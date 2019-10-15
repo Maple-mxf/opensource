@@ -1,0 +1,21 @@
+[Unit]
+Description=MongoDB Database Server
+Documentation=https://docs.mongodb.org/manual
+After=network.target
+
+[Service]
+Type=forking
+User=mongodb
+Group=mongodb
+ExecStart=/opt/mongodb/bin/mongod -f /opt/mongodb/mongodb.conf
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+MySQL  5.7
+Mongo 4.0.12
+Redis  版本无限制
+RocketMq  4.0以上
