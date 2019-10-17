@@ -26,11 +26,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>dev.morphia.morphia</groupId>
-            <artifactId>core</artifactId>
-            <version>1.5.5</version>
-        </dependency>
-        <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
             <version>3.11.0</version>
@@ -44,6 +39,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.28</version>
         </dependency>
     </dependencies>
 
