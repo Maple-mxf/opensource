@@ -9,10 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jopen-db</artifactId>
+    <artifactId>jopen-orm</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>jopen-mongo</module>
+        <module>jopen-mongo-orm</module>
+        <module>jopen-hbase-orm</module>
     </modules>
 
 
