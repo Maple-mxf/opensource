@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>jopen-mongo</module>
+        <module>jopen-redis</module>
     </modules>
 
 
