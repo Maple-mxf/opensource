@@ -1,11 +1,9 @@
 package io.jopen.core.function.util;
 
-import com.google.common.base.Converter;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Maps;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -48,7 +46,7 @@ public class FunctionsTest {
 
         System.err.println(forMapFunction.apply("k"));
         BiMap<String, Objects> biMap = HashBiMap.create();
-        Converter<Object, Object> converter = Maps.asConverter(biMap);
+        // Converter<Object, Object> converter = Maps.asConverter(biMap);
 
         // forMapFunction.andThen()
     }

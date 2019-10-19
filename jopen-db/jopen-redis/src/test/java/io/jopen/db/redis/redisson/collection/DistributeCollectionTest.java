@@ -79,19 +79,27 @@ public class DistributeCollectionTest {
         // client.getSet()
         RSortedSet<Object> sortedSet = client.getSortedSet("SortedSet");
         // sortedSet.addListenerAsync()
+        // sortedSet.touch()
     }
 
     /*generic list*/
     @Test
     public void testDistributeList() {
+        RList<Object> genericList = client.getList("genericList");
+        // genericList.
     }
 
     /*generic map*/
     @Test
     public void testDistributeMap() {
+        RMap<Object, Object> genericMap = client.getMap("", MapOptions.defaults());
+        // genericMap.
     }
+
 
     @Test
     public void testDistributeQueue() {
+        RQueue<Object> genericQueue = client.getQueue("genericQueue");
+        // genericQueue
     }
 }
