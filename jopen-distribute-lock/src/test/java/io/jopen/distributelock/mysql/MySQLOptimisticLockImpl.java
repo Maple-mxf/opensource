@@ -1,9 +1,11 @@
 package io.jopen.distributelock.mysql;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -29,5 +31,17 @@ public class MySQLOptimisticLockImpl {
         Class.forName("oracle.jdbc.driver.OracleDriver");
         conn = DriverManager.getConnection(uri, "root", "121101mxf@@ForBigData");
         conn.setAutoCommit(false);
+    }
+
+    @Test
+    public void lock() throws SQLException, InterruptedException {
+        String sql = "update video set star = 2 where star = 1";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        int updateResult = ps.executeUpdate();
+
+        // 如果小于0则一直循环 直到获取到锁
+        while (updateResult <= 0) {
+            updateResult = ps.executeUpdate();
+        }
     }
 }

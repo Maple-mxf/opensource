@@ -15,13 +15,12 @@ import redis.clients.jedis.params.SetParams;
 public class JedisDistributeLockImpl {
 
     private Jedis jedis;
-
     private final String lockName = "distributeLock";
 
     @Before
     public void before() {
-        jedis = new Jedis("120.55.41.150", 6379);
-        jedis.auth("qmbx@@2019");
+        jedis = new Jedis("10.55.41.150", 6379);
+        jedis.auth("12345");
     }
 
     /**
@@ -44,8 +43,8 @@ public class JedisDistributeLockImpl {
     }
 
     @Test
-    public void testGetLockLuaScript(){
-        String luaScript = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+    public void testGetLockLuaScript() {
+        // String luaScript = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
     }
 
 

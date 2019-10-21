@@ -54,7 +54,7 @@ public class HazelcastDistributeLockImpl {
 
 
     @Test
-    public void testCreateFirstNode() {
+    public void HazelcastdistributeLock() {
 
         // 获取分布式锁
         FencedLock fencedLock1 = hazelcastInstance1.getCPSubsystem().getLock("updateVideoStartLock");
@@ -70,6 +70,5 @@ public class HazelcastDistributeLockImpl {
         fencedLock1.unlock();
         boolean tryLock1 = fencedLock2.tryLock();
         System.err.println(tryLock1);
-
     }
 }
