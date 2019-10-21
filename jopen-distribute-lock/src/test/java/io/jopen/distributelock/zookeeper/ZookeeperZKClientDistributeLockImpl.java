@@ -15,7 +15,7 @@ public class ZookeeperZKClientDistributeLockImpl {
 
     private final String zkQurom = "192.168.74.136:2181";
     private ZooKeeper zkClient;
-    private String lockNameSpace = "/distributeLockDir";
+    private final String lockNameSpace = "/distributeLockDir";
 
 
     @Before
@@ -36,8 +36,39 @@ public class ZookeeperZKClientDistributeLockImpl {
         if (stat == null) {
             zkClient.create(lockNameSpace, "".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         }
+    }
 
+    private void watchNode(String nodeString, final Thread thread) throws InterruptedException {
+        try {
+            zkClient.exists(nodeString, watchedEvent -> {
 
+                System.out.println("==" + watchedEvent.toString());
+                if (watchedEvent.getType() == Watcher.Event.EventType.NodeDeleted) {
+                    System.err.println("Thread released Lock");
+                    thread.interrupt();
+                }
 
+                try {
+                    zkClient.exists(nodeString, watchedEvent1 -> {
+
+                        if (watchedEvent1.getType() == Watcher.Event.EventType.NodeDeleted) {
+                            System.out.println("Thread released Lock==============");
+                            thread.interrupt();
+                        }
+
+                        try {
+                            zkClient.exists(nodeString, true);
+                        } catch (KeeperException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (KeeperException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (KeeperException e) {
+            e.printStackTrace();
+        }
     }
 }
