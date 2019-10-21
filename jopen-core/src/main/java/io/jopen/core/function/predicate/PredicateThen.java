@@ -5,6 +5,8 @@ import java.util.function.Consumer;
 /**
  * @author maxuefeng
  * @since 2019-04-28
+ * @see com.google.common.base.Predicates
+ * @see java.util.function.Predicate
  */
 @FunctionalInterface
 public interface PredicateThen<T> {
