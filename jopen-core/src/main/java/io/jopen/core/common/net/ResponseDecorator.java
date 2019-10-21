@@ -1,4 +1,4 @@
-package io.jopen.core.common.io;
+package io.jopen.core.common.net;
 
 import com.alibaba.fastjson.JSONObject;
 import io.jopen.core.common.json.Json;
@@ -11,6 +11,7 @@ import java.util.Objects;
 /**
  * @author maxuefeng
  */
+@Deprecated
 public class ResponseDecorator {
 
     public Response response;

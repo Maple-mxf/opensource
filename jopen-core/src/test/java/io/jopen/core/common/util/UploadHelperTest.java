@@ -2,7 +2,7 @@ package io.jopen.core.common.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableMap;
-import io.jopen.core.common.io.UploadHelper;
+import io.jopen.core.common.net.UploadHelper;
 import org.junit.Test;
 
 import java.io.File;

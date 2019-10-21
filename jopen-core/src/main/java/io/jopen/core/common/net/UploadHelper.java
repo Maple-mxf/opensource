@@ -1,4 +1,4 @@
-package io.jopen.core.common.io;
+package io.jopen.core.common.net;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableMap;

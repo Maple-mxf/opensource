@@ -2,7 +2,7 @@ package io.jopen.core.other.python_rpc;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableMap;
-import io.jopen.core.common.io.UploadHelper;
+import io.jopen.core.common.net.UploadHelper;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;

@@ -1,4 +1,4 @@
-package io.jopen.core.common.io;
+package io.jopen.core.common.net;
 
 import okhttp3.Response;
 
@@ -7,6 +7,7 @@ import okhttp3.Response;
  *
  * @author maxuefeng
  */
+@Deprecated
 public final class RequestHelper{
 
     public static class ResponseWrapper {
