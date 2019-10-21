@@ -13,7 +13,7 @@ import org.junit.Test;
  * @see HazelcastInstance
  * @since 2019/10/21
  */
-public class HazelcastAPITest {
+public class HazelcastDistributeLockImpl {
 
     // 配置对象
     private final Config config = new Config();
