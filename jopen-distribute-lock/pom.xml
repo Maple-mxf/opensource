@@ -9,13 +9,21 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jopen-db</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>jopen-mongo</module>
-        <module>jopen-redis</module>
-        <module>jopen-mysql</module>
-    </modules>
+    <artifactId>jopen-distribute-lock</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.jopen</groupId>
+            <artifactId>jopen-redis</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jopen</groupId>
+            <artifactId>jopen-zookeeper</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 
 
 </project>
