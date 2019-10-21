@@ -19,7 +19,8 @@ public class HazelcastAPITest {
     private final Config config = new Config();
 
     // hazelcastInstance实例
-    private HazelcastInstance hazelcastInstance;
+    private HazelcastInstance hazelcastInstance1;
+    private HazelcastInstance hazelcastInstance2;
 
     /**
      * <p>{@link ManagementCenterConfig#ManagementCenterConfig(String, int)}</p>
@@ -31,12 +32,12 @@ public class HazelcastAPITest {
 
         // 创建集群中心配置
         ManagementCenterConfig centerConfig = new ManagementCenterConfig();
-        centerConfig.setUrl("http://127.0.0.1:8200/mancenter");
+        //centerConfig.setUrl("http://127.0.0.1:8200/mancenter");
         centerConfig.setEnabled(true);
 
         // 设置config
-        config.setInstanceName("test-center")
-                .setManagementCenterConfig(centerConfig)
+        //config.setInstanceName("test-center")
+        config.setManagementCenterConfig(centerConfig)
                 .addMapConfig(
                         new MapConfig().setName("mapConfig")
                                 .setMaxSizeConfig(new MaxSizeConfig(200, MaxSizeConfig.MaxSizePolicy.FREE_HEAP_SIZE))
@@ -44,9 +45,11 @@ public class HazelcastAPITest {
                                 .setEvictionPolicy(EvictionPolicy.LRU)
                                 .setTimeToLiveSeconds(20000)
                 );
+        config.getCPSubsystemConfig().setCPMemberCount(3);
 
         // 创建hazelcastInstance实例
-        hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+        hazelcastInstance1 = Hazelcast.newHazelcastInstance(config);
+        hazelcastInstance2 = Hazelcast.newHazelcastInstance(config);
     }
 
 
@@ -54,14 +57,19 @@ public class HazelcastAPITest {
     public void testCreateFirstNode() {
 
         // 获取分布式锁
-        FencedLock fencedLock = hazelcastInstance.getCPSubsystem().getLock("updateVideoStartLock");
+        FencedLock fencedLock1 = hazelcastInstance1.getCPSubsystem().getLock("updateVideoStartLock");
+        FencedLock fencedLock2 = hazelcastInstance2.getCPSubsystem().getLock("updateVideoStartLock");
 
         // 加锁
-        boolean tryLock = fencedLock.tryLock();
+        boolean tryLock = fencedLock1.tryLock();
+        System.err.println(tryLock);
 
-        // 更新数据
+        // 其他安全操作
 
         // 释放锁
-        fencedLock.unlock();
+        fencedLock1.unlock();
+        boolean tryLock1 = fencedLock2.tryLock();
+        System.err.println(tryLock1);
+
     }
 }
