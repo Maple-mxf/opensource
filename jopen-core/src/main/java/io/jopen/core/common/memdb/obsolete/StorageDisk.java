@@ -1,4 +1,4 @@
-package io.jopen.core.common.memdb;
+package io.jopen.core.common.memdb.obsolete;
 
 import java.util.Optional;
 import java.util.Set;
@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author maxuefeng
  * @since 2019/9/24
  */
+@Deprecated
 public class StorageDisk {
 
     private Set<Database> databases = new CopyOnWriteArraySet<>();

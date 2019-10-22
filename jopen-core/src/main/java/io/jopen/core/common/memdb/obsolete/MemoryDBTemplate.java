@@ -1,4 +1,4 @@
-package io.jopen.core.common.memdb;
+package io.jopen.core.common.memdb.obsolete;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
  * @author maxuefeng
  * @since 2019/9/24
  */
+@Deprecated
 public class MemoryDBTemplate {
 
     private Database database;

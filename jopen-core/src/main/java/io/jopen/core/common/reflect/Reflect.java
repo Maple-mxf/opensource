@@ -19,9 +19,9 @@ public class Reflect {
      * For example:
      * <code><pre>
      * Supplier&lt;String> supplier = Reflect.compile(
-     *   "org.joor.Test",
+     *   "org.joor.DBTest",
      *   "package org.joor;\n" +
-     *   "class Test implements java.util.function.Supplier&lt;String> {\n" +
+     *   "class DBTest implements java.util.function.Supplier&lt;String> {\n" +
      *   "  public String get() {\n" +
      *   "    return \"Hello World!\";\n" +
      *   "  }\n" +
@@ -43,9 +43,9 @@ public class Reflect {
      * For example:
      * <code><pre>
      * Supplier&lt;String> supplier = Reflect.compile(
-     *   "org.joor.Test",
+     *   "org.joor.DBTest",
      *   "package org.joor;\n" +
-     *   "class Test implements java.util.function.Supplier&lt;String> {\n" +
+     *   "class DBTest implements java.util.function.Supplier&lt;String> {\n" +
      *   "  public String get() {\n" +
      *   "    return \"Hello World!\";\n" +
      *   "  }\n" +

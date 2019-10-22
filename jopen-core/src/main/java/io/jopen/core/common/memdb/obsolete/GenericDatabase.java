@@ -1,4 +1,4 @@
-package io.jopen.core.common.memdb;
+package io.jopen.core.common.memdb.obsolete;
 
 import java.util.List;
 import java.util.Set;
@@ -8,6 +8,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author maxuefeng
  * @since 2019/9/24
  */
+@Deprecated
 public class GenericDatabase implements Database {
 
     private Set<Table> tables = new CopyOnWriteArraySet<>();

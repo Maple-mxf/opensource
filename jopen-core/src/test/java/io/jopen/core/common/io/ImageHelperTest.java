@@ -10,7 +10,7 @@ import java.io.IOException;
  */
 public class ImageHelperTest {
 
-    // Test Pass
+    // DBTest Pass
     @Test
     public void testImage2String() throws IOException {
         String based64 = ImageHelper.image2StringEncodeBased64("E:\\workplace\\jopen-core\\tmp\\1.jpg");

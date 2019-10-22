@@ -1,7 +1,7 @@
 /*
 package io.jopen.core.algorithm.tree;
 
-import org.junit.Test;
+import org.junit.DBTest;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class BinaryTreeTest {
      * 测试获取树的高度
      *//*
 
-    @Test
+    @DBTest
     public void testGetHeight() {
 
         BinaryTree<String> tree = new BinaryTree<>();
@@ -32,7 +32,7 @@ public class BinaryTreeTest {
      * 测试获取树的大小
      *//*
 
-    @Test
+    @DBTest
     public void testGetSize() {
 
         BinaryTree<Object> tree = new BinaryTree<>();
@@ -46,7 +46,7 @@ public class BinaryTreeTest {
      * 测试先序遍历
      *//*
 
-    @Test
+    @DBTest
     public void testLeftOrder() {
 
         BinaryTree<Object> tree = new BinaryTree<Object>();
@@ -62,7 +62,7 @@ public class BinaryTreeTest {
      * 测试中序遍历
      *//*
 
-    @Test
+    @DBTest
     public void testMidOrder() {
 
         BinaryTree<Object> tree = new BinaryTree<Object>();
@@ -78,7 +78,7 @@ public class BinaryTreeTest {
      * 测试后序遍历
      *//*
 
-    @Test
+    @DBTest
     public void testRightOrder() {
 
         BinaryTree<Object> tree = new BinaryTree<Object>();

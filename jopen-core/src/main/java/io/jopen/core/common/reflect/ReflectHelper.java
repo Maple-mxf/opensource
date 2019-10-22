@@ -344,11 +344,12 @@ public class ReflectHelper {
             String filedName = field.getName();
 
             // 字段值
-            Object value = null;
+            Object value;
             try {
                 value = field.get(obj);
 
             } catch (IllegalAccessException ignored) {
+                return Maps.newHashMap();
             }
 
             fieldValues.put(filedName, value);

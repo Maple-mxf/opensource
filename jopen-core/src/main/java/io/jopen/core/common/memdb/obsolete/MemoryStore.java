@@ -1,10 +1,11 @@
-package io.jopen.core.common.memdb;
+package io.jopen.core.common.memdb.obsolete;
 
 /**
  * @author maxuefeng
  * @see com.google.common.collect.Table
  * @since 2019/9/24
  */
+@Deprecated
 public interface MemoryStore {
 
     /**

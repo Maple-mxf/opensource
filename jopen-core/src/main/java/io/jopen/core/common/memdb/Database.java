@@ -1,60 +1,63 @@
 package io.jopen.core.common.memdb;
 
-import java.util.List;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import io.jopen.core.common.memdb.annotation.Entity;
+
+import java.io.Serializable;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author maxuefeng
- * @since 2019/9/24
+ * @since 2019/10/22
  */
-public interface Database extends MemoryStore {
+class Database implements Serializable {
 
-    /**
-     * create table in memory
-     * {@link Boolean}
-     *
-     * @param name database name
-     * @return create success or fail
-     */
-    Boolean create(String name);
+    private String dbName;
 
-    /**
-     * delete table in memory
-     * {@link Boolean}
-     *
-     * @param name database name
-     * @return delete object
-     */
-    Boolean delete(String name);
+    private ConcurrentHashMap<String, Table> tables = new ConcurrentHashMap<>();
 
-    /**
-     * {@link Table}
-     *
-     * @return get all tables object
-     */
-    List<Table> tables();
+    public ConcurrentHashMap<String, Table> showTables() {
+        return this.tables;
+    }
 
-    /**
-     * {@link Table}
-     *
-     * @return return this database contain the table by name
-     */
-    Boolean contain(String name);
+    public String getDbName() {
+        return dbName;
+    }
 
+    Database(String dbName) {
+        this.dbName = dbName;
+    }
 
-    /**
-     * {@link Table}
-     *
-     * @param table created table object
-     * @return success or fail
-     */
-    // Boolean add(Table<Object, String, Object> table);
+    private static <T> String parseEntity(Class<T> clazz) {
+        Entity annotation = clazz.getAnnotation(Entity.class);
+        if (annotation == null || Strings.isNullOrEmpty(annotation.value())) {
+            return clazz.getSimpleName();
+        }
+        return annotation.value();
+    }
 
-    /**
-     * get object in memory
-     * {@link Boolean}
-     *
-     * @param name database name
-     * @return delete object
-     */
-    // Table<Object, String, Object> get(String name);
+    public <T> void createTable(Class<T> clazz) {
+        Preconditions.checkNotNull(clazz);
+        String tableName = parseEntity(clazz);
+
+        // 重复检测
+        if (tables.containsKey(tableName)) {
+            throw new IllegalArgumentException("table existed");
+        }
+
+        // 创建表格
+        this.tables.put(tableName, new Table<T>(clazz));
+    }
+
+    public <T> Table<T> getTable(Class<T> clazz) {
+        Preconditions.checkNotNull(clazz);
+        String tableName = parseEntity(clazz);
+        if (!tables.containsKey(tableName)) {
+            // 创建表格
+            createTable(clazz);
+        }
+        return this.tables.get(tableName);
+
+    }
 }
