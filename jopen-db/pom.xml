@@ -15,6 +15,7 @@
         <module>jopen-mongo</module>
         <module>jopen-redis</module>
         <module>jopen-mysql</module>
+        <module>jopen-hive</module>
     </modules>
 
 
