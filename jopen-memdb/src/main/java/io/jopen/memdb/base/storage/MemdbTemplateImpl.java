@@ -28,6 +28,10 @@ class MemdbTemplateImpl implements MemdbTemplate {
     private MemdbTemplateImpl() {
     }
 
+    Database getCurrentDatabase() {
+        return this.currentDatabase;
+    }
+
     // 单例
     private static MemdbTemplateImpl memTemplateInstance = null;
 
@@ -67,7 +71,7 @@ class MemdbTemplateImpl implements MemdbTemplate {
         }
 
         public MemdbTemplateImpl build() {
-            return new MemdbTemplateImpl();
+            return MemdbTemplateImpl.getInstance();
         }
     }
 

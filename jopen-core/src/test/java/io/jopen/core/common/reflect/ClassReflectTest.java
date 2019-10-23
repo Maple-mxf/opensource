@@ -2,6 +2,7 @@ package io.jopen.core.common.reflect;
 
 import org.junit.Test;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
@@ -80,5 +81,12 @@ public class ClassReflectTest {
         Class<?> componentType = list.getClass().getComponentType();
 
         System.out.println(List.class.getComponentType());
+
+        System.err.println(componentType);
+
+
+
+        Type type = ((ParameterizedType)list.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        System.err.println(type);
     }
 }

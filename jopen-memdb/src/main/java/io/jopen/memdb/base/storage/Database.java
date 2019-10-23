@@ -16,7 +16,7 @@ class Database implements Serializable {
 
     private String dbName;
 
-    public JavaModelTable getTable(String tableName) {
+    public <T> JavaModelTable<T> getTable(String tableName) {
         Preconditions.checkNotNull(tableName);
         return tables.get(tableName);
     }

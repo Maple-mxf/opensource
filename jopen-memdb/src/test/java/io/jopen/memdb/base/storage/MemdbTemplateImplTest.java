@@ -1,6 +1,5 @@
 package io.jopen.memdb.base.storage;
 
-import com.google.common.util.concurrent.MoreExecutors;
 import io.jopen.core.common.text.Worker;
 import org.junit.Test;
 
@@ -28,13 +27,13 @@ public class MemdbTemplateImplTest {
         System.err.println(aBoolean);
 
         // 查询示例
-        IntermediateExpression<Student> expression = new IntermediateExpression<>();
+        IntermediateExpression<Student> expression = IntermediateExpression.buildFor(Student.class);
         expression.eq("id", id);
 
         // 条件构造
-        memTemplateInstance.select().execute(expression);
+        /*memTemplateInstance.selectCollection().input(expression).selectList();
         memTemplateInstance.update().execute(expression);
-        memTemplateInstance.delete().execute(expression);
+        memTemplateInstance.delete().execute(expression);*/
 
         // 无需条件构造
         memTemplateInstance.save(student);

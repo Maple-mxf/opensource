@@ -19,15 +19,24 @@ import java.util.Map;
  */
 public class IntermediateExpression<T> {
 
-    @FunctionalInterface
-    interface Condition<T> {
-        boolean test(JavaModelTable<T> table, Object value);
+    private Class<T> targetClass;
+
+    private IntermediateExpression(Class<T> targetClass) {
+        Preconditions.checkNotNull(targetClass);
+        this.targetClass = targetClass;
+    }
+
+    public static <T> IntermediateExpression<T> buildFor(Class<T> targetClass) {
+        return new IntermediateExpression<>(targetClass);
+    }
+
+    Class<T> getTargetClass() {
+        return this.targetClass;
     }
 
     @FunctionalInterface
-    @Deprecated
-    interface Match {
-        boolean test(Object v1, Object v2);
+    interface Condition<T> {
+        boolean test(T cell);
     }
 
     private List<Condition<T>> conditions = new ArrayList<>();
@@ -36,45 +45,21 @@ public class IntermediateExpression<T> {
         return this.conditions;
     }
 
-/*    private boolean common(String column, Object value, Match match) {
-
-        Preconditions.checkNotNull(column);
-        Preconditions.checkNotNull(value);
-        Preconditions.checkNotNull(match);
-
-        conditions.add((table, value1) -> {
-
-            List<T> cells = table.queryAll();
-
-            for (T object : cells) {
-                // 获取当前行的数据
-                Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(object);
-                // 获取当前行指定列的值
-                Object val = filedNameValues.get(column);
-                return match.test(val, value1);
-            }
-
-            return false;
-        });
-    }*/
-
     public IntermediateExpression<T> eq(String column, Object value) {
 
         Preconditions.checkNotNull(column);
         Preconditions.checkNotNull(value);
 
-        conditions.add((table, receiveValue) -> {
-            List<T> cells = table.queryAll();
-            for (T object : cells) {
-                // 获取当前行的数据
-                Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(object);
-                // 获取当前行指定列的值
-                Object val = filedNameValues.get(column);
-                if (val != null && val.equals(value)) {
-                    return true;
-                }
-            }
-            return false;
+        conditions.add((cell) -> {
+
+            // 获取当前行的数据
+            Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(cell);
+            // 获取当前行指定列的值
+            Object val = filedNameValues.get(column);
+
+            return val != null && val.equals(value);
+
+
         });
         return this;
     }
@@ -89,27 +74,27 @@ public class IntermediateExpression<T> {
 
         Preconditions.checkNotNull(column);
 
-        conditions.add((table, receiveValue) -> {
-            List<T> cells = table.queryAll();
-            for (T object : cells) {
-                // 获取当前行的数据
-                Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(object);
-                // 获取当前行指定列的值
-                Object val = filedNameValues.get(column);
+        conditions.add((cell) -> {
 
-                if (val != null && val.equals(value)) {
-                    return true;
-                }
+            // 获取当前行的数据
+            Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(cell);
+            // 获取当前行指定列的值
+            Object val = filedNameValues.get(column);
 
-                // 如果比较的数据实现了Comparable接口
-                if (val != null && Arrays.asList(val.getClass().getInterfaces()).contains(Comparable.class)) {
-                    Comparable v1 = (Comparable) val;
-                    Comparable v2 = (Comparable) value;
-                    return Ordering.natural().compare(v2, v1) >= 1;
-                }
+            if (val != null && val.equals(value)) {
+                return true;
+            }
+
+            // 如果比较的数据实现了Comparable接口
+            if (val != null && Arrays.asList(val.getClass().getInterfaces()).contains(Comparable.class)) {
+                Comparable v1 = (Comparable) val;
+                Comparable v2 = (Comparable) value;
+                return Ordering.natural().compare(v2, v1) >= 1;
             }
             return false;
         });
         return this;
     }
+
+
 }
