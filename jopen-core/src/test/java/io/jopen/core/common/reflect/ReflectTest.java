@@ -27,6 +27,5 @@ public class ReflectTest {
         // 调用Student的方法
         reflect.call("doSomethings");
 
-
     }
 }

@@ -3,8 +3,6 @@ package io.jopen.memdb.base.storage;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import io.jopen.core.function.ReturnValue;
-import io.jopen.memdb.query.IntermediateExpression;
-import io.jopen.memdb.query.OperationType;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,9 +59,10 @@ class MemdbTemplateImpl implements MemdbTemplate {
             Database db = DatabaseManagement.DBA.databases.get(dbName);
 
             if (db == null) {
-                DatabaseManagement.DBA.databases.put(dbName, new Database(dbName));
+                db = new Database(dbName);
+                DatabaseManagement.DBA.databases.put(dbName, db);
             }
-            memTemplateInstance.currentDatabase = db;
+            MemdbTemplateImpl.getInstance().currentDatabase = db;
             return this;
         }
 
@@ -107,7 +106,7 @@ class MemdbTemplateImpl implements MemdbTemplate {
         JavaModelTable<T> targetTable = null;
         // 执行J修改表格之前的预操作
         for (PreModifyTableAction preAction : preModifyTableActions) {
-            ReturnValue returnValue = preAction.prerequisites(this.currentDatabase, t);
+            ReturnValue returnValue = preAction.prerequisites(getInstance().currentDatabase, t);
 
             if (returnValue.containsKey(t.getClass().getName())) {
                 targetTable = (JavaModelTable<T>) returnValue.get(t.getClass().getName());

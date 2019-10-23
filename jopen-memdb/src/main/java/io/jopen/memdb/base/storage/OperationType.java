@@ -1,4 +1,4 @@
-package io.jopen.memdb.query;
+package io.jopen.memdb.base.storage;
 
 /**
  * @author maxuefeng

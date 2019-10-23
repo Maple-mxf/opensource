@@ -30,6 +30,10 @@ class JavaModelTable<T> implements Serializable {
     // primary key
     private Set<Object> ids = new ConcurrentSkipListSet<>();
 
+    public List<T> queryAll() {
+        return this.cells;
+    }
+
     // 修改表格之前的回调函数
     static List<PreModifyTableAction> preModifyTableActions = new ArrayList<>();
 
