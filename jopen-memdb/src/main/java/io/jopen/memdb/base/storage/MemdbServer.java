@@ -1,12 +1,15 @@
 package io.jopen.memdb.base.storage;
 
-import com.google.common.util.concurrent.AbstractService;
+import com.google.common.collect.Queues;
+import com.google.common.util.concurrent.*;
 import io.jopen.core.common.io.FileHelper;
 import io.jopen.memdb.base.serialize.KryoHelper;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 /**
@@ -17,6 +20,11 @@ import java.util.stream.Stream;
  * @since 2019/10/23
  */
 final class MemdbServer extends AbstractService {
+
+    private final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(50));
+
+    // 任务队列
+    private final BlockingQueue<Task<Object>> taskBlockingQueue = Queues.newLinkedBlockingQueue();
 
     private MemdbServer() {
     }
@@ -64,11 +72,31 @@ final class MemdbServer extends AbstractService {
                     DatabaseManagement.DBA.databases.put(dbName, db);
                 });
             }
+
+            // 开启一个子线程进行执行任务
+            new Thread(() -> {
+
+                while (true) {
+                    try {
+                        Task<Object> task = taskBlockingQueue.take();
+                        ListenableFuture<Object> future = MemdbServer.this.service.submit(task);
+                        // 添加任务完成回调函数
+                        Futures.addCallback(future, task.completeCallback(), service);
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+
+            }).start();
         }
+        //
     }
 
     @Override
     protected void doStop() {
         // 将临时文件进行落盘
+    }
+
+    void submit(Task<Object> task) {
+        this.taskBlockingQueue.add(task);
     }
 }
