@@ -8,6 +8,9 @@ import io.jopen.core.common.reflect.ReflectHelper;
 import io.jopen.core.function.ReturnValue;
 import io.jopen.memdb.base.annotation.Entity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -27,6 +30,8 @@ class JavaModelTable<T> implements Serializable {
     // 数据存储
     private CopyOnWriteArrayList<T> cells = new CopyOnWriteArrayList<>();
 
+    // private Database database
+
     // primary key
     private Set<Object> ids = new ConcurrentSkipListSet<>();
 
@@ -35,11 +40,14 @@ class JavaModelTable<T> implements Serializable {
     }
 
     // 修改表格之前的回调函数
-    static List<PreModifyTableAction> preModifyTableActions = new ArrayList<>();
+    static List<PreModifyTableCallback> preModifyTableCallbacks = new ArrayList<>();
+
+    // 修改表格之后的回调函数
+    static List<AfterModifyTableCallback> afterModifyTableCallbacks = new ArrayList<>();
 
     static {
         // 修改表格之前预操作
-        preModifyTableActions.add((database, object) -> {
+        preModifyTableCallbacks.add((database, object) -> {
             JavaModelTable javaModelTable = database.getTable(parseEntity(object.getClass()));
 
             if (javaModelTable == null) {
@@ -47,6 +55,36 @@ class JavaModelTable<T> implements Serializable {
                 database.tables.put(javaModelTable.getTableName(), javaModelTable);
             }
             return ReturnValue.of(object.getClass().getName(), javaModelTable);
+        });
+
+
+        // 修改表格之后的回调函数
+        afterModifyTableCallbacks.add((database, table) -> {
+
+            // 数据库名称
+            String dbName = database.getDbName();
+
+            // 持久化数据
+            String path = "./memdb/" + dbName;
+            File dirFile = new File(path);
+            if (!dirFile.exists()) {
+                boolean mkdirSuccess = dirFile.mkdirs();
+                if (!mkdirSuccess) {
+                    throw new RuntimeException("create dir fail");
+                }
+
+                // TODO  暂时直接覆盖原有的数据文件
+                // 将java对象转换为List<Map<String,Object>>类型进行序列化
+                // ByteStreams.
+                File dataFile = new File(path + "/" + Objects.hashCode(table.getTableName()));
+                // com.google.common.io.Files.asCharSink(dataFile, StandardCharsets.UTF_8, FileWriteMode.APPEND).openStream().write();
+                // Closeables.c
+                // 将数据进行加密
+                // MoreFiles.asCharSink().openStream().write();
+                ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path + "/" + Objects.hashCode(table.getTableName())));
+                out.writeObject(table);
+                out.close();
+            }
         });
     }
 

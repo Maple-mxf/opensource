@@ -7,7 +7,8 @@ import io.jopen.core.function.ReturnValue;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static io.jopen.memdb.base.storage.JavaModelTable.preModifyTableActions;
+import static io.jopen.memdb.base.storage.JavaModelTable.afterModifyTableCallbacks;
+import static io.jopen.memdb.base.storage.JavaModelTable.preModifyTableCallbacks;
 
 /**
  * 内存数据库
@@ -107,7 +108,7 @@ class MemdbTemplateImpl {
 
         JavaModelTable<T> targetTable = null;
         // 执行J修改表格之前的预操作
-        for (PreModifyTableAction preAction : preModifyTableActions) {
+        for (PreModifyTableCallback preAction : preModifyTableCallbacks) {
             ReturnValue returnValue = preAction.prerequisites(getInstance().currentDatabase, t);
 
             if (returnValue.containsKey(t.getClass().getName())) {
@@ -121,7 +122,11 @@ class MemdbTemplateImpl {
         }
 
         // 保存数据
-        return targetTable.add(t);
+        Boolean Res = targetTable.add(t);
+        for (AfterModifyTableCallback afterModifyTableCallback : afterModifyTableCallbacks) {
+            afterModifyTableCallback.callback(this.currentDatabase, targetTable);
+        }
+        return Res;
     }
 
     @Deprecated
@@ -130,7 +135,7 @@ class MemdbTemplateImpl {
         Preconditions.checkNotNull(t);
         JavaModelTable<T> targetTable = null;
         // 执行J修改表格之前的预操作
-        for (PreModifyTableAction preAction : preModifyTableActions) {
+        for (PreModifyTableCallback preAction : preModifyTableCallbacks) {
             ReturnValue returnValue = preAction.prerequisites(this.currentDatabase, t);
 
             if (returnValue.containsKey(t.getClass().getName())) {
@@ -139,5 +144,4 @@ class MemdbTemplateImpl {
         }
         targetTable.delete(t);
     }
-
 }

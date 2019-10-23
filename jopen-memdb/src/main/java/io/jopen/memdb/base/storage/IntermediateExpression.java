@@ -56,10 +56,7 @@ public class IntermediateExpression<T> {
             Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(cell);
             // 获取当前行指定列的值
             Object val = filedNameValues.get(column);
-
             return val != null && val.equals(value);
-
-
         });
         return this;
     }
@@ -95,6 +92,4 @@ public class IntermediateExpression<T> {
         });
         return this;
     }
-
-
 }

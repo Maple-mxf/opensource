@@ -68,6 +68,7 @@ class MemdbExecutor {
 
 
     class Landing<T> {
+
         private Stream<T> stream;
 
         Landing(Stream<T> stream) {
