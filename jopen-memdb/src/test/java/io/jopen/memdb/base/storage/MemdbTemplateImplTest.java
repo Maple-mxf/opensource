@@ -25,7 +25,7 @@ public class MemdbTemplateImplTest {
     public void testGetInstance() throws Throwable {
 
         // 创建客户端单例
-        MemdbTemplateImpl memTemplateInstance = new MemdbTemplateImpl.Builder().switchDB("default").build();
+        MemdbTemplateImpl memTemplateInstance = MemdbTemplateImpl.Builder.startDBServer().switchDB("default").build();
 
         // 保存数据
         Boolean aBoolean = memTemplateInstance.save(student);
@@ -34,7 +34,7 @@ public class MemdbTemplateImplTest {
 
     @Test
     public void testQueryByCondition() {
-        MemdbTemplateImpl memTemplateInstance = new MemdbTemplateImpl.Builder().switchDB("default").build();
+        // MemdbTemplateImpl memTemplateInstance = new MemdbTemplateImpl.Builder().switchDB("default").build();
     }
 
 

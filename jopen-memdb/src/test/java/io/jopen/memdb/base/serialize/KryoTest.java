@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * @author maxuefeng
@@ -41,5 +43,11 @@ public class KryoTest {
 
         // 转换为byte数组
         byte[] bytes = baos.toByteArray();
+    }
+
+    @Test
+    public void testBase64(){
+        System.err.println(Base64.getEncoder().encodeToString(Student.class.getName().getBytes(StandardCharsets.UTF_8)));
+        // Hashing.sha256().newHasher().putString()
     }
 }
