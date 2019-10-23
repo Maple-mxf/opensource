@@ -49,7 +49,7 @@ class MemdbExecutor {
     }
 
 
-    private  <T> Stream<T> filter(IntermediateExpression<T> expression, List<T> cells) {
+    private <T> Stream<T> filter(IntermediateExpression<T> expression, List<T> cells) {
 
         // 获取断言集合
         List<IntermediateExpression.Condition<T>> conditions = expression.getConditions();
@@ -67,7 +67,7 @@ class MemdbExecutor {
     }
 
 
-    class Landing<T> {
+    final class Landing<T> {
 
         private Stream<T> stream;
 
