@@ -28,13 +28,13 @@ class MemdbExecutor {
      * @return 使用Stream高阶变成
      * @see MemdbTemplateImpl 相当于上下文对象
      */
-    <T> Stream<T> input(IntermediateExpression<T> expression) {
+    <T> Landing<T> input(IntermediateExpression<T> expression) {
 
         // 获取expression的泛型
         currentTable = MemdbTemplateImpl.getInstance().getCurrentDatabase().getTable(JavaModelTable.parseEntity(expression.getTargetClass()));
 
         if (currentTable == null) {
-            return Stream.of();
+            return new Landing<>(Stream.of());
         }
 
         // 表格中所有数据
@@ -42,14 +42,14 @@ class MemdbExecutor {
 
         if (OperationType.SELECT.equals(this.operationType) || OperationType.UPDATE.equals(this.operationType) || OperationType.DELETE.equals(this.operationType)) {
             // 数据按照条件过滤
-            return filter(expression, cells);
+            return new Landing<>(filter(expression, cells));
         } else {
             throw new UnsupportedOperationException(String.format("not support operation, OperationType [%s] ", this.operationType));
         }
     }
 
 
-    public <T> Stream<T> filter(IntermediateExpression<T> expression, List<T> cells) {
+    private  <T> Stream<T> filter(IntermediateExpression<T> expression, List<T> cells) {
 
         // 获取断言集合
         List<IntermediateExpression.Condition<T>> conditions = expression.getConditions();
@@ -75,7 +75,7 @@ class MemdbExecutor {
         }
 
 
-        public List<T> list() {
+        public List<T> selectList() {
             if (!MemdbExecutor.this.operationType.equals(OperationType.SELECT)) {
                 throw new RuntimeException(String.format("current operationType error ,expection optionType is [%s] ", OperationType.SELECT));
             }

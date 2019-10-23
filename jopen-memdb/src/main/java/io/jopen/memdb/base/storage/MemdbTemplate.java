@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
  * @author maxuefeng
  * @since 2019/10/23
  */
+@Deprecated
 interface MemdbTemplate {
 
     <T> Boolean save(T t) throws Throwable;

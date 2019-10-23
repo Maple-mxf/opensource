@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import io.jopen.core.function.ReturnValue;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static io.jopen.memdb.base.storage.JavaModelTable.preModifyTableActions;
@@ -15,7 +16,7 @@ import static io.jopen.memdb.base.storage.JavaModelTable.preModifyTableActions;
  * @since 2019/10/22
  */
 public final
-class MemdbTemplateImpl implements MemdbTemplate {
+class MemdbTemplateImpl {
 
     //
     private Database currentDatabase;
@@ -75,34 +76,31 @@ class MemdbTemplateImpl implements MemdbTemplate {
         }
     }
 
-    private OperationType operationType = OperationType.SELECT;
 
-    public MemdbTemplateImpl select() {
-        this.operationType = OperationType.SELECT;
-        return this;
+    public MemdbExecutor select() {
+        return new MemdbExecutor(OperationType.SELECT);
     }
 
-    public MemdbTemplateImpl delete() {
-        this.operationType = OperationType.DELETE;
-        return this;
+    public MemdbExecutor delete() {
+        return new MemdbExecutor(OperationType.DELETE);
     }
 
-    public MemdbTemplateImpl update() {
-        this.operationType = OperationType.UPDATE;
-        return this;
+    public MemdbExecutor update() {
+        return new MemdbExecutor(OperationType.UPDATE);
     }
 
-    public MemdbTemplateImpl insert() {
-        this.operationType = OperationType.INSERT;
-        return this;
+    public MemdbExecutor insert() {
+        return new MemdbExecutor(OperationType.UPDATE);
     }
 
-    // 内部条件构造器
-    private IntermediateExpression intermediateExpression;
 
-    public void eq(String name, Object value) {
-
+    public <T> Boolean saveBatch(Collection<T> entities) throws Throwable {
+        for (T entity : entities) {
+            save(entity);
+        }
+        return true;
     }
+
 
     public <T> Boolean save(T t) throws Throwable {
         Preconditions.checkNotNull(t);
@@ -126,8 +124,8 @@ class MemdbTemplateImpl implements MemdbTemplate {
         return targetTable.add(t);
     }
 
-    @Override
-    public <T> void delete(T t) throws Throwable {
+    @Deprecated
+    private <T> void delete(T t) throws Throwable {
 
         Preconditions.checkNotNull(t);
         JavaModelTable<T> targetTable = null;
@@ -142,13 +140,4 @@ class MemdbTemplateImpl implements MemdbTemplate {
         targetTable.delete(t);
     }
 
-    @Override
-    public <T> void update(T t) {
-        Preconditions.checkNotNull(t);
-    }
-
-    @Override
-    public <T> void select(T t) {
-        Preconditions.checkNotNull(t);
-    }
 }
