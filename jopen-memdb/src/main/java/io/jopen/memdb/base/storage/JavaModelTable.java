@@ -76,7 +76,7 @@ class JavaModelTable<T> implements Serializable {
                 // TODO  暂时直接覆盖原有的数据文件
                 // 将java对象转换为List<Map<String,Object>>类型进行序列化
                 // ByteStreams.
-                File dataFile = new File(path + "/" + Objects.hashCode(table.getTableName()));
+                // File dataFile = new File(path + "/" + Objects.hashCode(table.getTableName()));
                 // com.google.common.io.Files.asCharSink(dataFile, StandardCharsets.UTF_8, FileWriteMode.APPEND).openStream().write();
                 // Closeables.c
                 // 将数据进行加密

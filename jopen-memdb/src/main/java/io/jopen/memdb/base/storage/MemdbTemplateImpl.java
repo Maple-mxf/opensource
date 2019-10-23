@@ -28,6 +28,9 @@ class MemdbTemplateImpl {
 
     // 客户端登陆
     private MemdbTemplateImpl() {
+
+        // 读取持久化数据
+
     }
 
     Database getCurrentDatabase() {
