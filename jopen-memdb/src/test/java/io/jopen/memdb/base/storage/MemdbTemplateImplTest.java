@@ -1,5 +1,6 @@
 package io.jopen.memdb.base.storage;
 
+import com.google.common.collect.ImmutableList;
 import io.jopen.core.common.text.Worker;
 import org.junit.Test;
 
@@ -41,7 +42,7 @@ public class MemdbTemplateImplTest {
         memTemplateInstance.delete().input(expression).delete();
 
         // 批量插入
-
+        memTemplateInstance.saveBatch(ImmutableList.of(student));
 
 
     }
