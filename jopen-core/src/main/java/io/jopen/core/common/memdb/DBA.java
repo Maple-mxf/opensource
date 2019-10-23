@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author maxuefeng
  * @since 2019/10/22
  */
+@Deprecated
 final
 class DBA {
 

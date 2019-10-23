@@ -1,9 +1,12 @@
-package io.jopen.core.common.memdb;
+package io.jopen.memdb.base.storage;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.base.Strings;
 import io.jopen.core.common.reflect.ReflectHelper;
+import io.jopen.core.function.ReturnValue;
+import io.jopen.memdb.base.annotation.Entity;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -16,16 +19,46 @@ import java.util.stream.Collectors;
 /**
  * @author maxuefeng
  * @since 2019/10/22
+ * <p>{@link com.google.common.collect.Table}</p>
  */
-@Deprecated
-final class JavaModelTabale<T> implements Serializable {
+final
+class JavaModelTable<T> implements Serializable {
+
+    // 数据存储
     private CopyOnWriteArrayList<T> cells = new CopyOnWriteArrayList<>();
+
+    // primary key
     private Set<Object> ids = new ConcurrentSkipListSet<>();
+
+    // 修改表格之前的回调函数
+    static List<PreModifyTableAction> preModifyTableActions = new ArrayList<>();
+
+    static {
+        // 修改表格之前预操作
+        preModifyTableActions.add((database, object) -> {
+            JavaModelTable javaModelTable = database.getTable(parseEntity(object.getClass()));
+
+            if (javaModelTable == null) {
+                javaModelTable = new JavaModelTable(object.getClass());
+                database.tables.put(javaModelTable.getTableName(), javaModelTable);
+            }
+            return ReturnValue.of(object.getClass().getName(), javaModelTable);
+        });
+    }
+
+    // 存储的目标类型
     private Class<T> target;
 
-    JavaModelTabale(Class<T> target) {
+    private String tableName;
+
+    JavaModelTable(Class<T> target) {
         Preconditions.checkNotNull(target);
         this.target = target;
+        this.tableName = parseEntity(target);
+    }
+
+    public String getTableName() {
+        return this.tableName;
     }
 
     T queryOne(T t) {
@@ -58,8 +91,7 @@ final class JavaModelTabale<T> implements Serializable {
 
             // 进行过滤
             return predicate.apply(cell);
-        }).findAny();
-
+        }).findFirst();
 
         return optional.orElse(null);
     }
@@ -77,6 +109,8 @@ final class JavaModelTabale<T> implements Serializable {
         T target = optional.orElseThrow((Supplier<Throwable>) RuntimeException::new);
         // this.cells.removeIf()
         this.cells.remove(target);
+
+
     }
 
     @Override
@@ -110,5 +144,14 @@ final class JavaModelTabale<T> implements Serializable {
             value.append("\n");
         }
         return column.append(value).toString();
+    }
+
+
+    static <T> String parseEntity(Class<T> clazz) {
+        Entity annotation = clazz.getAnnotation(Entity.class);
+        if (annotation == null || Strings.isNullOrEmpty(annotation.value())) {
+            return clazz.getSimpleName();
+        }
+        return annotation.value();
     }
 }
