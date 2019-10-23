@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
  * @author maxuefeng
  * @since 2019/10/22
  */
-final class Table<T> implements Serializable {
+final class JavaModelTabale<T> implements Serializable {
     private CopyOnWriteArrayList<T> cells = new CopyOnWriteArrayList<>();
     private Set<Object> ids = new ConcurrentSkipListSet<>();
     private Class<T> target;
 
-    Table(Class<T> target) {
+    JavaModelTabale(Class<T> target) {
         Preconditions.checkNotNull(target);
         this.target = target;
     }

@@ -16,7 +16,7 @@ public class DBTest {
 
     @Test
     public void showTables() {
-        ConcurrentHashMap<String, Table> tables = DBA.DBA.use("test").showTables();
+        ConcurrentHashMap<String, JavaModelTabale> tables = DBA.DBA.use("test").showTables();
         tables.forEach((k, v) -> System.err.println(k + v));
     }
 
@@ -31,7 +31,7 @@ public class DBTest {
         student.id = Worker.id();
         student.name = "Jack Ma";
 
-        Table<Student> table = database.getTable(Student.class);
+        JavaModelTabale<Student> table = database.getTable(Student.class);
         table.add(student);
 
         // System.err.println(table);
@@ -53,7 +53,7 @@ public class DBTest {
         student.id = Worker.id();
         student.name = "Jack Ma";
 
-        Table<Student> table = database.getTable(Student.class);
+        JavaModelTabale<Student> table = database.getTable(Student.class);
         table.add(student);
 
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("./objectFile.obj"));

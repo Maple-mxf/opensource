@@ -11,13 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author maxuefeng
  * @since 2019/10/22
  */
+final
 class Database implements Serializable {
 
     private String dbName;
 
-    private ConcurrentHashMap<String, Table> tables = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, JavaModelTabale> tables = new ConcurrentHashMap<>();
 
-    public ConcurrentHashMap<String, Table> showTables() {
+    public ConcurrentHashMap<String, JavaModelTabale> showTables() {
         return this.tables;
     }
 
@@ -47,10 +48,10 @@ class Database implements Serializable {
         }
 
         // 创建表格
-        this.tables.put(tableName, new Table<T>(clazz));
+        this.tables.put(tableName, new JavaModelTabale<T>(clazz));
     }
 
-    public <T> Table<T> getTable(Class<T> clazz) {
+    public <T> JavaModelTabale<T> getTable(Class<T> clazz) {
         Preconditions.checkNotNull(clazz);
         String tableName = parseEntity(clazz);
         if (!tables.containsKey(tableName)) {

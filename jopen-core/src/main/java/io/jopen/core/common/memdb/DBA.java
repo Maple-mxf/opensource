@@ -6,7 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author maxuefeng
  * @since 2019/10/22
  */
-final class DBA {
+final
+class DBA {
 
     private ConcurrentHashMap<String, Database> databases = new ConcurrentHashMap<>();
 
