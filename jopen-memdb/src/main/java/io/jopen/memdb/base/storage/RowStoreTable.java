@@ -6,10 +6,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -31,12 +28,12 @@ class RowStoreTable {
     private String tableName;
 
     // 列的属性
-    private Set<ColumnType> columnTypes;
+    private List<ColumnType> columnTypes;
 
     // database
     private transient Database database;
 
-    RowStoreTable(Database database, String tableName, Set<ColumnType> columnTypes) {
+    RowStoreTable(Database database, String tableName, List<ColumnType> columnTypes) {
         this.database = database;
         this.tableName = tableName;
         this.columnTypes = columnTypes;
@@ -128,7 +125,7 @@ class RowStoreTable {
         rowStoreTable.append(this.tableName).append("\n");
 
         // 拼接列名
-        String columnNames = Joiner.on("\t\t\t").join(columnTypes.parallelStream().map(ColumnType::getColumnName).collect(Collectors.toSet()));
+        String columnNames = Joiner.on("\t\t\t\t\t\t\t\t").join(columnTypes.parallelStream().map(ColumnType::getColumnName).collect(Collectors.toList()));
         rowStoreTable.append(columnNames);
         rowStoreTable.append("\n");
 

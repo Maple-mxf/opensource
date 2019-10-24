@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.jopen</groupId>
+    <artifactId>opensource</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <modules>
+        <module>jopen-rpc</module>
+        <module>jopen-db</module>
+        <module>jopen-core</module>
+        <module>jopen-orm</module>
+        <module>jopen-netty</module>
+        <module>jopen-flink</module>
+        <module>jopen-zookeeper</module>
+        <module>jopen-mq</module>
+        <module>jopen-distribute-lock</module>
+        <module>jopen-quartz</module>
+        <module>jopen-web</module>
+        <module>jopen-spark</module>
+        <module>jopen-iot</module>
+        <module>jopen-scheduling</module>
+        <module>jopen-memdb</module>
+    </modules>
+
+
+</project>

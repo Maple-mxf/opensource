@@ -1,6 +1,9 @@
 package io.jopen.memdb.base.storage;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import io.jopen.core.common.text.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,10 +17,10 @@ public class RowStoreTableTest {
     private Database database = new Database("default");
 
     @Before
-    private void beforeCreateTable() {
+    public void beforeCreateTable() {
         ColumnType idColumn = new ColumnType(String.class, "id", true);
         ColumnType nameColumn = new ColumnType(String.class, "name");
-        rowStoreTable = new RowStoreTable(database, "student", ImmutableSet.of(idColumn, nameColumn));
+        rowStoreTable = new RowStoreTable(database, "student", ImmutableList.of(idColumn, nameColumn));
     }
 
     /**
@@ -28,7 +31,11 @@ public class RowStoreTableTest {
     public void testStorageData() {
 
         // 保存数据
-        rowStoreTable.save();
+        String id = Worker.id();
+        Row<String, Object> row = Row.row(Id.of(ImmutableMap.of("id", id)), ImmutableBiMap.of("id", id, "name", "Jack"));
+        rowStoreTable.save(row);
+
+        System.err.println(rowStoreTable);
     }
 
 }
