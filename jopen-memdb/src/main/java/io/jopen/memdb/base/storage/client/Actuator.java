@@ -25,7 +25,7 @@ class Actuator<T> {
     private transient final Mapper<T> mapper = new Mapper<>();
 
     final int update(QueryBuilder.Update update) {
-        HashMap<String, Object> updateBody = update.getBody();
+        HashMap<String, Object> setKV = update.getBody();
 
         // 获取操作的数据库当前对象
         Database currentDatabase = update.getQueryBuilder().getClientInstance().getCurrentDatabase();
@@ -37,7 +37,7 @@ class Actuator<T> {
         IntermediateExpression expression = update.getQueryBuilder().getExpression();
 
         // 更新
-        List<Id> updateRes = table.update(expression, updateBody);
+        List<Id> updateRes = table.update(expression, setKV);
 
         return updateRes.size();
     }
@@ -74,7 +74,7 @@ class Actuator<T> {
     }
 
     @NonNull
-    final List<T> select(@NonNull QueryBuilder.Select select) {
+    final Collection<T> select(@NonNull QueryBuilder.Select select) throws Throwable {
 
         IntermediateExpression<T> expression = select.getQueryBuilder().getExpression();
         // 获取操作的数据库当前对象
@@ -84,14 +84,9 @@ class Actuator<T> {
         Class clazz = select.getQueryBuilder().getExpression().getTargetClass();
         RowStoreTable table = currentDatabase.getTable(clazz);
 
-        Mapper<T> mapper = new Mapper<>();
-
         List<Row> selectResult = table.query(converter.convertIntermediateExpressionType(expression));
 
-        // select result -> Java Bean
-        Collection<T> collection = mapper.mapRowsToBeans.apply(selectResult);
-
-        return null;
+        return mapper.mapRowsToBeans.apply(selectResult, clazz);
 
     }
 }
