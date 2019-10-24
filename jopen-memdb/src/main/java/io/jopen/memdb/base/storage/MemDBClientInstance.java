@@ -2,36 +2,45 @@ package io.jopen.memdb.base.storage;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.util.concurrent.Service;
 import io.jopen.core.function.ReturnValue;
 
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static io.jopen.memdb.base.storage.JavaModelTable.afterModifyTableCallbacks;
 import static io.jopen.memdb.base.storage.JavaModelTable.preModifyTableCallbacks;
 
 /**
- * 内存数据库
+ * {@link MemDBDatabaseSystem#doStart()}
+ * {@link MemDBDatabaseSystem#doStop()} ()}
+ * <p>
+ * <p>
+ * 数据库客户端
  *
  * @author maxuefeng
- * @since 2019/10/22
+ * @since 2019/10/24
  */
-@Deprecated
-public final
-class MemdbTemplateImpl {
+public class MemDBClientInstance {
 
-    //
+    // 当前数据库
     private Database currentDatabase;
 
-    public ConcurrentHashMap<String, Database> showDBs() {
-        return DatabaseManagement.DBA.databases;
-    }
+    // private MemDBDatabaseSystem memDBDatabaseSystem;
 
     // 客户端登陆
-    private MemdbTemplateImpl() {
+    private MemDBClientInstance() {
 
-        // 读取持久化数据
+        // 启动服务器
+        Service.State state = MemDBDatabaseSystem.DB_DATABASE_SYSTEM.state();
+        if (state.equals(Service.State.STOPPING) || state.equals(Service.State.FAILED)
+                || state.equals(Service.State.TERMINATED)) {
+            MemDBDatabaseSystem.DB_DATABASE_SYSTEM.doStart();
+        }
 
+        // 状态检测
+        if (!state.equals(Service.State.RUNNING) || !state.equals(Service.State.STARTING)) {
+            throw new RuntimeException("DB_DATABASE_SYSTEM not start");
+        }
     }
 
     Database getCurrentDatabase() {
@@ -39,25 +48,19 @@ class MemdbTemplateImpl {
     }
 
     // 单例
-    private static MemdbTemplateImpl memTemplateInstance = null;
+    private static MemDBClientInstance memDBClientInstance = null;
 
-    static MemdbTemplateImpl getInstance() {
+    static MemDBClientInstance getInstance() {
         synchronized (MemdbTemplateImpl.class) {
-            if (memTemplateInstance == null) {
-                memTemplateInstance = new MemdbTemplateImpl();
+            if (memDBClientInstance == null) {
+                memDBClientInstance = new MemDBClientInstance();
             }
-            return memTemplateInstance;
+            return memDBClientInstance;
         }
     }
 
     public static class Builder {
-
         private Builder() {
-        }
-
-        public static synchronized Builder startDBServer() {
-            MemDBDatabaseSystem.DB_DATABASE_SYSTEM.doStart();
-            return new Builder();
         }
 
         /**
@@ -66,7 +69,7 @@ class MemdbTemplateImpl {
          * @param dbName 数据库名称
          * @return fluent风格 build
          */
-        public synchronized Builder switchDB(String dbName) {
+        public synchronized MemDBClientInstance.Builder switchDB(String dbName) {
             if (Strings.isNullOrEmpty(dbName)) {
                 throw new IllegalArgumentException("database name must not null");
             }
@@ -77,15 +80,14 @@ class MemdbTemplateImpl {
                 db = new Database(dbName);
                 DatabaseManagement.DBA.databases.put(dbName, db);
             }
-            MemdbTemplateImpl.getInstance().currentDatabase = db;
+            MemDBClientInstance.getInstance().currentDatabase = db;
             return this;
         }
 
-        public MemdbTemplateImpl build() {
-            return MemdbTemplateImpl.getInstance();
+        public MemDBClientInstance build() {
+            return MemDBClientInstance.getInstance();
         }
     }
-
 
     public MemdbExecutor select() {
         return new MemdbExecutor(OperationType.SELECT);
@@ -153,4 +155,5 @@ class MemdbTemplateImpl {
         }
         targetTable.delete(t);
     }
+
 }
