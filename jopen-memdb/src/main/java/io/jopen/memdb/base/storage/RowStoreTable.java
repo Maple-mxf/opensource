@@ -4,8 +4,9 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * {@link JavaModelTable}
@@ -17,16 +18,22 @@ final
 class RowStoreTable {
 
     // cells
-    final Table<Id, String, Object> cells = Tables.newCustomTable(new ConcurrentHashMap<>(), ConcurrentHashMap::new);
+    private final Table<Id, String, Object> cells = Tables.newCustomTable(new ConcurrentHashMap<>(), ConcurrentHashMap::new);
 
     // table Name
     private String tableName;
 
-    // 列名和类型
-    private Map<String, Class> columnTypes = new ConcurrentHashMap<>();
+    // 列的属性
+    private Set<ColumnType> columnTypes;
 
     // database
-    private Database database;
+    private transient Database database;
+
+    RowStoreTable(Database database, String tableName, Set<ColumnType> columnTypes) {
+        this.database = database;
+        this.tableName = tableName;
+        this.columnTypes = columnTypes;
+    }
 
 
     public Table<Id, String, Object> getCells() {
@@ -37,16 +44,9 @@ class RowStoreTable {
         return tableName;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
 
     public Database getDatabase() {
         return database;
-    }
-
-    public void setDatabase(Database database) {
-        this.database = database;
     }
 
     @Override
@@ -56,13 +56,22 @@ class RowStoreTable {
         rowStoreTable.append(this.tableName).append("\n");
 
         // 拼接列名
-        String columnNames = Joiner.on("                ").join(columnTypes.keySet());
+        String columnNames = Joiner.on("\t\t\t").join(columnTypes.parallelStream().map(ColumnType::getColumnName).collect(Collectors.toSet()));
         rowStoreTable.append(columnNames);
         rowStoreTable.append("\n");
 
         // 拼接行数据  rowKeySet属于主键
-        // Set<Object> rowKeySet = cells.rowKeySet();
+        // 获取所有Id
+        Set<Id> ids = cells.rowKeySet();
 
+        for (Id id : ids) {
+            for (ColumnType columnType : this.columnTypes) {
+                Object cell = cells.get(id, columnType.getColumnName());
+                rowStoreTable.append(cell);
+                rowStoreTable.append("\t\t\t");
+            }
+            rowStoreTable.append("\n");
+        }
         return rowStoreTable.toString();
     }
 }
