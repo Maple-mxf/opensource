@@ -55,28 +55,33 @@ class RowStoreTable {
     // create table Precondition
 
     // save cell data Precondition  主键为空或者不唯一则返回false
-    private Predicate<Table.Cell<Id, String, Object>> saveCellPreconditionId = input -> {
+    private Predicate<Table.Cell<Id, String, Object>> saveCellPreconditionId = cell -> {
 
-        if (input == null) {
+        if (cell == null) {
             return false;
         }
 
         // 获取主键
-        Id primaryKey = input.getRowKey();
+        Id primaryKey = cell.getRowKey();
 
-        if (primaryKey == null || primaryKey.size() == 0) {
+        if (primaryKey == null || primaryKey.size() == 0 || primaryKey.isNull()) {
             return false;
         }
 
         // 检测主键
-        List<ColumnType> primaryKeys = RowStoreTable.this.columnTypes.parallelStream()
+        List<ColumnType> primaryKeyColumnTypes = RowStoreTable.this.columnTypes.parallelStream()
                 .filter(ColumnType::getPrimaryKey).collect(Collectors.toList());
 
-        for (ColumnType primaryKeyColumnType : primaryKeys) {
-            if (primaryKeyColumnType.getColumnName().equals(input.getColumnKey())) {
-
-            }
+        // 检测大小
+        if (primaryKeyColumnTypes.size() != primaryKey.size()) {
+            return false;
         }
+
+        // 检测具体的值是否为空
+        /*primaryKeyColumnTypes.parallelStream().filter(pct->{
+            cell.getValue()
+        })*/
+
         return false;
     };
 
@@ -86,7 +91,7 @@ class RowStoreTable {
      *
      * @see com.google.common.collect.Table.Cell#put(Object, Object, Object)
      */
-    public void save(Table.Cell<Id, String, Object> cell) {
+    public void save(Table.Row<Id, String, Object> cell) {
         // before save data check data is complete
         this.cells.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
     }
