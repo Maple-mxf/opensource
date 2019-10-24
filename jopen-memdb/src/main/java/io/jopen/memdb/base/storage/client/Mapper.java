@@ -30,39 +30,38 @@ class Mapper<T> {
         R apply(@NonNull T t, @NonNull U u) throws Throwable;
     }
 
-    final BiThrFunction<Collection<Row>, Class<T>, Collection<T>> mapRowsToBeans = (rows, clazz) -> rows.parallelStream().map(row -> {
-        // create object
-        T instance;
-        try {
-            instance = clazz.newInstance();
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable.getMessage());
-        }
+    final BiThrFunction<Collection<Row>, Class<T>, Collection<T>> mapRowsToBeans =
+            (rows, clazz) -> rows.parallelStream().map(row -> {
+                // create object
+                T instance;
+                try {
+                    instance = clazz.newInstance();
+                } catch (Throwable throwable) {
+                    throw new RuntimeException(throwable.getMessage());
+                }
 
-        Stream.of(instance.getClass().getDeclaredFields()).forEach(field -> {
-            // set field access
-            field.setAccessible(true);
+                Stream.of(instance.getClass().getDeclaredFields()).forEach(field -> {
+                    // set field access
+                    field.setAccessible(true);
 
-            // 获取当前field的value
-            PrimaryKey pkAnno = field.getDeclaredAnnotation(PrimaryKey.class);
-            Property proAnno = field.getDeclaredAnnotation(Property.class);
+                    // 获取当前field的value
+                    PrimaryKey pkAnno = field.getDeclaredAnnotation(PrimaryKey.class);
+                    Property proAnno = field.getDeclaredAnnotation(Property.class);
 
-            String columnName = field.getName();
+                    String columnName = field.getName();
 
-            if (pkAnno != null && proAnno == null && StringUtils.isNotBlank(pkAnno.value())) {
-                columnName = pkAnno.value();
-            } else if (pkAnno == null && proAnno != null && StringUtils.isNotBlank(proAnno.value())) {
-                columnName = proAnno.value();
-            }
+                    if (pkAnno != null && proAnno == null && StringUtils.isNotBlank(pkAnno.value())) {
+                        columnName = pkAnno.value();
+                    } else if (pkAnno == null && proAnno != null && StringUtils.isNotBlank(proAnno.value())) {
+                        columnName = proAnno.value();
+                    }
 
-            try {
-                field.set(field.getName(), row.get(columnName));
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        });
-        return instance;
-    }).collect(Collectors.toList());
-
-
+                    try {
+                        field.set(field.getName(), row.get(columnName));
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e.getMessage());
+                    }
+                });
+                return instance;
+            }).collect(Collectors.toList());
 }
