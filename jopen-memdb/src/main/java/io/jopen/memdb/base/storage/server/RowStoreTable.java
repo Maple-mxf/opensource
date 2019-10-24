@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  * @since 2019/10/24
  * TODO   为了方便测试  当前类暂时声明为public类型的
  */
-final
+public final
 class RowStoreTable implements Serializable {
 
     // rowsData  TODO   怎么保证数据的有序性
@@ -41,7 +41,7 @@ class RowStoreTable implements Serializable {
     // 列的属性
     private List<ColumnType> columnTypes;
 
-    // database
+    // currentDatabase
     private transient Database database;
 
     RowStoreTable(Database database, String tableName, List<ColumnType> columnTypes) {
@@ -127,22 +127,33 @@ class RowStoreTable implements Serializable {
      *
      * @param rows rows data
      */
-    public void saveBatch(@NonNull Collection<Row<String, Object>> rows) {
-        rows.forEach(this::save);
+    public int saveBatch(@NonNull Collection<Row<String, Object>> rows) {
+        int i = 0;
+        try {
+
+            rows.forEach(this::save);
+            ++i;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return i;
     }
 
 
-    public List<Row<String, Object>> update(@Nullable IntermediateExpression<Row<String, Object>> expression, HashMap<String, Object> updateBody) {
+    public List<Id> update(@Nullable IntermediateExpression<Row<String, Object>> expression, HashMap<String, Object> updateBody) {
         List<Row<String, Object>> matchingResult = matching(expression);
         Set<Id> rowKeys = matchingResult.parallelStream().map(Row::getRowKey).collect(Collectors.toSet());
 
         // TODO  batch update update  注意类型检查   如果类型不匹配 存储没问题  mapper to  java  bean会出现问题
+        List<Id> idList = new ArrayList<>();
         this.rowsData.rowMap().forEach((rowKey, columnValues) -> {
             if (rowKeys.contains(rowKey)) {
                 columnValues.putAll(updateBody);
+                idList.add(rowKey);
             }
         });
-        return matchingResult;
+
+        return idList;
     }
 
 

@@ -23,8 +23,7 @@ public class Util {
         return annotation.value();
     }
 
-    @Deprecated
-    public static Object idVal(Class clazz) throws IllegalAccessException {
+    public static List<Field> idFields(Class clazz) {
 
         Field[] fields = clazz.getFields();
         List<Field> primaryKeyFields = Arrays.stream(fields).filter(f -> f.getAnnotation(PrimaryKey.class) != null).collect(Collectors.toList());
@@ -33,7 +32,8 @@ public class Util {
         if (primaryKeyFields.size() == 0) {
             throw new IllegalArgumentException("not idVal annotation,must have @PrimaryKey");
         }
-        return null;
+
+        return primaryKeyFields;
 
     }
 

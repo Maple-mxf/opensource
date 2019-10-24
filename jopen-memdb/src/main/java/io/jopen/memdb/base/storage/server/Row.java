@@ -11,7 +11,7 @@ import java.util.HashMap;
  * @author maxuefeng
  * @since 2019/10/24
  */
-final
+public final
 class Row<String, Object> extends HashMap<String, Object> {
 
     // 主键

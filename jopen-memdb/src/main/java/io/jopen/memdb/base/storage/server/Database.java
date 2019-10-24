@@ -64,7 +64,14 @@ class Database implements Serializable {
         return translator.mapJavaBeanToTable(clazz, this);
     }
 
-    public RowStoreTable getTable(Class clazz){
-
+    public RowStoreTable getTable(Class clazz) {
+        String tableName = Util.entityVal(clazz);
+        if (StringUtils.isNotBlank(tableName)) {
+            if (!this.rowStoreTables.containsKey(tableName)) {
+                throw new RuntimeException(String.format("table %s not exist", tableName));
+            }
+            return rowStoreTables.get(tableName);
+        }
+        throw new RuntimeException(String.format("table %s not exist", tableName));
     }
 }

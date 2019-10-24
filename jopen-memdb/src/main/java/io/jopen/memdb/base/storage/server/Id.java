@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author maxuefeng
  * @since 2019/10/24
  */
-final
+public final
 class Id {
 
     private Map<String, Object> ids;
@@ -26,7 +26,7 @@ class Id {
      * @param ids key表示主键的列的名称  value表示主键的值
      * @return Id instance
      */
-    static Id of(Map<String, Object> ids) {
+    public static Id of(Map<String, Object> ids) {
         Preconditions.checkNotNull(ids);
         return new Id(ids);
     }

@@ -34,7 +34,7 @@ class JavaModelTable<T> implements Serializable {
     // 数据存储
     private CopyOnWriteArrayList<T> cells = new CopyOnWriteArrayList<>();
 
-    // private Database database
+    // private Database currentDatabase
 
     // primary key
     private Set<Object> ids = new ConcurrentSkipListSet<>();

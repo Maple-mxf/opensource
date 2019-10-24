@@ -73,7 +73,7 @@ public class MemDBClientInstance {
          */
         public synchronized MemDBClientInstance.Builder switchDB(String dbName) {
             if (Strings.isNullOrEmpty(dbName)) {
-                throw new IllegalArgumentException("database name must not null");
+                throw new IllegalArgumentException("currentDatabase name must not null");
             }
 
             Database db = DatabaseManagement.DBA.getDatabase(dbName);
@@ -83,6 +83,7 @@ public class MemDBClientInstance {
                 DatabaseManagement.DBA.addDatabase(db);
             }
             MemDBClientInstance.getInstance().currentDatabase = db;
+            // MemDBContext.currentDatabase
             return this;
         }
 
@@ -93,18 +94,18 @@ public class MemDBClientInstance {
 
     // query  delete  update
     public <T> io.jopen.memdb.base.storage.client.Builder<T> input(@Nullable IntermediateExpression<T> expression) {
-        return new io.jopen.memdb.base.storage.client.Builder<>(expression);
+        return new io.jopen.memdb.base.storage.client.Builder<>(expression, this);
     }
 
 
     // save
     public <T> io.jopen.memdb.base.storage.client.Builder<T> input(@NonNull T t) {
-        return new io.jopen.memdb.base.storage.client.Builder<>(Lists.newArrayList(t));
+        return new io.jopen.memdb.base.storage.client.Builder<>(Lists.newArrayList(t), this);
     }
 
     @SafeVarargs
     public final <T> io.jopen.memdb.base.storage.client.Builder<T> input(@NonNull T... t) {
-        return new io.jopen.memdb.base.storage.client.Builder<>(Lists.newArrayList(t));
+        return new io.jopen.memdb.base.storage.client.Builder<>(Lists.newArrayList(t), this);
     }
 
 

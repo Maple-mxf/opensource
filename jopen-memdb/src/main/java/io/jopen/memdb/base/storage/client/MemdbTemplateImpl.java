@@ -68,7 +68,7 @@ class MemdbTemplateImpl {
          */
         public synchronized Builder switchDB(String dbName) {
             if (Strings.isNullOrEmpty(dbName)) {
-                throw new IllegalArgumentException("database name must not null");
+                throw new IllegalArgumentException("currentDatabase name must not null");
             }
 
             Database db = DatabaseManagement.DBA.getDatabase(dbName);
