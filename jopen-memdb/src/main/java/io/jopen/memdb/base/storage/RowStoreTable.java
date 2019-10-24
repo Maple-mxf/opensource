@@ -1,9 +1,11 @@
 package io.jopen.memdb.base.storage;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
  *
  * @author maxuefeng
  * @since 2019/10/24
+ * TODO   为了方便测试  当前类暂时声明为public类型的
  */
 final
 class RowStoreTable {
@@ -49,6 +52,45 @@ class RowStoreTable {
         return database;
     }
 
+    // create table Precondition
+
+    // save cell data Precondition  主键为空或者不唯一则返回false
+    private Predicate<Table.Cell<Id, String, Object>> saveCellPreconditionId = input -> {
+
+        if (input == null) {
+            return false;
+        }
+
+        // 获取主键
+        Id primaryKey = input.getRowKey();
+
+        if (primaryKey == null || primaryKey.size() == 0) {
+            return false;
+        }
+
+        // 检测主键
+        List<ColumnType> primaryKeys = RowStoreTable.this.columnTypes.parallelStream()
+                .filter(ColumnType::getPrimaryKey).collect(Collectors.toList());
+
+        for (ColumnType primaryKeyColumnType : primaryKeys) {
+            if (primaryKeyColumnType.getColumnName().equals(input.getColumnKey())) {
+
+            }
+        }
+        return false;
+    };
+
+
+    /**
+     * save data to table
+     *
+     * @see com.google.common.collect.Table.Cell#put(Object, Object, Object)
+     */
+    public void save(Table.Cell<Id, String, Object> cell) {
+        // before save data check data is complete
+        this.cells.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
+    }
+
     @Override
     public String toString() {
 
@@ -74,4 +116,5 @@ class RowStoreTable {
         }
         return rowStoreTable.toString();
     }
+
 }

@@ -3,6 +3,7 @@ package io.jopen.memdb.base.storage;
 import com.google.common.base.Preconditions;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Id包装器
@@ -49,4 +50,15 @@ class Id {
         }
         return false;
     }
+
+    public Boolean isNull() {
+        Optional<Map.Entry<String, Object>> optional = this.ids.entrySet().parallelStream().filter(entry -> entry.getValue() == null).findAny();
+        return optional.isPresent();
+    }
+
+    public int size() {
+        return this.ids.size();
+    }
+
+
 }
