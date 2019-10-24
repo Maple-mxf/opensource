@@ -31,7 +31,7 @@ class MemDBDatabaseSystem extends AbstractService {
     }
 
     // 初始化
-    static final MemDBDatabaseSystem MEMDB_SERVER = new MemDBDatabaseSystem();
+    static final MemDBDatabaseSystem DB_DATABASE_SYSTEM = new MemDBDatabaseSystem();
 
     /**
      * 同步启动方式

@@ -55,7 +55,7 @@ class MemdbTemplateImpl {
         }
 
         public static synchronized Builder startDBServer() {
-            MemDBDatabaseSystem.MEMDB_SERVER.doStart();
+            MemDBDatabaseSystem.DB_DATABASE_SYSTEM.doStart();
             return new Builder();
         }
 
