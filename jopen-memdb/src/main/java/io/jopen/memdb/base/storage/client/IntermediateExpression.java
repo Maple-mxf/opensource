@@ -30,7 +30,7 @@ public class IntermediateExpression<T> {
         return new IntermediateExpression<>(targetClass);
     }
 
-    Class<T> getTargetClass() {
+    public Class<T> getTargetClass() {
         return this.targetClass;
     }
 

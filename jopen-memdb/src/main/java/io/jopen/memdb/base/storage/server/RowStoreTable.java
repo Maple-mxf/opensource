@@ -132,6 +132,14 @@ class RowStoreTable implements Serializable {
     }
 
 
+    public List<Row<String, Object>> update(@Nullable IntermediateExpression<Row<String, Object>> expression) {
+        List<Row<String, Object>> matchingResult = matching(expression);
+
+        // TODO  batch update update
+        return matchingResult;
+    }
+
+
     /**
      * 查询
      *
@@ -146,18 +154,34 @@ class RowStoreTable implements Serializable {
     /**
      * 删除
      *
-     * @return
+     * @return delete result
      */
     @NonNull
     public List<Id> delete(@Nullable IntermediateExpression<Row<String, Object>> expression) {
-        List<Row<String, Object>> deleteResult = matching(expression);
+        List<Row<String, Object>> matchingResult = matching(expression);
 
-        if (deleteResult.size() == 0) {
+        if (matchingResult.size() == 0) {
             return Lists.newArrayList();
         }
-        return deleteResult.parallelStream().map(Row::getRowKey).collect(Collectors.toList());
+        List<Id> ids = matchingResult.parallelStream().map(Row::getRowKey).collect(Collectors.toList());
+
+
+        for (Id id : ids) {
+            Map<String, Object> willBeDelRow = this.rowsData.row(id);
+            willBeDelRow.forEach((column, value) -> this.rowsData.remove(id, column));
+        }
+
+        return ids;
     }
 
+    /**
+     * matching condition
+     *
+     * @param expression
+     * @return
+     * @see IntermediateExpression#getConditions()
+     * @see IntermediateExpression#getTargetClass()
+     */
     @NonNull
     private List<Row<String, Object>> matching(@Nullable IntermediateExpression<Row<String, Object>> expression) {
         List<Row<String, Object>> matchingResult;
