@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.serialize;
+package io.jopen.memdb.base.storage.serialize;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;

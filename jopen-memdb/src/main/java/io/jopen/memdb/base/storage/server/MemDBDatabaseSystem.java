@@ -3,7 +3,7 @@ package io.jopen.memdb.base.storage.server;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.*;
 import io.jopen.core.common.io.FileHelper;
-import io.jopen.memdb.base.serialize.KryoHelper;
+import io.jopen.memdb.base.storage.serialize.KryoHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -107,7 +107,7 @@ class MemDBDatabaseSystem extends AbstractService {
                             }
                         });
                     }
-                    DatabaseManagement.DBA.databases.put(dbName, db);
+                    DatabaseManagement.DBA.addDatabase(db);
                 });
             }
         }
