@@ -1,13 +1,17 @@
 package io.jopen.memdb.base.storage;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -20,8 +24,8 @@ import java.util.stream.Collectors;
 final
 class RowStoreTable {
 
-    // cells
-    private final Table<Id, String, Object> cells = Tables.newCustomTable(new ConcurrentHashMap<>(), ConcurrentHashMap::new);
+    // table
+    private final Table<Id, String, Object> table = Tables.newCustomTable(new ConcurrentHashMap<>(), ConcurrentHashMap::new);
 
     // table Name
     private String tableName;
@@ -39,8 +43,8 @@ class RowStoreTable {
     }
 
 
-    public Table<Id, String, Object> getCells() {
-        return cells;
+    public Table<Id, String, Object> getTable() {
+        return table;
     }
 
     public String getTableName() {
@@ -55,14 +59,14 @@ class RowStoreTable {
     // create table Precondition
 
     // save cell data Precondition  主键为空或者不唯一则返回false
-    private Predicate<Table.Cell<Id, String, Object>> saveCellPreconditionId = cell -> {
+    private Predicate<Row<String, Object>> saveCellPreconditionId = row -> {
 
-        if (cell == null) {
+        if (row == null) {
             return false;
         }
 
         // 获取主键
-        Id primaryKey = cell.getRowKey();
+        Id primaryKey = row.getRowKey();
 
         if (primaryKey == null || primaryKey.size() == 0 || primaryKey.isNull()) {
             return false;
@@ -78,22 +82,43 @@ class RowStoreTable {
         }
 
         // 检测具体的值是否为空
-        /*primaryKeyColumnTypes.parallelStream().filter(pct->{
-            cell.getValue()
-        })*/
+        Optional<ColumnType> optional = primaryKeyColumnTypes.parallelStream().filter(pct -> row.get(pct.getColumnName()) == null).findAny();
+        return optional.isPresent();
+    };
 
-        return false;
+    // storage data  consumer the row
+    private Consumer<Row<String, Object>> storageRow = row -> {
+        Id rowKey = row.getRowKey();
+        row.forEach((column, value) -> RowStoreTable.this.table.put(rowKey, column, value));
     };
 
 
     /**
      * save data to table
      *
+     * @see Row#getRowKey()   storage data to the current table   in row
      * @see com.google.common.collect.Table.Cell#put(Object, Object, Object)
      */
-    public void save(Table.Row<Id, String, Object> cell) {
+    public void save(Row<String, Object> row) {
         // before save data check data is complete
-        this.cells.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
+        // this.table.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
+        boolean res = saveCellPreconditionId.apply(row);
+        if (res) {
+            throw new RuntimeException("save exception");
+        }
+
+        // put data
+        storageRow.accept(row);
+    }
+
+    /**
+     * save batch  row  data
+     *
+     * @param rows rows data
+     */
+    public void saveBatch(Collection<Row<String, Object>> rows) {
+        Preconditions.checkNotNull(rows);
+        rows.forEach(this::save);
     }
 
     @Override
@@ -109,11 +134,11 @@ class RowStoreTable {
 
         // 拼接行数据  rowKeySet属于主键
         // 获取所有Id
-        Set<Id> ids = cells.rowKeySet();
+        Set<Id> ids = table.rowKeySet();
 
         for (Id id : ids) {
             for (ColumnType columnType : this.columnTypes) {
-                Object cell = cells.get(id, columnType.getColumnName());
+                Object cell = table.get(id, columnType.getColumnName());
                 rowStoreTable.append(cell);
                 rowStoreTable.append("\t\t\t");
             }
