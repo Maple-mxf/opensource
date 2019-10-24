@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  * @since 2019/10/24
  */
 public final
-class Mapper {
+class Transform {
 
     @NotNull
     public RowStoreTable mapJavaBeanToTable(@NonNull Class clazz,

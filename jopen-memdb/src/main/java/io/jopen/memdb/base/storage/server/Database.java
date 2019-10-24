@@ -3,6 +3,7 @@ package io.jopen.memdb.base.storage.server;
 import com.google.common.base.Preconditions;
 import io.jopen.memdb.base.annotation.Util;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,11 +20,10 @@ class Database implements Serializable {
 
     private String dbName;
 
-    private transient Mapper mapper = new Mapper();
+    private transient Transform transform = new Transform();
 
     @Deprecated
-    public <T> JavaModelTable<T> getTable(String tableName) {
-        Preconditions.checkNotNull(tableName);
+    public <T> JavaModelTable<T> getTable(@NonNull String tableName) {
         return tables.get(tableName);
     }
 
@@ -61,6 +61,6 @@ class Database implements Serializable {
 
     RowStoreTable createTable(Class clazz) {
         // 创建表格的先决条件  至少存在一个主键
-        return mapper.mapJavaBeanToTable(clazz, this);
+        return transform.mapJavaBeanToTable(clazz, this);
     }
 }
