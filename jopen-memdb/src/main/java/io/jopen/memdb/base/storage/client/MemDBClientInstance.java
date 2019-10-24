@@ -93,19 +93,19 @@ public class MemDBClientInstance {
     }
 
     // query  delete  update
-    public <T> io.jopen.memdb.base.storage.client.Builder<T> input(@Nullable IntermediateExpression<T> expression) {
-        return new io.jopen.memdb.base.storage.client.Builder<>(expression, this);
+    public <T> QueryBuilder<T> input(@Nullable IntermediateExpression<T> expression) {
+        return new QueryBuilder<>(expression, this);
     }
 
 
     // save
-    public <T> io.jopen.memdb.base.storage.client.Builder<T> input(@NonNull T t) {
-        return new io.jopen.memdb.base.storage.client.Builder<>(Lists.newArrayList(t), this);
+    public <T> QueryBuilder<T> input(@NonNull T t) {
+        return new QueryBuilder<>(Lists.newArrayList(t), this);
     }
 
     @SafeVarargs
-    public final <T> io.jopen.memdb.base.storage.client.Builder<T> input(@NonNull T... t) {
-        return new io.jopen.memdb.base.storage.client.Builder<>(Lists.newArrayList(t), this);
+    public final <T> QueryBuilder<T> input(@NonNull T... t) {
+        return new QueryBuilder<>(Lists.newArrayList(t), this);
     }
 
 

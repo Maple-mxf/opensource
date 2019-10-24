@@ -36,7 +36,7 @@ public class MemdbTemplateImplTest {
 
     @Test
     public void testQueryByCondition() {
-        // MemdbTemplateImpl memTemplateInstance = new MemdbTemplateImpl.Builder().switchDB("default").build();
+        // MemdbTemplateImpl memTemplateInstance = new MemdbTemplateImpl.QueryBuilder().switchDB("default").build();
     }
 
 

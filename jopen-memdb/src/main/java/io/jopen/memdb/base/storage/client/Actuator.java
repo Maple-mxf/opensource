@@ -20,41 +20,17 @@ import java.util.List;
 final
 class Actuator<T> {
 
-
-    @Deprecated
-    void execute(Builder.Carrier carrier) {
-        Builder builder = carrier.getBuilder();
-
-        // query operation
-        if (carrier.getClass().equals(Builder.Select.class)) {
-
-        }
-        // delete operation
-        else if (carrier.getClass().equals(Builder.Delete.class)) {
-
-        }
-        // update operation
-        else if (carrier.getClass().equals(Builder.Update.class)) {
-
-        }
-        // save operation
-        else if (carrier.getClass().equals(Builder.Save.class)) {
-
-        }
-    }
-
-
-    int update(Builder.Update update) {
+    int update(QueryBuilder.Update update) {
         HashMap<String, Object> updateBody = update.getBody();
 
         // 获取操作的数据库当前对象
-        Database currentDatabase = update.getBuilder().getClientInstance().getCurrentDatabase();
+        Database currentDatabase = update.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
         // 获取对应table对象
-        Class clazz = update.getBuilder().getExpression().getTargetClass();
+        Class clazz = update.getQueryBuilder().getExpression().getTargetClass();
         RowStoreTable table = currentDatabase.getTable(clazz);
 
-        IntermediateExpression expression = update.getBuilder().getExpression();
+        IntermediateExpression expression = update.getQueryBuilder().getExpression();
 
         // 更新
         List<Id> updateRes = table.update(expression, updateBody);
@@ -62,32 +38,32 @@ class Actuator<T> {
         return updateRes.size();
     }
 
-    int save(Builder.Update update) {
+    int save(QueryBuilder.Update update) {
 
-        List<T> saveBody = update.getBuilder().getWillSaveBody();
+        List<T> saveBody = update.getQueryBuilder().getWillSaveBody();
 
         // 获取操作的数据库当前对象
-        Database currentDatabase = update.getBuilder().getClientInstance().getCurrentDatabase();
+        Database currentDatabase = update.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
         // 获取对应table对象
-        Class clazz = update.getBuilder().getExpression().getTargetClass();
+        Class clazz = update.getQueryBuilder().getExpression().getTargetClass();
         RowStoreTable table = currentDatabase.getTable(clazz);
 
         // 进行保存  saveBody
         return table.saveBatch();
     }
 
-    int delete(Builder.Delete delete) {
+    int delete(QueryBuilder.Delete delete) {
 
 
         // 获取操作的数据库当前对象
-        Database currentDatabase = delete.getBuilder().getClientInstance().getCurrentDatabase();
+        Database currentDatabase = delete.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
         // 获取对应table对象
-        Class clazz = delete.getBuilder().getExpression().getTargetClass();
+        Class clazz = delete.getQueryBuilder().getExpression().getTargetClass();
         RowStoreTable table = currentDatabase.getTable(clazz);
 
-        IntermediateExpression<T> expression = delete.getBuilder().getExpression();
+        IntermediateExpression<T> expression = delete.getQueryBuilder().getExpression();
 
         Mapper<T> mapper = new Mapper<>();
         // 进行保存
@@ -95,14 +71,14 @@ class Actuator<T> {
         return deleteRes.size()
     }
 
-    List<T> select(Builder.Select select) {
+    List<T> select(QueryBuilder.Select select) {
 
-        IntermediateExpression<T> expression = select.getBuilder().getExpression();
+        IntermediateExpression<T> expression = select.getQueryBuilder().getExpression();
         // 获取操作的数据库当前对象
-        Database currentDatabase = select.getBuilder().getClientInstance().getCurrentDatabase();
+        Database currentDatabase = select.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
         // 获取对应table对象
-        Class clazz = select.getBuilder().getExpression().getTargetClass();
+        Class clazz = select.getQueryBuilder().getExpression().getTargetClass();
         RowStoreTable table = currentDatabase.getTable(clazz);
 
         Mapper<T> mapper = new Mapper<>();

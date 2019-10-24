@@ -10,7 +10,7 @@ import java.util.List;
  * @author maxuefeng
  * @since 2019/10/24
  */
-class Builder<T> {
+class QueryBuilder<T> {
 
     private IntermediateExpression<T> expression;
 
@@ -26,11 +26,11 @@ class Builder<T> {
         return expression;
     }
 
-    Builder(IntermediateExpression<T> expression, MemDBClientInstance clientInstance) {
+    QueryBuilder(IntermediateExpression<T> expression, MemDBClientInstance clientInstance) {
         this.expression = expression;
     }
 
-    Builder(List<T> willSaveBody, MemDBClientInstance clientInstance) {
+    QueryBuilder(List<T> willSaveBody, MemDBClientInstance clientInstance) {
         this.willSaveBody = willSaveBody;
     }
 
@@ -52,20 +52,20 @@ class Builder<T> {
     }
 
     abstract class Carrier {
-        Builder<T> builder;
+        QueryBuilder<T> queryBuilder;
 
         Actuator actuator = new Actuator();
 
-        Carrier(Builder<T> builder) {
-            this.builder = builder;
+        Carrier(QueryBuilder<T> queryBuilder) {
+            this.queryBuilder = queryBuilder;
         }
 
-        public Builder<T> getBuilder() {
-            return builder;
+        public QueryBuilder<T> getQueryBuilder() {
+            return queryBuilder;
         }
 
-        public void setBuilder(Builder<T> builder) {
-            this.builder = builder;
+        public void setQueryBuilder(QueryBuilder<T> queryBuilder) {
+            this.queryBuilder = queryBuilder;
         }
 
         public Actuator getActuator() {
@@ -81,8 +81,8 @@ class Builder<T> {
     class Update extends Carrier {
         private HashMap<String, Object> body = Maps.newLinkedHashMap();
 
-        Update(Builder<T> builder) {
-            super(builder);
+        Update(QueryBuilder<T> queryBuilder) {
+            super(queryBuilder);
         }
 
         @NonNull
@@ -101,20 +101,20 @@ class Builder<T> {
     }
 
     class Select extends Carrier {
-        Select(Builder<T> builder) {
-            super(builder);
+        Select(QueryBuilder<T> queryBuilder) {
+            super(queryBuilder);
         }
     }
 
     class Delete extends Carrier {
-        Delete(Builder<T> builder) {
-            super(builder);
+        Delete(QueryBuilder<T> queryBuilder) {
+            super(queryBuilder);
         }
     }
 
     class Save extends Carrier {
-        Save(Builder<T> builder) {
-            super(builder);
+        Save(QueryBuilder<T> queryBuilder) {
+            super(queryBuilder);
         }
     }
 }
