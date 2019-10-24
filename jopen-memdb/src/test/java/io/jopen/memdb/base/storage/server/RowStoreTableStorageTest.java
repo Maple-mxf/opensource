@@ -1,21 +1,20 @@
-package io.jopen.memdb.base.storage;
+package io.jopen.memdb.base.storage.server;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.jopen.core.common.text.Worker;
-import io.jopen.memdb.base.storage.server.*;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 数据表格测试通过
+ * 数据内存式存储测试通过
  * {@link RowStoreTable}
  *
  * @author maxuefeng
  * @since 2019/10/24
  */
-public class RowStoreTableTest {
+public class RowStoreTableStorageTest {
 
     private RowStoreTable rowStoreTable;
     private Database database = new Database("default");

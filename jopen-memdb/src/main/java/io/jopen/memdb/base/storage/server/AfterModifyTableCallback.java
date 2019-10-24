@@ -1,8 +1,5 @@
 package io.jopen.memdb.base.storage.server;
 
-import io.jopen.memdb.base.storage.server.Database;
-import io.jopen.memdb.base.storage.server.JavaModelTable;
-
 /**
  * 修改表格之后触发的函数
  *
