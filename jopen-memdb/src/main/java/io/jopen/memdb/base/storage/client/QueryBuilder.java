@@ -68,7 +68,7 @@ class QueryBuilder<T> {
             return queryBuilder;
         }
 
-        public void setQueryBuilder(QueryBuilder<T> queryBuilder) {
+        public void setQueryBuilder(@NonNull QueryBuilder<T> queryBuilder) {
             this.queryBuilder = queryBuilder;
         }
 

@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * 异步刷盘任务
+ * 异步刷盘任务  将临时文件落地
  *
  * @author maxuefeng
  * @since 2019/10/23
