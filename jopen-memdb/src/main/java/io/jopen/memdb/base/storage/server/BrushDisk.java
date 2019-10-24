@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage;
+package io.jopen.memdb.base.storage.server;
 
 import com.google.common.util.concurrent.FutureCallback;
 import org.checkerframework.checker.nullness.qual.Nullable;

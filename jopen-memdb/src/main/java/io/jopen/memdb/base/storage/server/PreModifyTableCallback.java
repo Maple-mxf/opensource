@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage;
+package io.jopen.memdb.base.storage.server;
 
 import io.jopen.core.function.ReturnValue;
 
@@ -7,7 +7,7 @@ import io.jopen.core.function.ReturnValue;
  * @since 2019/10/23
  */
 @FunctionalInterface
-interface PreModifyTableCallback {
+public interface PreModifyTableCallback {
 
     // 先决条件
     ReturnValue prerequisites(Database database, Object object) throws Throwable;

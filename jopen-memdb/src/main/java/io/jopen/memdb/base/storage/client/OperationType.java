@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage;
+package io.jopen.memdb.base.storage.client;
 
 /**
  * @author maxuefeng

@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage;
+package io.jopen.memdb.base.storage.server;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * <p>{@link com.google.common.collect.Table}</p>
  */
 @Deprecated
-final
+public final
 class JavaModelTable<T> implements Serializable {
 
     // 数据存储
@@ -193,7 +193,7 @@ class JavaModelTable<T> implements Serializable {
     }
 
 
-    static <T> String parseEntity(Class<T> clazz) {
+   public static <T> String parseEntity(Class<T> clazz) {
         Entity annotation = clazz.getAnnotation(Entity.class);
         if (annotation == null || Strings.isNullOrEmpty(annotation.value())) {
             return clazz.getSimpleName();

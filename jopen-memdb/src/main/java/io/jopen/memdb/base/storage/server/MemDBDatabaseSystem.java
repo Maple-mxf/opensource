@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage;
+package io.jopen.memdb.base.storage.server;
 
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.*;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * {@link DatabaseManagement#DBA 初始化DBA信息 }
  * @since 2019/10/23
  */
-final
+public final
 class MemDBDatabaseSystem extends AbstractService {
 
     private final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(50));
@@ -31,13 +31,51 @@ class MemDBDatabaseSystem extends AbstractService {
     }
 
     // 初始化
-    static final MemDBDatabaseSystem DB_DATABASE_SYSTEM = new MemDBDatabaseSystem();
+    public static final MemDBDatabaseSystem DB_DATABASE_SYSTEM = new MemDBDatabaseSystem();
+
+    public void start() {
+        doStart();
+    }
 
     /**
      * 同步启动方式
      */
     @Override
     protected void doStart() {
+
+        // 加载数据
+        load();
+
+        // 接受任务
+    }
+
+    @Override
+    protected void doStop() {
+        // 将临时文件进行落盘
+    }
+
+    void submit(Task<Object> task) {
+        this.taskBlockingQueue.add(task);
+    }
+
+    void receiveTask() {
+        // 开启一个子线程进行执行任务
+        new Thread(() -> {
+
+            while (true) {
+                try {
+                    Task<Object> task = taskBlockingQueue.take();
+                    ListenableFuture<Object> future = MemDBDatabaseSystem.this.service.submit(task);
+                    // 添加任务完成回调函数
+                    Futures.addCallback(future, task.completeCallback(), service);
+                } catch (InterruptedException ignored) {
+                }
+            }
+
+        }).start();
+    }
+
+    private void load() {
         File file = new File("./memdb");
         if (file.exists()) {
             File[] files = file.listFiles();
@@ -72,31 +110,6 @@ class MemDBDatabaseSystem extends AbstractService {
                     DatabaseManagement.DBA.databases.put(dbName, db);
                 });
             }
-
-            // 开启一个子线程进行执行任务
-            new Thread(() -> {
-
-                while (true) {
-                    try {
-                        Task<Object> task = taskBlockingQueue.take();
-                        ListenableFuture<Object> future = MemDBDatabaseSystem.this.service.submit(task);
-                        // 添加任务完成回调函数
-                        Futures.addCallback(future, task.completeCallback(), service);
-                    } catch (InterruptedException ignored) {
-                    }
-                }
-
-            }).start();
         }
-        //
-    }
-
-    @Override
-    protected void doStop() {
-        // 将临时文件进行落盘
-    }
-
-    void submit(Task<Object> task) {
-        this.taskBlockingQueue.add(task);
     }
 }

@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage;
+package io.jopen.memdb.base.storage.server;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -6,6 +6,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
  * TODO   为了方便测试  当前类暂时声明为public类型的
  */
 final
-class RowStoreTable {
+class RowStoreTable implements Serializable {
 
     // table
     private final Table<Id, String, Object> table = Tables.newCustomTable(new ConcurrentHashMap<>(), ConcurrentHashMap::new);
@@ -129,7 +130,7 @@ class RowStoreTable {
         rowStoreTable.append(columnNames);
         rowStoreTable.append("\n");
 
-        // 拼接行数据  rowKeySet属于主键
+        // 拼接行数据  rowKeySet属于主键集合
         // 获取所有Id
         Set<Id> ids = table.rowKeySet();
 

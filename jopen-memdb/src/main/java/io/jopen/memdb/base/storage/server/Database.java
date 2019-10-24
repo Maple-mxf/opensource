@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage;
+package io.jopen.memdb.base.storage.server;
 
 import com.google.common.base.Preconditions;
 
@@ -7,11 +7,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * {@link JavaModelTable}
+ * {@link RowStoreTable}
  *
  * @author maxuefeng
  * @since 2019/10/22
  */
-final
+public final
 class Database implements Serializable {
 
     private String dbName;
@@ -39,7 +40,7 @@ class Database implements Serializable {
         return dbName;
     }
 
-    Database(String dbName) {
+    public Database(String dbName) {
         this.dbName = dbName;
     }
 }

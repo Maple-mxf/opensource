@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage;
+package io.jopen.memdb.base.storage.client;
 
 import com.google.common.base.Preconditions;
 import io.jopen.core.common.memdb.annotation.PrimaryKey;

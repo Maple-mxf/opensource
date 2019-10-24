@@ -1,6 +1,7 @@
 package io.jopen.memdb.base.storage;
 
 import io.jopen.core.common.text.Worker;
+import io.jopen.memdb.base.storage.client.MemdbTemplateImpl;
 import org.junit.Before;
 import org.junit.Test;
 
