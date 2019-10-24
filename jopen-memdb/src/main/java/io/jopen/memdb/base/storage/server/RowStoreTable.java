@@ -70,7 +70,7 @@ class RowStoreTable implements Serializable {
     // create rowsData Precondition
 
     // save cell data Precondition  主键为空或者不唯一则返回false
-    private Predicate<Row<String, Object>> saveCellPreconditionId = row -> {
+    private Predicate<Row> saveCellPreconditionId = row -> {
 
         if (row == null) {
             return false;
@@ -98,7 +98,7 @@ class RowStoreTable implements Serializable {
     };
 
     // storage data  consumer the row
-    private Consumer<Row<String, Object>> storageRow = row -> {
+    private Consumer<Row> storageRow = row -> {
         Id rowKey = row.getRowKey();
         row.forEach((column, value) -> RowStoreTable.this.rowsData.put(rowKey, column, value));
     };
@@ -110,7 +110,7 @@ class RowStoreTable implements Serializable {
      * @see Row#getRowKey()   storage data to the current rowsData   in row
      * @see com.google.common.collect.Table.Cell#put(Object, Object, Object)
      */
-    public void save(Row<String, Object> row) {
+    public void save(Row row) {
         // before save data check data is complete
         // this.rowsData.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
         boolean res = saveCellPreconditionId.apply(row);
@@ -127,10 +127,9 @@ class RowStoreTable implements Serializable {
      *
      * @param rows rows data
      */
-    public int saveBatch(@NonNull Collection<Row<String, Object>> rows) {
+    public int saveBatch(@NonNull Collection<Row> rows) {
         int i = 0;
         try {
-
             rows.forEach(this::save);
             ++i;
         } catch (Exception e) {
@@ -140,8 +139,8 @@ class RowStoreTable implements Serializable {
     }
 
 
-    public List<Id> update(@Nullable IntermediateExpression<Row<String, Object>> expression, HashMap<String, Object> updateBody) {
-        List<Row<String, Object>> matchingResult = matching(expression);
+    public List<Id> update(@Nullable IntermediateExpression<Row> expression, HashMap<String, Object> updateBody) {
+        List<Row> matchingResult = matching(expression);
         Set<Id> rowKeys = matchingResult.parallelStream().map(Row::getRowKey).collect(Collectors.toSet());
 
         // TODO  batch update update  注意类型检查   如果类型不匹配 存储没问题  mapper to  java  bean会出现问题
@@ -163,7 +162,7 @@ class RowStoreTable implements Serializable {
      * @see IntermediateExpression
      */
     @NonNull
-    public List<Row<String, Object>> query(@Nullable IntermediateExpression<Row<String, Object>> expression) {
+    public List<Row> query(@Nullable IntermediateExpression<Row> expression) {
         return matching(expression);
     }
 
@@ -174,8 +173,8 @@ class RowStoreTable implements Serializable {
      * @return delete result
      */
     @NonNull
-    public List<Id> delete(@Nullable IntermediateExpression<Row<String, Object>> expression) {
-        List<Row<String, Object>> matchingResult = matching(expression);
+    public List<Id> delete(@Nullable IntermediateExpression<Row> expression) {
+        List<Row> matchingResult = matching(expression);
 
         if (matchingResult.size() == 0) {
             return Lists.newArrayList();
@@ -200,29 +199,29 @@ class RowStoreTable implements Serializable {
      * @see IntermediateExpression#getTargetClass()
      */
     @NonNull
-    private List<Row<String, Object>> matching(@Nullable IntermediateExpression<Row<String, Object>> expression) {
-        List<Row<String, Object>> matchingResult;
+    private List<Row> matching(@Nullable IntermediateExpression<Row> expression) {
+        List<Row> matchingResult;
         // 全查询
         if (expression == null || expression.getConditions().size() == 0) {
 
             matchingResult = rowsData.rowMap().entrySet().parallelStream().map(entry -> {
                 // 主键
                 Id rowKey = entry.getKey();
-                Row<String, Object> row = new Row<>(rowKey);
+                Row row = new Row(rowKey);
                 row.putAll(entry.getValue());
                 return row;
             }).limit(maxAllQueryLimit).collect(Collectors.toList());
         } else {
             //
-            List<IntermediateExpression.Condition<Row<String, Object>>> conditions = expression.getConditions();
+            List<IntermediateExpression.Condition> conditions = expression.getConditions();
 
             // map the element
-            Stream<Row<String, Object>> rowStream = this.rowsData.rowMap().entrySet().parallelStream()
+            Stream<Row> rowStream = this.rowsData.rowMap().entrySet().parallelStream()
 
                     // 进行map修改数据
                     .map(entry -> {
                         Id pk = entry.getKey();
-                        Row<String, Object> tmpRow = new Row<>(pk);
+                        Row tmpRow = new Row(pk);
                         tmpRow.putAll(entry.getValue());
                         return tmpRow;
                     });
@@ -230,7 +229,7 @@ class RowStoreTable implements Serializable {
             // filter the element
             matchingResult = rowStream.filter(row -> {
                         boolean match = true;
-                        for (IntermediateExpression.Condition<Row<String, Object>> condition : conditions) {
+                        for (IntermediateExpression.Condition condition : conditions) {
                             boolean test = condition.test(row);
                             if (!test) {
                                 match = false;

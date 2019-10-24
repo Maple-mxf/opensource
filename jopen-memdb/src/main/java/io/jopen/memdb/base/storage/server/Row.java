@@ -12,7 +12,7 @@ import java.util.HashMap;
  * @since 2019/10/24
  */
 public final
-class Row<String, Object> extends HashMap<String, Object> {
+class Row extends HashMap<String, Object> {
 
     // 主键
     private Id rowKey;
@@ -27,8 +27,8 @@ class Row<String, Object> extends HashMap<String, Object> {
     }
 
     //
-    public static <String, Object> Row<String, Object> row(Id rowKey, ImmutableBiMap<String, Object> biMap) {
-        Row<String, Object> row = new Row<>(rowKey);
+    public static Row row(Id rowKey, ImmutableBiMap<String, Object> biMap) {
+        Row row = new Row(rowKey);
         row.putAll(biMap);
         return row;
     }

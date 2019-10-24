@@ -14,7 +14,7 @@ class QueryBuilder<T> {
 
     private IntermediateExpression<T> expression;
 
-    private List<T> willSaveBody;
+    private List<T> beans;
 
     private MemDBClientInstance clientInstance;
 
@@ -30,12 +30,12 @@ class QueryBuilder<T> {
         this.expression = expression;
     }
 
-    QueryBuilder(List<T> willSaveBody, MemDBClientInstance clientInstance) {
-        this.willSaveBody = willSaveBody;
+    QueryBuilder(List<T> beans, MemDBClientInstance clientInstance) {
+        this.beans = beans;
     }
 
-    public List<T> getWillSaveBody() {
-        return willSaveBody;
+    public List<T> getBeans() {
+        return beans;
     }
 
     public void select() {

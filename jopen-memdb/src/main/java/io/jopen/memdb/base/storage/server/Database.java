@@ -59,12 +59,12 @@ class Database implements Serializable {
         throw new RuntimeException(String.format("table %s not exist", tableName));
     }
 
-    RowStoreTable createTable(Class clazz) {
+    final <T> RowStoreTable createTable(Class clazz) {
         // 创建表格的先决条件  至少存在一个主键
         return translator.mapJavaBeanToTable(clazz, this);
     }
 
-    public RowStoreTable getTable(Class clazz) {
+    final public RowStoreTable getTable(Class clazz) {
         String tableName = Util.entityVal(clazz);
         if (StringUtils.isNotBlank(tableName)) {
             if (!this.rowStoreTables.containsKey(tableName)) {

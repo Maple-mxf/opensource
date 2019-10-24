@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class IntermediateExpression<T> {
 
-    private Class<T> targetClass;
+    private transient Class<T> targetClass;
 
     private IntermediateExpression(Class<T> targetClass) {
         Preconditions.checkNotNull(targetClass);
@@ -34,15 +34,23 @@ public class IntermediateExpression<T> {
         return this.targetClass;
     }
 
+
     @FunctionalInterface
-    public interface Condition<T> {
-        boolean test(T row);
+    public interface Condition {
+        boolean test(Object row);
+
+        default void copy() {
+        }
     }
 
-    private List<Condition<T>> conditions = new ArrayList<>();
+    private List<Condition> conditions = new ArrayList<>();
 
-    public List<Condition<T>> getConditions() {
+    public List<Condition> getConditions() {
         return this.conditions;
+    }
+
+    public void setConditions(List<Condition> conditions) {
+        this.conditions = conditions;
     }
 
     public IntermediateExpression<T> eq(String column, Object value) {
@@ -50,10 +58,10 @@ public class IntermediateExpression<T> {
         Preconditions.checkNotNull(column);
         Preconditions.checkNotNull(value);
 
-        conditions.add((cell) -> {
+        conditions.add((row) -> {
 
             // 获取当前行的数据
-            Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(cell);
+            Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(row);
             // 获取当前行指定列的值
             Object val = filedNameValues.get(column);
             return val != null && val.equals(value);
@@ -71,10 +79,10 @@ public class IntermediateExpression<T> {
 
         Preconditions.checkNotNull(column);
 
-        conditions.add((cell) -> {
+        conditions.add((row) -> {
 
             // 获取当前行的数据
-            Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(cell);
+            Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(row);
             // 获取当前行指定列的值
             Object val = filedNameValues.get(column);
 

@@ -15,11 +15,14 @@ import java.util.stream.Stream;
  * @since 2019/10/24
  */
 final
-class Translator {
+class Translator<T> {
+
+    Translator() {
+    }
 
     @NonNull
-    RowStoreTable mapJavaBeanToTable(@NonNull Class clazz,
-                                     @NonNull Database database) {
+    final RowStoreTable mapJavaBeanToTable(@NonNull Class clazz,
+                                           @NonNull Database database) {
         Field[] fields = clazz.getDeclaredFields();
 
         if (fields.length == 0) {

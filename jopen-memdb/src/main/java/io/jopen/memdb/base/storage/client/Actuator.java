@@ -4,9 +4,9 @@ import io.jopen.memdb.base.storage.server.Database;
 import io.jopen.memdb.base.storage.server.Id;
 import io.jopen.memdb.base.storage.server.Row;
 import io.jopen.memdb.base.storage.server.RowStoreTable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +20,11 @@ import java.util.List;
 final
 class Actuator<T> {
 
-    int update(QueryBuilder.Update update) {
+    // 转换器  避免类型擦除
+    private transient final Converter<T> converter = new Converter<>();
+    private transient final Mapper<T> mapper = new Mapper<>();
+
+    final int update(QueryBuilder.Update update) {
         HashMap<String, Object> updateBody = update.getBody();
 
         // 获取操作的数据库当前对象
@@ -38,9 +42,9 @@ class Actuator<T> {
         return updateRes.size();
     }
 
-    int save(QueryBuilder.Update update) {
+    final int save(@NonNull QueryBuilder.Update update) {
 
-        List<T> saveBody = update.getQueryBuilder().getWillSaveBody();
+        List<T> beans = update.getQueryBuilder().getBeans();
 
         // 获取操作的数据库当前对象
         Database currentDatabase = update.getQueryBuilder().getClientInstance().getCurrentDatabase();
@@ -49,13 +53,11 @@ class Actuator<T> {
         Class clazz = update.getQueryBuilder().getExpression().getTargetClass();
         RowStoreTable table = currentDatabase.getTable(clazz);
 
-        // 进行保存  saveBody
-        return table.saveBatch();
+        // 进行保存beans
+        return table.saveBatch(converter.convertBean2Row(beans));
     }
 
-    int delete(QueryBuilder.Delete delete) {
-
-
+    final int delete(@NonNull QueryBuilder.Delete delete) {
         // 获取操作的数据库当前对象
         Database currentDatabase = delete.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
@@ -65,13 +67,14 @@ class Actuator<T> {
 
         IntermediateExpression<T> expression = delete.getQueryBuilder().getExpression();
 
-        Mapper<T> mapper = new Mapper<>();
-        // 进行保存
-        List<Id> deleteRes = table.delete(mapper.mapExpressionToExpressionRow.apply(expression));
-        return deleteRes.size()
+        // delete
+        List<Id> deleteRes = table.delete(converter.convertIntermediateExpressionType(expression));
+
+        return deleteRes.size();
     }
 
-    List<T> select(QueryBuilder.Select select) {
+    @NonNull
+    final List<T> select(@NonNull QueryBuilder.Select select) {
 
         IntermediateExpression<T> expression = select.getQueryBuilder().getExpression();
         // 获取操作的数据库当前对象
@@ -83,13 +86,12 @@ class Actuator<T> {
 
         Mapper<T> mapper = new Mapper<>();
 
-        // table.query(expression);
-        List<Row<String, Object>> selectResult = table.query(mapper.mapExpressionToExpressionRow.apply(expression));
+        List<Row> selectResult = table.query(converter.convertIntermediateExpressionType(expression));
 
         // select result -> Java Bean
         Collection<T> collection = mapper.mapRowsToBeans.apply(selectResult);
 
-        return Collections.list(collection);
+        return null;
 
     }
 }
