@@ -8,6 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
+ * 数据表格测试通过
+ * {@link RowStoreTable}
+ *
  * @author maxuefeng
  * @since 2019/10/24
  */

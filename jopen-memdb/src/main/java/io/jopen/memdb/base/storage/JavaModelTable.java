@@ -20,6 +20,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
+ * 这种存储方式序列化存在很多问题
+ * 丢弃当前的存储策略
+ *
  * @author maxuefeng
  * @since 2019/10/22
  * <p>{@link com.google.common.collect.Table}</p>

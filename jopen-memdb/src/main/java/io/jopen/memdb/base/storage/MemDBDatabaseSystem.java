@@ -20,18 +20,18 @@ import java.util.stream.Stream;
  * @since 2019/10/23
  */
 final
-class MemdbServer extends AbstractService {
+class MemDBDatabaseSystem extends AbstractService {
 
     private final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(50));
 
     // 任务队列
     private final BlockingQueue<Task<Object>> taskBlockingQueue = Queues.newLinkedBlockingQueue();
 
-    private MemdbServer() {
+    private MemDBDatabaseSystem() {
     }
 
     // 初始化
-    static final MemdbServer MEMDB_SERVER = new MemdbServer();
+    static final MemDBDatabaseSystem MEMDB_SERVER = new MemDBDatabaseSystem();
 
     /**
      * 同步启动方式
@@ -79,7 +79,7 @@ class MemdbServer extends AbstractService {
                 while (true) {
                     try {
                         Task<Object> task = taskBlockingQueue.take();
-                        ListenableFuture<Object> future = MemdbServer.this.service.submit(task);
+                        ListenableFuture<Object> future = MemDBDatabaseSystem.this.service.submit(task);
                         // 添加任务完成回调函数
                         Futures.addCallback(future, task.completeCallback(), service);
                     } catch (InterruptedException ignored) {
