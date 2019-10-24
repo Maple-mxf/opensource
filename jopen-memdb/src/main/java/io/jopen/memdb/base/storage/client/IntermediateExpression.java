@@ -35,8 +35,8 @@ public class IntermediateExpression<T> {
     }
 
     @FunctionalInterface
-    interface Condition<T> {
-        boolean test(T cell);
+    public interface Condition<T> {
+        boolean test(T row);
     }
 
     private List<Condition<T>> conditions = new ArrayList<>();

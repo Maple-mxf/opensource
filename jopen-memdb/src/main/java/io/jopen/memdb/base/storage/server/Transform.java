@@ -15,12 +15,12 @@ import java.util.stream.Stream;
  * @author maxuefeng
  * @since 2019/10/24
  */
-public final
+final
 class Transform {
 
     @NotNull
-    public RowStoreTable mapJavaBeanToTable(@NonNull Class clazz,
-                                            @NonNull Database database) {
+    RowStoreTable mapJavaBeanToTable(@NonNull Class clazz,
+                                     @NonNull Database database) {
         Field[] fields = clazz.getDeclaredFields();
 
         if (fields.length == 0) {

@@ -74,7 +74,7 @@ interface MemdbTemplate {
         DatabaseManagement.DBA.databases.put(tableName, new JavaModelTable<T>(clazz));
     }*/
 
-/*    default <T> JavaModelTable<T> getTable(Class<T> clazz) {
+/*    default <T> JavaModelTable<T> getRowsData(Class<T> clazz) {
         Preconditions.checkNotNull(clazz);
         String tableName = MemdbTemplate.parseEntity(clazz);
         if (!tables.containsKey(tableName)) {

@@ -1,19 +1,26 @@
 package io.jopen.memdb.base.storage.server;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import io.jopen.memdb.base.storage.client.IntermediateExpression;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * {@link JavaModelTable}
+ * {@link java.util.concurrent.ConcurrentNavigableMap}
+ * {@link java.util.concurrent.ConcurrentMap}
+ * {@link java.util.TreeMap}
  *
  * @author maxuefeng
  * @since 2019/10/24
@@ -22,10 +29,13 @@ import java.util.stream.Collectors;
 final
 class RowStoreTable implements Serializable {
 
-    // table
-    private final Table<Id, String, Object> table = Tables.newCustomTable(new ConcurrentHashMap<>(), ConcurrentHashMap::new);
+    // rowsData  TODO   怎么保证数据的有序性
+    private final Table<Id, String, Object> rowsData = Tables.newCustomTable(new ConcurrentHashMap<>(), () -> Collections.synchronizedSortedMap(new TreeMap<>()));
 
-    // table Name
+    // 全查询最大只能查询1000条数据
+    private final int maxAllQueryLimit = 1000;
+
+    // rowsData Name
     private String tableName;
 
     // 列的属性
@@ -41,8 +51,8 @@ class RowStoreTable implements Serializable {
     }
 
 
-    public Table<Id, String, Object> getTable() {
-        return table;
+    public Table<Id, String, Object> getRowsData() {
+        return rowsData;
     }
 
     public String getTableName() {
@@ -57,7 +67,7 @@ class RowStoreTable implements Serializable {
         return database;
     }
 
-    // create table Precondition
+    // create rowsData Precondition
 
     // save cell data Precondition  主键为空或者不唯一则返回false
     private Predicate<Row<String, Object>> saveCellPreconditionId = row -> {
@@ -90,19 +100,19 @@ class RowStoreTable implements Serializable {
     // storage data  consumer the row
     private Consumer<Row<String, Object>> storageRow = row -> {
         Id rowKey = row.getRowKey();
-        row.forEach((column, value) -> RowStoreTable.this.table.put(rowKey, column, value));
+        row.forEach((column, value) -> RowStoreTable.this.rowsData.put(rowKey, column, value));
     };
 
 
     /**
-     * save data to table
+     * save data to rowsData
      *
-     * @see Row#getRowKey()   storage data to the current table   in row
+     * @see Row#getRowKey()   storage data to the current rowsData   in row
      * @see com.google.common.collect.Table.Cell#put(Object, Object, Object)
      */
     public void save(Row<String, Object> row) {
         // before save data check data is complete
-        // this.table.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
+        // this.rowsData.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
         boolean res = saveCellPreconditionId.apply(row);
         if (res) {
             throw new RuntimeException("save exception");
@@ -117,10 +127,82 @@ class RowStoreTable implements Serializable {
      *
      * @param rows rows data
      */
-    public void saveBatch(Collection<Row<String, Object>> rows) {
-        Preconditions.checkNotNull(rows);
+    public void saveBatch(@NonNull Collection<Row<String, Object>> rows) {
         rows.forEach(this::save);
     }
+
+
+    /**
+     * 查询
+     *
+     * @see IntermediateExpression
+     */
+    @NonNull
+    public List<Row<String, Object>> query(@Nullable IntermediateExpression<Row<String, Object>> expression) {
+        return matching(expression);
+    }
+
+
+    /**
+     * 删除
+     *
+     * @return
+     */
+    @NonNull
+    public List<Id> delete(@Nullable IntermediateExpression<Row<String, Object>> expression) {
+        List<Row<String, Object>> deleteResult = matching(expression);
+
+        if (deleteResult.size() == 0) {
+            return Lists.newArrayList();
+        }
+        return deleteResult.parallelStream().map(Row::getRowKey).collect(Collectors.toList());
+    }
+
+    @NonNull
+    private List<Row<String, Object>> matching(@Nullable IntermediateExpression<Row<String, Object>> expression) {
+        List<Row<String, Object>> matchingResult;
+        // 全查询
+        if (expression == null || expression.getConditions().size() == 0) {
+
+            matchingResult = rowsData.rowMap().entrySet().parallelStream().map(entry -> {
+                // 主键
+                Id rowKey = entry.getKey();
+                Row<String, Object> row = new Row<>(rowKey);
+                row.putAll(entry.getValue());
+                return row;
+            }).limit(maxAllQueryLimit).collect(Collectors.toList());
+        } else {
+            //
+            List<IntermediateExpression.Condition<Row<String, Object>>> conditions = expression.getConditions();
+
+            // map the element
+            Stream<Row<String, Object>> rowStream = this.rowsData.rowMap().entrySet().parallelStream()
+
+                    // 进行map修改数据
+                    .map(entry -> {
+                        Id pk = entry.getKey();
+                        Row<String, Object> tmpRow = new Row<>(pk);
+                        tmpRow.putAll(entry.getValue());
+                        return tmpRow;
+                    });
+
+            // filter the element
+            matchingResult = rowStream.filter(row -> {
+                        boolean match = true;
+                        for (IntermediateExpression.Condition<Row<String, Object>> condition : conditions) {
+                            boolean test = condition.test(row);
+                            if (!test) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        return match;
+                    }
+            ).collect(Collectors.toList());
+        }
+        return matchingResult;
+    }
+
 
     @Override
     public String toString() {
@@ -135,11 +217,11 @@ class RowStoreTable implements Serializable {
 
         // 拼接行数据  rowKeySet属于主键集合
         // 获取所有Id
-        Set<Id> ids = table.rowKeySet();
+        Set<Id> ids = rowsData.rowKeySet();
 
         for (Id id : ids) {
             for (ColumnType columnType : this.columnTypes) {
-                Object cell = table.get(id, columnType.getColumnName());
+                Object cell = rowsData.get(id, columnType.getColumnName());
                 rowStoreTable.append(cell);
                 rowStoreTable.append("\t\t\t");
             }
@@ -147,5 +229,4 @@ class RowStoreTable implements Serializable {
         }
         return rowStoreTable.toString();
     }
-
 }
