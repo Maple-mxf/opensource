@@ -1,8 +1,12 @@
 package io.jopen.memdb.base.annotation;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author maxuefeng
@@ -10,23 +14,27 @@ import java.util.Optional;
  */
 public class Util {
 
-    public static String entityVal(Object object) {
-        Entity entity = object.getClass().getAnnotation(Entity.class);
-        return entity.value();
+    public static String entityVal(Class<?> clazz) {
+        Preconditions.checkNotNull(clazz);
+        Entity annotation = clazz.getAnnotation(Entity.class);
+        if (annotation == null || Strings.isNullOrEmpty(annotation.value())) {
+            return clazz.getSimpleName();
+        }
+        return annotation.value();
     }
 
-    public static Object idVal(Object object) throws IllegalAccessException {
+    @Deprecated
+    public static Object idVal(Class clazz) throws IllegalAccessException {
 
-        Class clazz = object.getClass();
         Field[] fields = clazz.getFields();
-        Optional<Field> optional = Arrays.stream(fields).filter(f -> f.getAnnotation(PrimaryKey.class) != null).findFirst();
+        List<Field> primaryKeyFields = Arrays.stream(fields).filter(f -> f.getAnnotation(PrimaryKey.class) != null).collect(Collectors.toList());
 
-        if (optional.isPresent()) {
-            Field field = optional.get();
-            field.setAccessible(true);
-            return field.get(object);
-        } else {
+
+        if (primaryKeyFields.size() == 0) {
             throw new IllegalArgumentException("not idVal annotation,must have @PrimaryKey");
         }
+        return null;
+
     }
+
 }

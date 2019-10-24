@@ -49,6 +49,9 @@ class RowStoreTable implements Serializable {
         return tableName;
     }
 
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
 
     public Database getDatabase() {
         return database;
