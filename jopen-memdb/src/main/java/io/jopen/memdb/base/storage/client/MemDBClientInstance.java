@@ -27,18 +27,6 @@ public class MemDBClientInstance {
 
     // 客户端登陆
     private MemDBClientInstance() {
-
-        // 启动服务器
-        Service.State state = MemDBDatabaseSystem.DB_DATABASE_SYSTEM.state();
-        if (state.equals(Service.State.STOPPING) || state.equals(Service.State.FAILED)
-                || state.equals(Service.State.TERMINATED)) {
-            MemDBDatabaseSystem.DB_DATABASE_SYSTEM.start();
-        }
-
-        // 状态检测
-        if (!state.equals(Service.State.RUNNING) || !state.equals(Service.State.STARTING)) {
-            throw new RuntimeException("DB_DATABASE_SYSTEM not start");
-        }
     }
 
     Database getCurrentDatabase() {
@@ -48,8 +36,8 @@ public class MemDBClientInstance {
     // 单例
     private static MemDBClientInstance memDBClientInstance = null;
 
-    static MemDBClientInstance getInstance() {
-        synchronized (MemdbTemplateImpl.class) {
+    private static MemDBClientInstance getInstance() {
+        synchronized (MemDBClientInstance.class) {
             if (memDBClientInstance == null) {
                 memDBClientInstance = new MemDBClientInstance();
             }
@@ -58,7 +46,22 @@ public class MemDBClientInstance {
     }
 
     public static class Builder {
-        private Builder() {
+        public Builder() {
+        }
+
+        public synchronized MemDBClientInstance.Builder startDBServer() {
+            // 启动服务器
+            Service.State state = MemDBDatabaseSystem.DB_DATABASE_SYSTEM.state();
+            if (state.equals(Service.State.STOPPING) || state.equals(Service.State.FAILED)
+                    || state.equals(Service.State.TERMINATED)) {
+                MemDBDatabaseSystem.DB_DATABASE_SYSTEM.start();
+            }
+
+            // 状态检测
+            if (!state.equals(Service.State.RUNNING) || !state.equals(Service.State.STARTING)) {
+                throw new RuntimeException("DB_DATABASE_SYSTEM not start");
+            }
+            return this;
         }
 
         /**
@@ -87,23 +90,11 @@ public class MemDBClientInstance {
         }
     }
 
-    public MemdbExecutor select() {
-        return new MemdbExecutor(OperationType.SELECT);
+    //
+    public <T> io.jopen.memdb.base.storage.client.Builder<T> input(IntermediateExpression<T> expression) {
+        return new io.jopen.memdb.base.storage.client.Builder<>(expression);
     }
-
-    public MemdbExecutor delete() {
-        return new MemdbExecutor(OperationType.DELETE);
-    }
-
-    public MemdbExecutor update() {
-        return new MemdbExecutor(OperationType.UPDATE);
-    }
-
-    public MemdbExecutor insert() {
-        return new MemdbExecutor(OperationType.UPDATE);
-    }
-
-
+    
     public <T> Boolean saveBatch(Collection<T> entities) throws Throwable {
         for (T entity : entities) {
             save(entity);

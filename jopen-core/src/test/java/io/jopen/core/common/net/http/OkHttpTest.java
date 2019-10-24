@@ -1,12 +1,10 @@
 package io.jopen.core.common.net.http;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.*;
 import io.jopen.core.common.json.Json;
 import okhttp3.*;
-import okhttp3.internal.http.HttpMethod;
-import org.apache.commons.lang3.builder.ToStringExclude;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.Test;
 
 import java.io.File;
@@ -16,12 +14,14 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * OkHttp 代理服务   reid.red是新加坡远程代理服务器
@@ -67,18 +67,46 @@ public class OkHttpTest {
         System.out.println(response.body().string());
     }
 
+    private OkHttpClient client = new OkHttpClient();
+
+    AtomicInteger atomicInteger = new AtomicInteger(1);
+    String url = "http://www.taiguoweige.com/#/home";
+
+    ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+
     @Test
-    public void testWxLink() throws IOException {
-        String url = "https://mp.weixin.qq.com/s/11Ta97w9RrchGw97Iwb_AA";
+    public void testWxLink() throws IOException, InterruptedException {
 
-        OkHttpClient client = new OkHttpClient();
+        ListenableFuture<String> future = service.submit(new Task());
 
-        Request request = new Request.Builder().get().url(url).get().build();
+        Futures.addCallback(future, new FutureCallback<String>() {
+            @Override
+            public void onSuccess(@Nullable String s) {
+                System.err.println(s);
+                System.err.println(atomicInteger.getAndIncrement());
+            }
 
-        Response response = client.newCall(request).execute();
+            @Override
+            public void onFailure(Throwable throwable) {
+                System.err.println(throwable.getMessage());
+            }
+        }, service);
 
-        assert response.body() != null;
-        System.out.println(response.body().string());
+        Thread.sleep(1000000000);
+    }
+
+    class Task implements Callable<String> {
+
+        @Override
+        public String call() throws Exception {
+            Request request = new Request.Builder().get().url(url).get().build();
+
+            Response response = client.newCall(request).execute();
+
+            assert response.body() != null;
+
+            return response.body().string();
+        }
     }
 
 

@@ -12,6 +12,7 @@ import java.util.stream.Stream;
  * @see IntermediateExpression
  * @since 2019/10/23
  */
+@Deprecated
 final
 class MemdbExecutor {
 

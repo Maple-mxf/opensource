@@ -7,6 +7,7 @@ package io.jopen.memdb.base.storage.server;
  * @since 2019/10/23
  */
 @FunctionalInterface
+@Deprecated
 public interface AfterModifyTableCallback {
 
     void callback(Database database, JavaModelTable table) throws Throwable;
