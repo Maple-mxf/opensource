@@ -19,7 +19,8 @@ import java.util.stream.Stream;
  * {@link DatabaseManagement#DBA 初始化DBA信息 }
  * @since 2019/10/23
  */
-final class MemdbServer extends AbstractService {
+final
+class MemdbServer extends AbstractService {
 
     private final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(50));
 
@@ -39,7 +40,6 @@ final class MemdbServer extends AbstractService {
     protected void doStart() {
         File file = new File("./memdb");
         if (file.exists()) {
-
             File[] files = file.listFiles();
             if (files != null) {
                 Stream.of(files).filter(File::isDirectory).forEach(f -> {

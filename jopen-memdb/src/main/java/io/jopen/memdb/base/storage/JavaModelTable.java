@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  * @since 2019/10/22
  * <p>{@link com.google.common.collect.Table}</p>
  */
+@Deprecated
 final
 class JavaModelTable<T> implements Serializable {
 
