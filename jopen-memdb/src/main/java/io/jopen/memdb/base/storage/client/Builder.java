@@ -3,6 +3,7 @@ package io.jopen.memdb.base.storage.client;
 import com.google.common.collect.Maps;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author maxuefeng
@@ -12,12 +13,18 @@ class Builder<T> {
 
     private IntermediateExpression<T> expression;
 
+    private List<T> willSaveBody;
+
     public IntermediateExpression<T> getExpression() {
         return expression;
     }
 
-    public Builder(IntermediateExpression<T> expression) {
+    Builder(IntermediateExpression<T> expression) {
         this.expression = expression;
+    }
+
+    Builder(List<T> willSaveBody) {
+        this.willSaveBody = willSaveBody;
     }
 
     public void select() {
@@ -42,9 +49,22 @@ class Builder<T> {
             this.builder = builder;
         }
 
-        Object execute(){
-            actuator.equals();
-        };
+        public Builder<O> getBuilder() {
+            return builder;
+        }
+
+        public void setBuilder(Builder<O> builder) {
+            this.builder = builder;
+        }
+
+        public Actuator getActuator() {
+            return actuator;
+        }
+
+        public void setActuator(Actuator actuator) {
+            this.actuator = actuator;
+        }
+
     }
 
     class Update<O> extends Carrier<O> {
@@ -59,8 +79,12 @@ class Builder<T> {
             return this;
         }
 
-        @Override
-        Object execute() {
+        HashMap<String, Object> getBody() {
+            return body;
+        }
+
+        <ID> List<ID> execute() {
+            actuator.update(this);
             return null;
         }
     }
@@ -73,6 +97,12 @@ class Builder<T> {
 
     class Delete<O> extends Carrier<O> {
         Delete(Builder<O> builder) {
+            super(builder);
+        }
+    }
+
+    class Save<O> extends Carrier<O> {
+        Save(Builder<O> builder) {
             super(builder);
         }
     }

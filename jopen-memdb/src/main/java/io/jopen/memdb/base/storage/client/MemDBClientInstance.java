@@ -1,12 +1,13 @@
 package io.jopen.memdb.base.storage.client;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Service;
 import io.jopen.memdb.base.storage.server.Database;
 import io.jopen.memdb.base.storage.server.DatabaseManagement;
 import io.jopen.memdb.base.storage.server.MemDBDatabaseSystem;
-
-import java.util.Collection;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * application layer
@@ -90,19 +91,21 @@ public class MemDBClientInstance {
         }
     }
 
-    //
-    public <T> io.jopen.memdb.base.storage.client.Builder<T> input(IntermediateExpression<T> expression) {
+    // query  delete  update
+    public <T> io.jopen.memdb.base.storage.client.Builder<T> input(@Nullable IntermediateExpression<T> expression) {
         return new io.jopen.memdb.base.storage.client.Builder<>(expression);
     }
-    
-    public <T> Boolean saveBatch(Collection<T> entities) throws Throwable {
-        for (T entity : entities) {
-            save(entity);
-        }
-        return true;
+
+
+    // save
+    public <T> io.jopen.memdb.base.storage.client.Builder<T> input(@NonNull T t) {
+        return new io.jopen.memdb.base.storage.client.Builder<>(Lists.newArrayList(t));
     }
 
-    public <T> Boolean save(T t) throws Throwable {
-        return false;
+    @SafeVarargs
+    public final <T> io.jopen.memdb.base.storage.client.Builder<T> input(@NonNull T... t) {
+        return new io.jopen.memdb.base.storage.client.Builder<>(Lists.newArrayList(t));
     }
+
+
 }

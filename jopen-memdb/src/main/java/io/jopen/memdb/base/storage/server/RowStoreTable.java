@@ -132,10 +132,16 @@ class RowStoreTable implements Serializable {
     }
 
 
-    public List<Row<String, Object>> update(@Nullable IntermediateExpression<Row<String, Object>> expression) {
+    public List<Row<String, Object>> update(@Nullable IntermediateExpression<Row<String, Object>> expression, HashMap<String, Object> updateBody) {
         List<Row<String, Object>> matchingResult = matching(expression);
+        Set<Id> rowKeys = matchingResult.parallelStream().map(Row::getRowKey).collect(Collectors.toSet());
 
-        // TODO  batch update update
+        // TODO  batch update update  注意类型检查   如果类型不匹配 存储没问题  mapper to  java  bean会出现问题
+        this.rowsData.rowMap().forEach((rowKey, columnValues) -> {
+            if (rowKeys.contains(rowKey)) {
+                columnValues.putAll(updateBody);
+            }
+        });
         return matchingResult;
     }
 

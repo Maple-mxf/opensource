@@ -20,7 +20,7 @@ class Database implements Serializable {
 
     private String dbName;
 
-    private transient Transform transform = new Transform();
+    private transient Translator translator = new Translator();
 
     @Deprecated
     public <T> JavaModelTable<T> getTable(@NonNull String tableName) {
@@ -61,6 +61,10 @@ class Database implements Serializable {
 
     RowStoreTable createTable(Class clazz) {
         // 创建表格的先决条件  至少存在一个主键
-        return transform.mapJavaBeanToTable(clazz, this);
+        return translator.mapJavaBeanToTable(clazz, this);
+    }
+
+    public RowStoreTable getTable(Class clazz){
+
     }
 }
