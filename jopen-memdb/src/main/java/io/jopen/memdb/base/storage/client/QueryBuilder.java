@@ -3,6 +3,7 @@ package io.jopen.memdb.base.storage.client;
 import com.google.common.collect.Maps;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,9 +29,11 @@ class QueryBuilder<T> {
 
     QueryBuilder(IntermediateExpression<T> expression, MemDBClientInstance clientInstance) {
         this.expression = expression;
+        this.clientInstance = clientInstance;
     }
 
     QueryBuilder(List<T> beans, MemDBClientInstance clientInstance) {
+        this.clientInstance = clientInstance;
         this.beans = beans;
     }
 
@@ -38,11 +41,12 @@ class QueryBuilder<T> {
         return beans;
     }
 
-    public void select() {
-
+    public Select select() {
+        return new Select(this);
     }
 
-    public void delete() {
+    public Delete delete() {
+        return new Delete(this);
     }
 
     //
@@ -103,6 +107,10 @@ class QueryBuilder<T> {
     class Select extends Carrier {
         Select(QueryBuilder<T> queryBuilder) {
             super(queryBuilder);
+        }
+
+        Collection<T> execute() throws Throwable {
+            return actuator.select(this);
         }
     }
 
