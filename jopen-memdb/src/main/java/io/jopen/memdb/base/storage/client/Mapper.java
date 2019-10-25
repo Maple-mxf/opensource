@@ -57,8 +57,10 @@ class Mapper<T> {
                     }
 
                     try {
-                        field.set(field.getName(), row.get(columnName));
-                    } catch (IllegalAccessException e) {
+                        Object value = row.get(columnName);
+                        field.set(instance, value);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                         throw new RuntimeException(e.getMessage());
                     }
                 });

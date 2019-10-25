@@ -4,9 +4,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
-import io.jopen.core.common.reflect.ReflectHelper;
 import io.jopen.core.function.ReturnValue;
 import io.jopen.memdb.base.annotation.Entity;
+import io.jopen.memdb.base.reflect.ReflectHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;

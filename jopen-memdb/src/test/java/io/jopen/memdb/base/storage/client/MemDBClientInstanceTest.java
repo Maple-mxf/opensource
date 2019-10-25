@@ -24,9 +24,7 @@ public class MemDBClientInstanceTest {
         student.setId(Worker.id());
         student.setName("Jack");
 
-        // memDBClientInstance.input()
         int save = memDBClientInstance.input(student).save().execute();
-
         System.err.println(save);
     }
 
@@ -64,18 +62,11 @@ public class MemDBClientInstanceTest {
                 .execute();
     }
 
-    // TODO  delete poeration will send java beans
     @Test
     public void select() throws Throwable {
         IntermediateExpression<Student> expression = IntermediateExpression.buildFor(Student.class).eq("age", 20);
-        // memDBClientInstance.input()
-
-        // 全删除
-        // memDBClientInstance.input().delete().
-
         Collection<Student> collection = memDBClientInstance.input(expression).select().execute();
         System.err.println(collection);
-
     }
 
 
