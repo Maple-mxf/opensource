@@ -29,7 +29,7 @@ public final
 class RowStoreTable implements Serializable {
 
     // rowsData  TODO   怎么保证数据的有序性
-    private final Table<Id, String, Object> rowsData = Tables.newCustomTable(new ConcurrentHashMap<>(), () -> Collections.synchronizedSortedMap(new TreeMap<>()));
+    private final Table<Id, String, Object> rowsData = Tables.newCustomTable(new ConcurrentHashMap<>(), ConcurrentHashMap::new);
 
     // 全查询最大只能查询1000条数据
     private final int maxAllQueryLimit = 1000;

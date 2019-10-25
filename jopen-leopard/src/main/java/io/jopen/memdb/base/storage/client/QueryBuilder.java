@@ -18,9 +18,9 @@ class QueryBuilder<T> {
 
     private List<T> beans;
 
-    private MemDBClientInstance clientInstance;
+    private LeopardClient clientInstance;
 
-    public MemDBClientInstance getClientInstance() {
+    public LeopardClient getClientInstance() {
         return clientInstance;
     }
 
@@ -28,12 +28,12 @@ class QueryBuilder<T> {
         return expression;
     }
 
-    QueryBuilder(IntermediateExpression<T> expression, MemDBClientInstance clientInstance) {
+    QueryBuilder(IntermediateExpression<T> expression, LeopardClient clientInstance) {
         this.expression = expression;
         this.clientInstance = clientInstance;
     }
 
-    QueryBuilder(List<T> beans, MemDBClientInstance clientInstance) {
+    QueryBuilder(List<T> beans, LeopardClient clientInstance) {
         this.clientInstance = clientInstance;
         this.beans = beans;
     }

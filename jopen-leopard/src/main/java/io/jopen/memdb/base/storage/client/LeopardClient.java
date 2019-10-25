@@ -5,13 +5,13 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Service;
 import io.jopen.memdb.base.storage.server.DBManagement;
 import io.jopen.memdb.base.storage.server.Database;
-import io.jopen.memdb.base.storage.server.MemDBSystem;
+import io.jopen.memdb.base.storage.server.LeopardServer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * application layer
- * {@link MemDBSystem#start()} ()}
+ * {@link LeopardServer#startAsync()} ()} ()}
  * <p>
  * <p>
  * 数据库客户端
@@ -20,15 +20,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 2019/10/24
  */
 public final
-class MemDBClientInstance {
+class LeopardClient {
 
     // 当前数据库
     private Database currentDatabase;
 
-    // private MemDBSystem memDBDatabaseSystem;
+    // private LeopardServer memDBDatabaseSystem;
 
     // 客户端登陆
-    private MemDBClientInstance() {
+    private LeopardClient() {
     }
 
     Database getCurrentDatabase() {
@@ -36,28 +36,49 @@ class MemDBClientInstance {
     }
 
     // 单例
-    private static MemDBClientInstance memDBClientInstance = null;
+    private static LeopardClient leopardClient = null;
 
-    private static MemDBClientInstance getInstance() {
-        synchronized (MemDBClientInstance.class) {
-            if (memDBClientInstance == null) {
-                memDBClientInstance = new MemDBClientInstance();
+    private static LeopardClient getInstance() {
+        synchronized (LeopardClient.class) {
+            if (leopardClient == null) {
+                leopardClient = new LeopardClient();
             }
-            return memDBClientInstance;
+            return leopardClient;
         }
+    }
+
+    /**
+     * 同步加锁方式  防止数据错误
+     *
+     * @param dbName 数据库名称
+     * @return fluent风格 build
+     */
+    public synchronized LeopardClient switchDB(String dbName) {
+        if (Strings.isNullOrEmpty(dbName)) {
+            throw new IllegalArgumentException("currentDatabase name must not null");
+        }
+
+        Database db = DBManagement.DBA.getDatabase(dbName);
+
+        if (db == null) {
+            db = new Database(dbName);
+            DBManagement.DBA.addDatabase(db);
+        }
+        this.currentDatabase = db;
+        return this;
     }
 
     public static class Builder {
         public Builder() {
         }
 
-        public synchronized MemDBClientInstance.Builder startDBServer() {
+        public synchronized LeopardClient.Builder startDBServer() {
             // 启动服务器
-            Service.State state = MemDBSystem.DB_DATABASE_SYSTEM.state();
+            Service.State state = LeopardServer.DB_DATABASE_SYSTEM.state();
             if (state.equals(Service.State.STOPPING) || state.equals(Service.State.FAILED)
                     || state.equals(Service.State.TERMINATED) || state.equals(Service.State.NEW)) {
-                MemDBSystem.DB_DATABASE_SYSTEM.startAsync();
-                state = MemDBSystem.DB_DATABASE_SYSTEM.state();
+                LeopardServer.DB_DATABASE_SYSTEM.startAsync();
+                state = LeopardServer.DB_DATABASE_SYSTEM.state();
             }
 
             // 状态检测
@@ -67,29 +88,8 @@ class MemDBClientInstance {
             return this;
         }
 
-        /**
-         * 同步加锁方式  防止数据错误
-         *
-         * @param dbName 数据库名称
-         * @return fluent风格 build
-         */
-        public synchronized MemDBClientInstance.Builder switchDB(String dbName) {
-            if (Strings.isNullOrEmpty(dbName)) {
-                throw new IllegalArgumentException("currentDatabase name must not null");
-            }
-
-            Database db = DBManagement.DBA.getDatabase(dbName);
-
-            if (db == null) {
-                db = new Database(dbName);
-                DBManagement.DBA.addDatabase(db);
-            }
-            MemDBClientInstance.getInstance().currentDatabase = db;
-            return this;
-        }
-
-        public MemDBClientInstance build() {
-            return MemDBClientInstance.getInstance();
+        public LeopardClient build() {
+            return LeopardClient.getInstance();
         }
     }
 

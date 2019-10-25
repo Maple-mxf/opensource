@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jopen-memdb</artifactId>
+    <artifactId>jopen-leopard</artifactId>
 
 
     <dependencies>

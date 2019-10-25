@@ -5,7 +5,7 @@ import com.google.common.base.Strings;
 import io.jopen.memdb.base.storage.client.OperationType;
 import io.jopen.memdb.base.storage.server.DBManagement;
 import io.jopen.memdb.base.storage.server.Database;
-import io.jopen.memdb.base.storage.server.MemDBSystem;
+import io.jopen.memdb.base.storage.server.LeopardServer;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,7 +56,7 @@ class MemdbTemplateImpl {
         }
 
         public static synchronized Builder startDBServer() {
-            MemDBSystem.DB_DATABASE_SYSTEM.startAsync();
+            LeopardServer.DB_DATABASE_SYSTEM.startAsync();
             return new Builder();
         }
 

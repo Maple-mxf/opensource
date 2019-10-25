@@ -1,15 +1,16 @@
 package io.jopen.memdb.base.storage.server;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * {@link MemDBSystem}
+ * {@link LeopardServer}
  *
  * @author maxuefeng
  * @since 2019/10/23
  */
 public final
-class DBManagement {
+class DBManagement implements Serializable {
 
     private DBManagement() {
     }

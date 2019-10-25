@@ -14,18 +14,18 @@ import java.util.concurrent.Executors;
  * @since 2019/10/23
  */
 public final
-class MemDBSystem extends AbstractService {
+class LeopardServer extends AbstractService {
 
     private final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(50));
 
     // 任务队列
     private final BlockingQueue<Task<Object>> taskBlockingQueue = Queues.newLinkedBlockingQueue();
 
-    private MemDBSystem() {
+    private LeopardServer() {
     }
 
     // 初始化
-    public static final MemDBSystem DB_DATABASE_SYSTEM = new MemDBSystem();
+    public static final LeopardServer DB_DATABASE_SYSTEM = new LeopardServer();
 
     /**
      * 同步启动方式
@@ -55,7 +55,7 @@ class MemDBSystem extends AbstractService {
             while (true) {
                 try {
                     Task<Object> task = taskBlockingQueue.take();
-                    ListenableFuture<Object> future = MemDBSystem.this.service.submit(task);
+                    ListenableFuture<Object> future = LeopardServer.this.service.submit(task);
                     // 添加任务完成回调函数
                     Futures.addCallback(future, task.completeCallback(), service);
                 } catch (InterruptedException ignored) {
