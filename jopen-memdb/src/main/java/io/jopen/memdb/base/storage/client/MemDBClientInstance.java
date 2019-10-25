@@ -19,7 +19,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author maxuefeng
  * @since 2019/10/24
  */
-public class MemDBClientInstance {
+public final
+class MemDBClientInstance {
 
     // 当前数据库
     private Database currentDatabase;
@@ -54,12 +55,13 @@ public class MemDBClientInstance {
             // 启动服务器
             Service.State state = MemDBSystem.DB_DATABASE_SYSTEM.state();
             if (state.equals(Service.State.STOPPING) || state.equals(Service.State.FAILED)
-                    || state.equals(Service.State.TERMINATED)) {
-                MemDBSystem.DB_DATABASE_SYSTEM.start();
+                    || state.equals(Service.State.TERMINATED) || state.equals(Service.State.NEW)) {
+                MemDBSystem.DB_DATABASE_SYSTEM.startAsync();
+                state = MemDBSystem.DB_DATABASE_SYSTEM.state();
             }
 
             // 状态检测
-            if (!state.equals(Service.State.RUNNING) || !state.equals(Service.State.STARTING)) {
+            if (!state.equals(Service.State.RUNNING) && !state.equals(Service.State.STARTING)) {
                 throw new RuntimeException("DB_DATABASE_SYSTEM not start");
             }
             return this;

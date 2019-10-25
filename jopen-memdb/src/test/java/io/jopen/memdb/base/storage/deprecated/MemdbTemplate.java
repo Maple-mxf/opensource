@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage.client;
+package io.jopen.memdb.base.storage.deprecated;
 
 import com.google.common.base.Preconditions;
 import io.jopen.core.common.memdb.annotation.PrimaryKey;

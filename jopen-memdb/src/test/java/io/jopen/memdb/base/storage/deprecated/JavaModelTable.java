@@ -1,4 +1,4 @@
-package io.jopen.memdb.base.storage.server;
+package io.jopen.memdb.base.storage.deprecated;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -52,11 +52,12 @@ class JavaModelTable<T> implements Serializable {
     static {
         // 修改表格之前预操作
         preModifyTableCallbacks.add((database, object) -> {
-            JavaModelTable javaModelTable = database.getTable(parseEntity(object.getClass()));
+            JavaModelTable javaModelTable = null;
+            // JavaModelTable javaModelTable = database.getTable(parseEntity(object.getClass()));
 
             if (javaModelTable == null) {
                 javaModelTable = new JavaModelTable(object.getClass());
-                database.tables.put(javaModelTable.getTableName(), javaModelTable);
+                // database.tables.put(javaModelTable.getTableName(), javaModelTable);
             }
             return ReturnValue.of(object.getClass().getName(), javaModelTable);
         });
@@ -111,7 +112,7 @@ class JavaModelTable<T> implements Serializable {
         Optional<T> optional = cells.parallelStream().filter(cell -> {
             // 获取指定属性匹配值
             // key fieldName value fieldValue
-            Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(t);
+            Map<String, Object> filedNameValues = ReflectHelper.getBeanFieldValueMap(t);
 
             Set<Field> fieldSet = Arrays.stream(cell.getClass().getFields())
                     .filter(field -> filedNameValues.containsKey(field.getName()))
@@ -193,7 +194,7 @@ class JavaModelTable<T> implements Serializable {
     }
 
 
-   public static <T> String parseEntity(Class<T> clazz) {
+    public static <T> String parseEntity(Class<T> clazz) {
         Entity annotation = clazz.getAnnotation(Entity.class);
         if (annotation == null || Strings.isNullOrEmpty(annotation.value())) {
             return clazz.getSimpleName();

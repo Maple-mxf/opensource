@@ -42,9 +42,6 @@ public class IntermediateExpression<T> {
     @FunctionalInterface
     public interface Condition {
         boolean test(Object row);
-
-        default void copy() {
-        }
     }
 
     private List<Condition> conditions = new ArrayList<>();
@@ -63,9 +60,8 @@ public class IntermediateExpression<T> {
         Preconditions.checkNotNull(value);
 
         conditions.add((row) -> {
-
             // 获取当前行的数据
-            Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(row);
+            Map<String, Object> filedNameValues = ReflectHelper.getBeanFieldValueMap(row);
             // 获取当前行指定列的值
             Object val = filedNameValues.get(column);
             return val != null && val.equals(value);
@@ -86,7 +82,7 @@ public class IntermediateExpression<T> {
         conditions.add((row) -> {
 
             // 获取当前行的数据
-            Map<String, Object> filedNameValues = ReflectHelper.getObjFiledValues(row);
+            Map<String, Object> filedNameValues = ReflectHelper.getBeanFieldValueMap(row);
             // 获取当前行指定列的值
             Object val = filedNameValues.get(column);
 

@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * {@link JavaModelTable}
  * {@link java.util.concurrent.ConcurrentNavigableMap}
  * {@link java.util.concurrent.ConcurrentMap}
  * {@link java.util.TreeMap}
@@ -93,7 +92,9 @@ class RowStoreTable implements Serializable {
         }
 
         // 检测具体的值是否为空
-        Optional<ColumnType> optional = primaryKeyColumnTypes.parallelStream().filter(pct -> row.get(pct.getColumnName()) == null).findAny();
+        Optional<ColumnType> optional = primaryKeyColumnTypes.parallelStream()
+                .filter(pct -> row.get(pct.getColumnName()) == null)
+                .findAny();
         return optional.isPresent();
     };
 
@@ -110,7 +111,7 @@ class RowStoreTable implements Serializable {
      * @see Row#getRowKey()   storage data to the current rowsData   in row
      * @see com.google.common.collect.Table.Cell#put(Object, Object, Object)
      */
-    public void save(Row row) {
+    final void save(Row row) {
         // before save data check data is complete
         // this.rowsData.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
         boolean res = saveCellPreconditionId.apply(row);
@@ -236,11 +237,11 @@ class RowStoreTable implements Serializable {
 
             // filter the element
             matchingResult = rowStream.filter(row -> {
-                        boolean match = true;
+                        boolean match = false;
                         for (IntermediateExpression.Condition condition : conditions) {
                             boolean test = condition.test(row);
-                            if (!test) {
-                                match = false;
+                            if (test) {
+                                match = true;
                                 break;
                             }
                         }

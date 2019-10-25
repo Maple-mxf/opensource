@@ -1,7 +1,8 @@
-package io.jopen.memdb.base.storage.client;
+package io.jopen.memdb.base.storage.deprecated;
 
 import com.google.common.base.Preconditions;
-import io.jopen.memdb.base.storage.server.JavaModelTable;
+import io.jopen.memdb.base.storage.client.IntermediateExpression;
+import io.jopen.memdb.base.storage.client.OperationType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,8 +34,8 @@ class MemdbExecutor {
     <T> Landing<T> input(IntermediateExpression<T> expression) {
 
         // 获取expression的泛型
-        currentTable = MemdbTemplateImpl.getInstance()
-                .getCurrentDatabase().getTable(JavaModelTable.parseEntity(expression.getTargetClass()));
+//        currentTable = MemdbTemplateImpl.getInstance()
+//                .getCurrentDatabase().getTable(expression.getTargetClass());
 
         if (currentTable == null) {
             return new Landing<>(Stream.of());

@@ -35,7 +35,7 @@ public class RowStoreTableStorageTest {
 
         // 保存数据
         String id = Worker.id();
-        Row<String, Object> row = Row.row(Id.of(ImmutableMap.of("id", id)), ImmutableBiMap.of("id", id, "name", "Jack"));
+        Row row = Row.row(Id.of(ImmutableMap.of("id", id)), ImmutableBiMap.of("id", id, "name", "Jack"));
         rowStoreTable.save(row);
 
         System.err.println(rowStoreTable);

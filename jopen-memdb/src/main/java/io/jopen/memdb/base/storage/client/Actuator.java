@@ -1,9 +1,6 @@
 package io.jopen.memdb.base.storage.client;
 
-import io.jopen.memdb.base.storage.server.Database;
-import io.jopen.memdb.base.storage.server.Id;
-import io.jopen.memdb.base.storage.server.Row;
-import io.jopen.memdb.base.storage.server.RowStoreTable;
+import io.jopen.memdb.base.storage.server.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collection;
@@ -42,20 +39,20 @@ class Actuator<T> {
         return updateRes.size();
     }
 
-    final int save(@NonNull QueryBuilder.Update update) {
+    final int save(@NonNull QueryBuilder.Save save) {
 
-        List<T> beans = update.getQueryBuilder().getBeans();
+        List<T> beans = save.getQueryBuilder().getBeans();
 
         if (beans.size() == 0) {
             return 0;
         }
 
         // 获取操作的数据库当前对象
-        Database currentDatabase = update.getQueryBuilder().getClientInstance().getCurrentDatabase();
+        Database currentDatabase = save.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
         // 获取对应table对象
-        Class clazz = update.getQueryBuilder().getExpression().getTargetClass();
-        RowStoreTable table = currentDatabase.getTable(clazz);
+        Class clazz = beans.get(0).getClass();
+        RowStoreTable table = securityCheckTable(currentDatabase, clazz);
 
         // 进行保存beans
         return table.saveBatch(converter.convertBean2Row(beans));
@@ -67,7 +64,7 @@ class Actuator<T> {
 
         // 获取对应table对象
         Class clazz = delete.getQueryBuilder().getExpression().getTargetClass();
-        RowStoreTable table = currentDatabase.getTable(clazz);
+        RowStoreTable table = securityCheckTable(currentDatabase, clazz);
 
         // 开发者可能输入一些条件 也可能输入一些实体类
         IntermediateExpression<T> expression = delete.getQueryBuilder().getExpression();
@@ -93,15 +90,31 @@ class Actuator<T> {
     final Collection<T> select(@NonNull QueryBuilder.Select select) throws Throwable {
 
         IntermediateExpression<T> expression = select.getQueryBuilder().getExpression();
+
         // 获取操作的数据库当前对象
         Database currentDatabase = select.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
         // 获取对应table对象
         Class clazz = select.getQueryBuilder().getExpression().getTargetClass();
-        RowStoreTable table = currentDatabase.getTable(clazz);
+        RowStoreTable table = securityCheckTable(currentDatabase, clazz);
 
         List<Row> selectResult = table.query(converter.convertIntermediateExpressionType(expression));
 
         return mapper.mapRowsToBeans.apply(selectResult, clazz);
+    }
+
+    @NonNull
+    final RowStoreTable securityCheckTable(
+            @NonNull Database database, @NonNull Class clazz) {
+
+        // 检测目标表格是否存在
+        RowStoreTable table;
+        try {
+            table = database.getTable(clazz);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            table = database.createTable(clazz);
+        }
+        return table;
     }
 }

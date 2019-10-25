@@ -1,4 +1,6 @@
-package io.jopen.memdb.base.storage.server;
+package io.jopen.memdb.base.storage.deprecated;
+
+import io.jopen.memdb.base.storage.server.Database;
 
 /**
  * 修改表格之后触发的函数

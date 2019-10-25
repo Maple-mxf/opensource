@@ -328,14 +328,20 @@ public class ReflectHelper {
      * @param obj
      * @return
      */
-    public static Map<String, Object> getObjFiledValues(Object obj) {
+    public static Map<String, Object> getBeanFieldValueMap(Object obj) {
 
-        if (obj == null) return Maps.newHashMap();
-
-        Field[] fields = obj.getClass().getDeclaredFields();
+        if (obj == null) {
+            return Maps.newHashMap();
+        }
 
         Map<String, Object> fieldValues = new HashMap<>();
+        if (obj instanceof Map) {
+            Map tmp = (Map) obj;
+            tmp.forEach((k, v) -> fieldValues.put(String.valueOf(k), v));
+            return fieldValues;
+        }
 
+        Field[] fields = obj.getClass().getDeclaredFields();
         for (Field field : fields) {
 
             field.setAccessible(true);

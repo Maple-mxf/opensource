@@ -14,15 +14,15 @@ import java.util.stream.Stream;
  * @author maxuefeng
  * @since 2019/10/24
  */
-final
+public final
 class Translator<T> {
 
     Translator() {
     }
 
     @NonNull
-    final RowStoreTable mapJavaBeanToTable(@NonNull Class clazz,
-                                           @NonNull Database database) {
+    public final RowStoreTable mapJavaBeanToTable(@NonNull Class clazz,
+                                                  @NonNull Database database) {
         Field[] fields = clazz.getDeclaredFields();
 
         if (fields.length == 0) {
@@ -34,9 +34,11 @@ class Translator<T> {
             Property proAnno = field.getDeclaredAnnotation(Property.class);
             boolean pk = false;
             String columnName = field.getName();
-            if (pkAnno != null && proAnno != null) {
+            if (pkAnno != null) {
                 pk = true;
                 columnName = pkAnno.value();
+            } else if (proAnno != null) {
+                columnName = proAnno.value();
             }
             return new ColumnType(field.getType(), columnName, pk);
         }).collect(Collectors.toList());

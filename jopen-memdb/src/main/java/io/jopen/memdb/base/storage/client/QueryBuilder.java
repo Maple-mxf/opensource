@@ -50,6 +50,10 @@ class QueryBuilder<T> {
         return new Delete(this);
     }
 
+    public Save save() {
+        return new Save(this);
+    }
+
     //
 
     public Update update() {
@@ -130,6 +134,10 @@ class QueryBuilder<T> {
     class Save extends Carrier {
         Save(QueryBuilder<T> queryBuilder) {
             super(queryBuilder);
+        }
+
+        int execute() {
+            return actuator.save(this);
         }
     }
 }
