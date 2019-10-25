@@ -71,7 +71,7 @@ interface MemdbTemplate {
         // 检测
 
         // 创建表格
-        DatabaseManagement.DBA.databases.put(tableName, new JavaModelTable<T>(clazz));
+        DBManagement.DBA.databases.put(tableName, new JavaModelTable<T>(clazz));
     }*/
 
 /*    default <T> JavaModelTable<T> getRowsData(Class<T> clazz) {

@@ -16,22 +16,22 @@ import java.util.stream.Stream;
  * @author maxuefeng
  * @see com.google.common.util.concurrent.Service
  * @see AbstractService
- * {@link DatabaseManagement#DBA 初始化DBA信息 }
+ * {@link DBManagement#DBA 初始化DBA信息 }
  * @since 2019/10/23
  */
 public final
-class MemDBDatabaseSystem extends AbstractService {
+class MemDBSystem extends AbstractService {
 
     private final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(50));
 
     // 任务队列
     private final BlockingQueue<Task<Object>> taskBlockingQueue = Queues.newLinkedBlockingQueue();
 
-    private MemDBDatabaseSystem() {
+    private MemDBSystem() {
     }
 
     // 初始化
-    public static final MemDBDatabaseSystem DB_DATABASE_SYSTEM = new MemDBDatabaseSystem();
+    public static final MemDBSystem DB_DATABASE_SYSTEM = new MemDBSystem();
 
     public void start() {
         doStart();
@@ -65,7 +65,7 @@ class MemDBDatabaseSystem extends AbstractService {
             while (true) {
                 try {
                     Task<Object> task = taskBlockingQueue.take();
-                    ListenableFuture<Object> future = MemDBDatabaseSystem.this.service.submit(task);
+                    ListenableFuture<Object> future = MemDBSystem.this.service.submit(task);
                     // 添加任务完成回调函数
                     Futures.addCallback(future, task.completeCallback(), service);
                 } catch (InterruptedException ignored) {
@@ -107,7 +107,7 @@ class MemDBDatabaseSystem extends AbstractService {
                             }
                         });
                     }
-                    DatabaseManagement.DBA.addDatabase(db);
+                    DBManagement.DBA.addDatabase(db);
                 });
             }
         }

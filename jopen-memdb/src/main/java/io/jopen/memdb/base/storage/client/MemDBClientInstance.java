@@ -3,15 +3,15 @@ package io.jopen.memdb.base.storage.client;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Service;
+import io.jopen.memdb.base.storage.server.DBManagement;
 import io.jopen.memdb.base.storage.server.Database;
-import io.jopen.memdb.base.storage.server.DatabaseManagement;
-import io.jopen.memdb.base.storage.server.MemDBDatabaseSystem;
+import io.jopen.memdb.base.storage.server.MemDBSystem;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * application layer
- * {@link MemDBDatabaseSystem#start()} ()}
+ * {@link MemDBSystem#start()} ()}
  * <p>
  * <p>
  * 数据库客户端
@@ -24,7 +24,7 @@ public class MemDBClientInstance {
     // 当前数据库
     private Database currentDatabase;
 
-    // private MemDBDatabaseSystem memDBDatabaseSystem;
+    // private MemDBSystem memDBDatabaseSystem;
 
     // 客户端登陆
     private MemDBClientInstance() {
@@ -52,10 +52,10 @@ public class MemDBClientInstance {
 
         public synchronized MemDBClientInstance.Builder startDBServer() {
             // 启动服务器
-            Service.State state = MemDBDatabaseSystem.DB_DATABASE_SYSTEM.state();
+            Service.State state = MemDBSystem.DB_DATABASE_SYSTEM.state();
             if (state.equals(Service.State.STOPPING) || state.equals(Service.State.FAILED)
                     || state.equals(Service.State.TERMINATED)) {
-                MemDBDatabaseSystem.DB_DATABASE_SYSTEM.start();
+                MemDBSystem.DB_DATABASE_SYSTEM.start();
             }
 
             // 状态检测
@@ -76,14 +76,13 @@ public class MemDBClientInstance {
                 throw new IllegalArgumentException("currentDatabase name must not null");
             }
 
-            Database db = DatabaseManagement.DBA.getDatabase(dbName);
+            Database db = DBManagement.DBA.getDatabase(dbName);
 
             if (db == null) {
                 db = new Database(dbName);
-                DatabaseManagement.DBA.addDatabase(db);
+                DBManagement.DBA.addDatabase(db);
             }
             MemDBClientInstance.getInstance().currentDatabase = db;
-            // MemDBContext.currentDatabase
             return this;
         }
 
@@ -98,7 +97,7 @@ public class MemDBClientInstance {
     }
 
 
-    // save
+    // save or delete or update
     public <T> QueryBuilder<T> input(@NonNull T t) {
         return new QueryBuilder<>(Lists.newArrayList(t), this);
     }

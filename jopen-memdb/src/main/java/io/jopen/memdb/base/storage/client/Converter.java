@@ -96,6 +96,7 @@ class Converter<T> {
         // 获取条件
         List<IntermediateExpression.Condition> originConditions = originExpression.getConditions();
 
+        expression.setTargetClass(Row.class);
         expression.setConditions(originConditions);
 
         return expression;

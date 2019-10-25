@@ -12,7 +12,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public class BrushDisk extends Task<Boolean> {
 
     public BrushDisk(String obj) {
-
     }
 
 

@@ -55,11 +55,11 @@ class MemdbExecutor {
     private <T> Stream<T> filter(IntermediateExpression<T> expression, List<T> cells) {
 
         // 获取断言集合
-        List<IntermediateExpression.Condition<T>> conditions = expression.getConditions();
+        List<IntermediateExpression.Condition> conditions = expression.getConditions();
 
         // 数据按照条件过滤
         return cells.stream().filter(cell -> {
-            for (IntermediateExpression.Condition<T> condition : conditions) {
+            for (IntermediateExpression.Condition condition : conditions) {
                 boolean test = condition.test(cell);
                 if (!test) {
                     return test;

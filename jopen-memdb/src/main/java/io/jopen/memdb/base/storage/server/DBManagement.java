@@ -3,18 +3,18 @@ package io.jopen.memdb.base.storage.server;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * {@link MemDBDatabaseSystem}
+ * {@link MemDBSystem}
  *
  * @author maxuefeng
  * @since 2019/10/23
  */
 public final
-class DatabaseManagement {
+class DBManagement {
 
-    private DatabaseManagement() {
+    private DBManagement() {
     }
 
-    public final static DatabaseManagement DBA = new DatabaseManagement();
+    public final static DBManagement DBA = new DBManagement();
 
     private ConcurrentHashMap<String, Database> databases = new ConcurrentHashMap<>();
 

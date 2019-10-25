@@ -44,6 +44,7 @@ public class MemDBClientInstanceTest {
                 .input(expression)
                 // 表示需要进行查询操作
                 .select()
+                // 执行
                 .execute();
     }
 

@@ -2,10 +2,10 @@ package io.jopen.memdb.base.storage.client;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import io.jopen.memdb.base.storage.server.DBManagement;
 import io.jopen.memdb.base.storage.server.Database;
-import io.jopen.memdb.base.storage.server.DatabaseManagement;
 import io.jopen.memdb.base.storage.server.JavaModelTable;
-import io.jopen.memdb.base.storage.server.MemDBDatabaseSystem;
+import io.jopen.memdb.base.storage.server.MemDBSystem;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +24,7 @@ class MemdbTemplateImpl {
     private Database currentDatabase;
 
     public ConcurrentHashMap<String, Database> showDBs() {
-        return DatabaseManagement.DBA.getDatabases();
+        return DBManagement.DBA.getDatabases();
     }
 
     // 客户端登陆
@@ -56,7 +56,7 @@ class MemdbTemplateImpl {
         }
 
         public static synchronized Builder startDBServer() {
-            MemDBDatabaseSystem.DB_DATABASE_SYSTEM.start();
+            MemDBSystem.DB_DATABASE_SYSTEM.start();
             return new Builder();
         }
 
@@ -71,11 +71,11 @@ class MemdbTemplateImpl {
                 throw new IllegalArgumentException("currentDatabase name must not null");
             }
 
-            Database db = DatabaseManagement.DBA.getDatabase(dbName);
+            Database db = DBManagement.DBA.getDatabase(dbName);
 
             if (db == null) {
                 db = new Database(dbName);
-                DatabaseManagement.DBA.addDatabase(db);
+                DBManagement.DBA.addDatabase(db);
             }
             MemdbTemplateImpl.getInstance().currentDatabase = db;
             return this;

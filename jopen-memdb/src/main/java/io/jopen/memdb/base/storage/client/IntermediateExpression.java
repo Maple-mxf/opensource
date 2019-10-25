@@ -30,6 +30,10 @@ public class IntermediateExpression<T> {
         return new IntermediateExpression<>(targetClass);
     }
 
+    public void setTargetClass(Class<T> targetClass) {
+        this.targetClass = targetClass;
+    }
+
     public Class<T> getTargetClass() {
         return this.targetClass;
     }
