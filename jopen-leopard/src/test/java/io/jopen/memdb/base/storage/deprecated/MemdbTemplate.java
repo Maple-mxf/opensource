@@ -1,7 +1,7 @@
 package io.jopen.memdb.base.storage.deprecated;
 
 import com.google.common.base.Preconditions;
-import io.jopen.core.common.memdb.annotation.PrimaryKey;
+import io.jopen.memdb.base.annotation.PrimaryKey;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
