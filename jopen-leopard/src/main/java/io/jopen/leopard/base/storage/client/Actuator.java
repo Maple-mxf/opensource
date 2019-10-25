@@ -75,7 +75,7 @@ class Actuator<T> {
         IntermediateExpression<T> expression = delete.getQueryBuilder().getExpression();
         List<T> beans = delete.getQueryBuilder().getBeans();
 
-        IntermediateExpression<Row> expressionRow = null;
+        IntermediateExpression<Row> expressionRow;
 
         // beans不为空则把beans转换为IntermediateExpression<T> 条件体
         // 按照条件bean构造器
@@ -169,7 +169,6 @@ class Actuator<T> {
     @NonNull
     private RowStoreTable securityCheckTable(
             @NonNull Database database, @NonNull Class clazz) {
-
         // 检测目标表格是否存在
         RowStoreTable table;
         try {
