@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import io.jopen.memdb.base.reflect.ReflectHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
@@ -241,4 +242,22 @@ public class IntermediateExpression<T> {
     public final IntermediateExpression<T> in(@NonNull String column, @NonNull Object... objects) {
         return this.in(column, Lists.newArrayList(objects));
     }
+
+    public final IntermediateExpression<T> like(@NonNull String column, @NonNull String value) {
+        if (StringUtils.isBlank(value)) {
+            return this;
+        }
+
+        conditions.add(row -> {
+            Map<String, Object> filedNameValues = ReflectHelper.getBeanFieldValueMap(row);
+            String tmpVal = String.valueOf(filedNameValues.get(column));
+            if ("null".equals(tmpVal)) {
+                return false;
+            }
+            return tmpVal.contains(value);
+        });
+        return this;
+    }
+
+
 }
