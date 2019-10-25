@@ -1,5 +1,6 @@
 package io.jopen.memdb.base.storage.client;
 
+import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
@@ -17,6 +18,7 @@ import java.util.*;
  * @author maxuefeng
  * @since 2019/10/23
  */
+@GwtCompatible
 public class IntermediateExpression<T> {
 
     private transient Class<T> targetClass;
@@ -243,6 +245,7 @@ public class IntermediateExpression<T> {
         return this.in(column, Lists.newArrayList(objects));
     }
 
+    @NonNull
     public final IntermediateExpression<T> like(@NonNull String column, @NonNull String value) {
         if (StringUtils.isBlank(value)) {
             return this;
@@ -260,4 +263,56 @@ public class IntermediateExpression<T> {
     }
 
 
+    /**
+     * @param column
+     * @param object
+     * @return
+     * @see IntermediateExpression#eq(String, Object)
+     */
+    @NonNull
+    public final IntermediateExpression<T> ne(
+            @NonNull String column,
+            @NonNull Object object) {
+
+        conditions.add(row -> {
+            Map<String, Object> fieldNameValues = ReflectHelper.getBeanFieldValueMap(row);
+            Object val = fieldNameValues.get(column);
+
+            return val != null && val.equals(object);
+        });
+        return this;
+    }
+
+    /**
+     * @param column  column name
+     * @param objects target
+     * @return this
+     * @see IntermediateExpression#in(String, Object...)
+     */
+    @NonNull
+    public final IntermediateExpression<T> notIn(@NonNull String column,
+                                                 @NonNull Collection<Object> objects) {
+        if (objects.size() == 0) {
+            return this;
+        }
+        conditions.add(row -> {
+            Map<String, Object> fieldNameValues = ReflectHelper.getBeanFieldValueMap(row);
+            Object val = fieldNameValues.get(column);
+            return objects.contains(val);
+        });
+        return this;
+    }
+
+    @NonNull
+    public final IntermediateExpression<T> notNull(@NonNull String column) {
+        if (StringUtils.isBlank(column)) {
+            return this;
+        }
+        conditions.add(row -> {
+            Map<String, Object> fieldNameValues = ReflectHelper.getBeanFieldValueMap(row);
+            Object val = fieldNameValues.get(column);
+            return val != null;
+        });
+        return this;
+    }
 }

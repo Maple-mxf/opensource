@@ -1,5 +1,6 @@
 package io.jopen.memdb.base.storage.server;
 
+import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
@@ -25,6 +26,7 @@ import java.util.stream.Stream;
  * @since 2019/10/24
  * TODO   为了方便测试  当前类暂时声明为public类型的
  */
+@GwtCompatible(serializable = true)
 public final
 class RowStoreTable implements Serializable {
 
