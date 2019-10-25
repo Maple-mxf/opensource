@@ -1,7 +1,7 @@
 package io.jopen.test.leopard;
 
-import io.jopen.memdb.base.storage.client.IntermediateExpression;
-import io.jopen.memdb.base.storage.client.LeopardClient;
+import io.jopen.leopard.base.storage.client.IntermediateExpression;
+import io.jopen.leopard.base.storage.client.LeopardClient;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -30,8 +30,9 @@ public class TestDBServer {
 
         //
         People p1 = new People();
-        p1.setName("ma");
-        Collection<People> collection = client.input(p1).select().execute();
+        p1.setName("JackM");
+        expression.like("name", "JaL");
+        Collection<People> collection = client.input(expression).select().execute();
 
         System.err.println(collection);
 
