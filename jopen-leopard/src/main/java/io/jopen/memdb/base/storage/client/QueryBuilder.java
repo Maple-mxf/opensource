@@ -12,7 +12,7 @@ import java.util.List;
  * @author maxuefeng
  * @since 2019/10/24
  */
-class QueryBuilder<T> {
+public class QueryBuilder<T> {
 
     private IntermediateExpression<T> expression;
 
@@ -60,7 +60,7 @@ class QueryBuilder<T> {
         return new Update(this);
     }
 
-    abstract class Carrier {
+    public abstract class Carrier {
         QueryBuilder<T> queryBuilder;
 
         Actuator actuator = new Actuator();
@@ -87,7 +87,7 @@ class QueryBuilder<T> {
 
     }
 
-    class Update extends Carrier {
+    public class Update extends Carrier {
         private HashMap<String, Object> body = Maps.newLinkedHashMap();
 
         Update(QueryBuilder<T> queryBuilder) {
@@ -104,39 +104,39 @@ class QueryBuilder<T> {
             return body;
         }
 
-        int execute() {
+        public int execute() {
             return actuator.update(this);
         }
     }
 
-    class Select extends Carrier {
+    public class Select extends Carrier {
         Select(QueryBuilder<T> queryBuilder) {
             super(queryBuilder);
         }
 
-        Collection<T> execute() throws Throwable {
+        public Collection<T> execute() throws Throwable {
             return actuator.select(this);
         }
     }
 
-    class Delete extends Carrier {
+    public class Delete extends Carrier {
         Delete(@Nullable QueryBuilder<T> queryBuilder) {
             super(queryBuilder);
         }
 
         // 执行删除操作
-        int execute() {
+        public int execute() {
             return actuator.delete(this);
         }
 
     }
 
-    class Save extends Carrier {
-        Save(QueryBuilder<T> queryBuilder) {
+    public class Save extends Carrier {
+        public Save(QueryBuilder<T> queryBuilder) {
             super(queryBuilder);
         }
 
-        int execute() {
+        public int execute() {
             return actuator.save(this);
         }
     }

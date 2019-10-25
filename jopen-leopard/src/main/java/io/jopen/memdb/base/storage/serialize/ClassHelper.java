@@ -16,7 +16,8 @@ public class ClassHelper {
     /**
      * 代理 class 的名称
      */
-    private static final List<String> PROXY_CLASS_NAMES = Arrays.asList("net.sf.cglib.proxy.Factory"
+    private static final List<String> PROXY_CLASS_NAMES = Arrays.asList(
+            "net.sf.cglib.proxy.Factory"
             // cglib
             , "org.springframework.cglib.proxy.Factory"
             , "javassist.util.proxy.ProxyObject"

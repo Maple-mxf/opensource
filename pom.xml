@@ -24,6 +24,7 @@
         <module>jopen-iot</module>
         <module>jopen-scheduling</module>
         <module>jopen-leopard</module>
+        <module>jopen-test</module>
     </modules>
 
 

@@ -6,6 +6,7 @@ import java.io.*;
 
 /**
  * @author maxuefeng
+ * @see Object
  * @since 2019/10/25
  */
 public class SerializedLambda implements Serializable {
@@ -40,7 +41,9 @@ public class SerializedLambda implements Serializable {
                 return clazz == java.lang.invoke.SerializedLambda.class ? SerializedLambda.class : clazz;
             }
         }) {
-            return (SerializedLambda) objIn.readObject();
+            Object object = objIn.readObject();
+            System.err.println(object.getClass());
+            return (SerializedLambda) object;
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
             throw new RuntimeException(String.format("This is impossible to happen %s ", e.getCause()));
