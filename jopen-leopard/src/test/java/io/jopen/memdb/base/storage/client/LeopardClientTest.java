@@ -1,12 +1,12 @@
 package io.jopen.memdb.base.storage.client;
 
-import io.jopen.core.common.text.Worker;
 import io.jopen.memdb.base.storage.Student;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * @author maxuefeng
@@ -21,15 +21,16 @@ public class LeopardClientTest {
     @Before
     public void before() {
 
-        // 切换数据库
+        // 切换数据库  如果不存在则会自己创建
         leopardClient.switchDB("default");
 
         Student student = new Student();
 
         student.setAge(20);
-        student.setId(Worker.id());
+        student.setId(UUID.randomUUID().toString());
         student.setName("Jack");
 
+        // 存储数据  如果不存在会自己创建
         int save = leopardClient.input(student).save().execute();
         System.err.println(save);
     }
