@@ -93,9 +93,11 @@ class Actuator<T> {
     final Collection<T> select(@NonNull QueryBuilder.Select select) throws Throwable {
 
         IntermediateExpression<T> expression = select.getQueryBuilder().getExpression();
+        List<T> beans = select.getQueryBuilder().getBeans();
 
         // 获取操作的数据库当前对象
         Database currentDatabase = select.getQueryBuilder().getClientInstance().getCurrentDatabase();
+
 
         // 获取对应table对象
         Class clazz = null;
@@ -110,7 +112,6 @@ class Actuator<T> {
         RowStoreTable table = securityCheckTable(currentDatabase, clazz);
 
         List<Row> selectResult = table.query(converter.convertIntermediateExpressionType(expression));
-
         return mapper.mapRowsToBeans.apply(selectResult, clazz);
     }
 

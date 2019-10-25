@@ -27,10 +27,14 @@ public class TestDBServer {
         System.err.println(saveRes);
 
         IntermediateExpression<People> expression = IntermediateExpression.buildFor(People.class);
+
+        //
         People p1 = new People();
         p1.setName("ma");
         Collection<People> collection = client.input(p1).select().execute();
 
         System.err.println(collection);
+
+
     }
 }
