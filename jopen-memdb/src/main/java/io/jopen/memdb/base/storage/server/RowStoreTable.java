@@ -166,6 +166,14 @@ class RowStoreTable implements Serializable {
         return matching(expression);
     }
 
+    public List<Id> delete(@NonNull List<IntermediateExpression<Row>> expressions) {
+        List<Id> ids = new ArrayList<>();
+        for (IntermediateExpression<Row> expression : expressions) {
+            ids.addAll(delete(expression));
+        }
+        return ids;
+    }
+
 
     /**
      * 删除

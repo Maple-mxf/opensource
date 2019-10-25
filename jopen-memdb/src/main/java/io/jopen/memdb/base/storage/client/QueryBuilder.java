@@ -2,6 +2,7 @@ package io.jopen.memdb.base.storage.client;
 
 import com.google.common.collect.Maps;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -115,9 +116,15 @@ class QueryBuilder<T> {
     }
 
     class Delete extends Carrier {
-        Delete(QueryBuilder<T> queryBuilder) {
+        Delete(@Nullable QueryBuilder<T> queryBuilder) {
             super(queryBuilder);
         }
+
+        // 执行删除操作
+        int execute() {
+            return actuator.delete(this);
+        }
+
     }
 
     class Save extends Carrier {

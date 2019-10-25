@@ -51,8 +51,12 @@ public class MemDBClientInstanceTest {
     // TODO  delete poeration will send java beans
     @Test
     public void testDelete() {
-        IntermediateExpression<Student> expression = IntermediateExpression.buildFor(Student.class).le("age", 10);
+        // IntermediateExpression<Student> expression = IntermediateExpression.buildFor(Student.class).le("age", 10);
         // memDBClientInstance.input()
+
+        // 全删除
+        // memDBClientInstance.input().delete().
+
     }
 
 

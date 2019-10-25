@@ -1,10 +1,9 @@
 package io.jopen.memdb.base.storage.client;
 
 import io.jopen.memdb.base.annotation.PrimaryKey;
-import io.jopen.memdb.base.annotation.Property;
+import io.jopen.memdb.base.storage.serialize.Field2ColumnHelper;
 import io.jopen.memdb.base.storage.server.Id;
 import io.jopen.memdb.base.storage.server.Row;
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.reflect.Field;
@@ -57,20 +56,9 @@ class Converter<T> {
                 }
 
                 PrimaryKey pkAnno = field.getDeclaredAnnotation(PrimaryKey.class);
-                Property proAnno = field.getDeclaredAnnotation(Property.class);
+                String columnName = Field2ColumnHelper.columnName(field);
 
-                boolean pk = false;
-
-                String columnName = field.getName();
-
-                if (pkAnno != null && proAnno == null && StringUtils.isNotBlank(pkAnno.value())) {
-                    columnName = pkAnno.value();
-                    pk = true;
-                } else if (pkAnno == null && proAnno != null && StringUtils.isNotBlank(proAnno.value())) {
-                    columnName = proAnno.value();
-                }
-
-                if (pk) {
+                if (pkAnno != null) {
                     ids.put(columnName, fieldValue);
                 }
                 columnValues.put(columnName, fieldValue);
@@ -100,5 +88,35 @@ class Converter<T> {
         expression.setConditions(originConditions);
 
         return expression;
+    }
+
+    @NonNull
+    final List<IntermediateExpression<Row>> convertBeansToExpressions(
+            @NonNull List<T> beans) {
+
+        List<IntermediateExpression<Row>> expressionList = new ArrayList<>();
+
+        for (T bean : beans) {
+            Field[] fields = bean.getClass().getDeclaredFields();
+
+            IntermediateExpression<Row> expression = IntermediateExpression.buildFor(Row.class);
+
+            for (Field field : fields) {
+                field.setAccessible(true);
+                try {
+                    Object value = field.get(bean);
+                    if (value != null) {
+                        String columnName = Field2ColumnHelper.columnName(field);
+                        expression.eq(columnName, value);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+            }
+            if (expression.getConditions().size() > 0) {
+                expressionList.add(expression);
+            }
+        }
+        return expressionList;
     }
 }

@@ -65,12 +65,24 @@ class Actuator<T> {
         Class clazz = delete.getQueryBuilder().getExpression().getTargetClass();
         RowStoreTable table = currentDatabase.getTable(clazz);
 
+        // 开发者可能输入一些条件 也可能输入一些实体类
         IntermediateExpression<T> expression = delete.getQueryBuilder().getExpression();
+        List<T> beans = delete.getQueryBuilder().getBeans();
 
-        // delete
-        List<Id> deleteRes = table.delete(converter.convertIntermediateExpressionType(expression));
-
-        return deleteRes.size();
+        // beans不为空则把beans转换为IntermediateExpression<T> 条件体
+        if (expression == null && beans != null) {
+            List<IntermediateExpression<Row>> expressionList = converter.convertBeansToExpressions(beans);
+            return table.delete(expressionList).size();
+        } else if (expression != null && beans == null) {
+            List<Id> deleteRes = table.delete(converter.convertIntermediateExpressionType(expression));
+            return deleteRes.size();
+        } else if (expression != null) {
+            List<IntermediateExpression<Row>> expressionList = converter.convertBeansToExpressions(beans);
+            expressionList.add(converter.convertIntermediateExpressionType(expression));
+            // delete
+            return table.delete(expressionList).size();
+        }
+        return table.delete(IntermediateExpression.buildFor(Row.class)).size();
     }
 
     @NonNull
