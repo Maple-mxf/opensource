@@ -1,9 +1,10 @@
 package io.jopen.memdb.base.storage.deprecated;
 
-import io.jopen.core.common.text.Worker;
 import io.jopen.memdb.base.storage.Student;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.UUID;
 
 /**
  * @author maxuefeng
@@ -17,7 +18,7 @@ public class MemdbTemplateImplTest {
 
     @Before
     public void before() {
-        String id = Worker.id();
+        String id = UUID.randomUUID().toString();
         student.setId(id);
         student.setName("Jack");
         student.setAge(10);

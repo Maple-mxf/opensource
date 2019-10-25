@@ -1,6 +1,5 @@
 package io.jopen.memdb.base.storage.deprecated;
 
-import io.jopen.core.function.ReturnValue;
 import io.jopen.memdb.base.storage.server.Database;
 
 /**

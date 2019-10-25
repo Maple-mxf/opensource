@@ -3,9 +3,10 @@ package io.jopen.memdb.base.storage.server;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.jopen.core.common.text.Worker;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.UUID;
 
 /**
  * 数据内存式存储测试通过
@@ -34,7 +35,7 @@ public class RowStoreTableStorageTest {
     public void testStorageData() {
 
         // 保存数据
-        String id = Worker.id();
+        String id = UUID.randomUUID().toString();
         Row row = Row.row(Id.of(ImmutableMap.of("id", id)), ImmutableBiMap.of("id", id, "name", "Jack"));
         rowStoreTable.save(row);
 

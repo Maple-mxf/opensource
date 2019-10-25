@@ -118,7 +118,7 @@ class MemdbTemplateImpl {
         JavaModelTable<T> targetTable = null;
         // 执行J修改表格之前的预操作
         /*for (PreModifyTableCallback preAction : preModifyTableCallbacks) {
-            ReturnValue returnValue = preAction.prerequisites(getInstance().currentDatabase, t);
+            io.jopen.memdb.base.storage.deprecated.ReturnValue returnValue = preAction.prerequisites(getInstance().currentDatabase, t);
 
             if (returnValue.containsKey(t.getClass().getName())) {
                 targetTable = (JavaModelTable<T>) returnValue.get(t.getClass().getName());
@@ -145,7 +145,7 @@ class MemdbTemplateImpl {
         JavaModelTable<T> targetTable = null;
         // 执行J修改表格之前的预操作
         for (PreModifyTableCallback preAction : preModifyTableCallbacks) {
-            ReturnValue returnValue = preAction.prerequisites(this.currentDatabase, t);
+            io.jopen.memdb.base.storage.deprecated.ReturnValue returnValue = preAction.prerequisites(this.currentDatabase, t);
 
             if (returnValue.containsKey(t.getClass().getName())) {
                 targetTable = (JavaModelTable<T>) returnValue.get(t.getClass().getName());
