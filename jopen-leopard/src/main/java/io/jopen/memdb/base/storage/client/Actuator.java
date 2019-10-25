@@ -78,8 +78,7 @@ class Actuator<T> {
             List<IntermediateExpression<Row>> expressionList = converter.convertBeansToExpressions(beans);
             return table.delete(expressionList).size();
         } else if (expression != null && beans == null) {
-            List<Id> deleteRes = table.delete(converter.convertIntermediateExpressionType(expression));
-            return deleteRes.size();
+            return table.delete(converter.convertIntermediateExpressionType(expression)).size();
         } else if (expression != null) {
             List<IntermediateExpression<Row>> expressionList = converter.convertBeansToExpressions(beans);
             expressionList.add(converter.convertIntermediateExpressionType(expression));
@@ -98,16 +97,9 @@ class Actuator<T> {
         // 获取操作的数据库当前对象
         Database currentDatabase = select.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
-
         // 获取对应table对象
         Class clazz = null;
 
-        if (expression == null) {
-            clazz = select.getQueryBuilder().getBeans().get(0).getClass();
-            expression = IntermediateExpression.buildFor(clazz);
-        } else {
-            clazz = select.getQueryBuilder().getExpression().getTargetClass();
-        }
 
         RowStoreTable table = securityCheckTable(currentDatabase, clazz);
 
