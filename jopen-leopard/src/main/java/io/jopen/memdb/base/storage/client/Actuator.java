@@ -1,6 +1,9 @@
 package io.jopen.memdb.base.storage.client;
 
-import io.jopen.memdb.base.storage.server.*;
+import io.jopen.memdb.base.storage.server.Database;
+import io.jopen.memdb.base.storage.server.Id;
+import io.jopen.memdb.base.storage.server.Row;
+import io.jopen.memdb.base.storage.server.RowStoreTable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collection;
@@ -95,7 +98,15 @@ class Actuator<T> {
         Database currentDatabase = select.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
         // 获取对应table对象
-        Class clazz = select.getQueryBuilder().getExpression().getTargetClass();
+        Class clazz = null;
+
+        if (expression == null) {
+            clazz = select.getQueryBuilder().getBeans().get(0).getClass();
+            expression = IntermediateExpression.buildFor(clazz);
+        } else {
+            clazz = select.getQueryBuilder().getExpression().getTargetClass();
+        }
+
         RowStoreTable table = securityCheckTable(currentDatabase, clazz);
 
         List<Row> selectResult = table.query(converter.convertIntermediateExpressionType(expression));

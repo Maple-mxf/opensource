@@ -104,10 +104,11 @@ class LeopardClient {
         return new QueryBuilder<>(Lists.newArrayList(t), this);
     }
 
-    @SafeVarargs
+    /*@SafeVarargs
+    @Deprecated
     public final <T> QueryBuilder<T> input(@NonNull T... t) {
         return new QueryBuilder<>(Lists.newArrayList(t), this);
-    }
+    }*/
 
 
 }
