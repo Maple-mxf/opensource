@@ -86,6 +86,7 @@ class Converter<T> {
 
         expression.setTargetClass(Row.class);
         expression.setConditions(originConditions);
+        
 
         return expression;
     }

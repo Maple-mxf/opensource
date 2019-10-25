@@ -1,14 +1,18 @@
 package io.jopen.memdb.base.storage.client;
 
+import io.jopen.memdb.base.storage.serialize.Field2ColumnHelper;
 import io.jopen.memdb.base.storage.server.Database;
 import io.jopen.memdb.base.storage.server.Id;
 import io.jopen.memdb.base.storage.server.Row;
 import io.jopen.memdb.base.storage.server.RowStoreTable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 执行器  将中间构建的表达式和底层存储table进行对接
@@ -43,9 +47,7 @@ class Actuator<T> {
     }
 
     final int save(@NonNull QueryBuilder.Save save) {
-
         List<T> beans = save.getQueryBuilder().getBeans();
-
         if (beans.size() == 0) {
             return 0;
         }
@@ -94,16 +96,48 @@ class Actuator<T> {
         IntermediateExpression<T> expression = select.getQueryBuilder().getExpression();
         List<T> beans = select.getQueryBuilder().getBeans();
 
+        // 获取类型
+        Class clazz;
+
+        IntermediateExpression<Row> rowExpression = null;
+
+        if (expression != null && (beans == null || beans.size() == 0)) {
+            clazz = expression.getTargetClass();
+            expression.setTargetClass(clazz);
+        } else if (expression == null && (beans != null && beans.size() > 0)) {
+            clazz = beans.get(0).getClass();
+            expression = IntermediateExpression.buildFor(clazz);
+
+            // 将bean中不为空的字段全部查询出来
+            for (T bean : beans) {
+
+                //
+                List<Field> fields = Arrays.stream(bean.getClass().getDeclaredFields()).peek(field -> field.setAccessible(true))
+                        .filter(field -> {
+                            try {
+                                return field.get(bean) != null;
+                            } catch (IllegalAccessException ignored) {
+                                return false;
+                            }
+                        }).collect(Collectors.toList());
+
+                for (Field field : fields) {
+                    expression.eq(Field2ColumnHelper.columnName(field), field.get(bean));
+                }
+            }
+
+        } else {
+            throw new RuntimeException("illegal args");
+        }
+        rowExpression = converter.convertIntermediateExpressionType(expression);
+
         // 获取操作的数据库当前对象
         Database currentDatabase = select.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
-        // 获取对应table对象
-        Class clazz = null;
-
-
+        // 获取目标表格
         RowStoreTable table = securityCheckTable(currentDatabase, clazz);
 
-        List<Row> selectResult = table.query(converter.convertIntermediateExpressionType(expression));
+        List<Row> selectResult = table.query(rowExpression);
         return mapper.mapRowsToBeans.apply(selectResult, clazz);
     }
 
