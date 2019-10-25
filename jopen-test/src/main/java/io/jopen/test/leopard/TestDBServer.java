@@ -17,23 +17,24 @@ public class TestDBServer {
     public static void main(String[] args) throws Throwable {
         client.switchDB("default");
 
+        // save
         People people = new People();
         people.setId(UUID.randomUUID().toString());
         people.setName("Jack");
         people.setAge(20);
-        //
         int saveRes = client.input(people).save().execute();
-
         System.err.println(saveRes);
 
-        IntermediateExpression<People> expression = IntermediateExpression.buildFor(People.class);
-
-        //
+        // delete
         People p1 = new People();
-        p1.setName("JackM");
-        expression.like("name", "JaL");
-        Collection<People> collection = client.input(expression).select().execute();
+        p1.setName("Jack");
+        int deleteRes = client.input(p1).delete().execute();
+        System.err.println(deleteRes);
 
+
+        // select all
+        IntermediateExpression<People> expression = IntermediateExpression.buildFor(People.class);
+        Collection<People> collection = client.input(expression).select().execute();
         System.err.println(collection);
 
 

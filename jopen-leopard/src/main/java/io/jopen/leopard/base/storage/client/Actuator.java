@@ -63,31 +63,57 @@ class Actuator<T> {
         return table.saveBatch(converter.convertBean2Row(beans));
     }
 
-    final int delete(@NonNull QueryBuilder.Delete delete) {
+    final int delete(@NonNull QueryBuilder.Delete delete) throws Throwable {
         // 获取操作的数据库当前对象
         Database currentDatabase = delete.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
         // 获取对应table对象
-        Class clazz = delete.getQueryBuilder().getExpression().getTargetClass();
-        RowStoreTable table = securityCheckTable(currentDatabase, clazz);
+        Class clazz = null;
+
 
         // 开发者可能输入一些条件 也可能输入一些实体类
         IntermediateExpression<T> expression = delete.getQueryBuilder().getExpression();
         List<T> beans = delete.getQueryBuilder().getBeans();
 
+        IntermediateExpression<Row> expressionRow = null;
+
         // beans不为空则把beans转换为IntermediateExpression<T> 条件体
-        if (expression == null && beans != null) {
-            List<IntermediateExpression<Row>> expressionList = converter.convertBeansToExpressions(beans);
-            return table.delete(expressionList).size();
-        } else if (expression != null && beans == null) {
-            return table.delete(converter.convertIntermediateExpressionType(expression)).size();
-        } else if (expression != null) {
-            List<IntermediateExpression<Row>> expressionList = converter.convertBeansToExpressions(beans);
-            expressionList.add(converter.convertIntermediateExpressionType(expression));
-            // delete
-            return table.delete(expressionList).size();
+        // 按照条件bean构造器
+        if (expression == null && beans != null && beans.size() > 0) {
+            clazz = beans.get(0).getClass();
+
+            expression = IntermediateExpression.buildFor(clazz);
+
+            T bean = beans.get(0);
+
+            List<Field> fields = Arrays.stream(bean.getClass().getDeclaredFields()).peek(field -> field.setAccessible(true))
+                    .filter(field -> {
+                        try {
+                            return field.get(bean) != null;
+                        } catch (IllegalAccessException ignored) {
+                            return false;
+                        }
+                    }).collect(Collectors.toList());
+
+            for (Field field : fields) {
+                expression.eq(Field2ColumnHelper.columnName(field), field.get(bean));
+            }
+
+            expressionRow = converter.convertIntermediateExpressionType(expression);
+
         }
-        return table.delete(IntermediateExpression.buildFor(Row.class)).size();
+        //
+        else if (expression != null && beans == null) {
+            clazz = expression.getTargetClass();
+            expressionRow = converter.convertIntermediateExpressionType(expression);
+        }
+        //
+        else {
+            throw new RuntimeException("illegal args");
+        }
+
+        RowStoreTable table = securityCheckTable(currentDatabase, clazz);
+        return table.delete(expressionRow).size();
     }
 
     @NonNull
