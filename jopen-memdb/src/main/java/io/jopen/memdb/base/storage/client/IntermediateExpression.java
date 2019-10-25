@@ -2,7 +2,7 @@ package io.jopen.memdb.base.storage.client;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
-import io.jopen.core.common.reflect.ReflectHelper;
+import io.jopen.memdb.base.reflect.ReflectHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
