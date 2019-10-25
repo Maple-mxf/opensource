@@ -46,6 +46,10 @@ class Actuator<T> {
 
         List<T> beans = update.getQueryBuilder().getBeans();
 
+        if (beans.size() == 0) {
+            return 0;
+        }
+
         // 获取操作的数据库当前对象
         Database currentDatabase = update.getQueryBuilder().getClientInstance().getCurrentDatabase();
 
@@ -99,6 +103,5 @@ class Actuator<T> {
         List<Row> selectResult = table.query(converter.convertIntermediateExpressionType(expression));
 
         return mapper.mapRowsToBeans.apply(selectResult, clazz);
-
     }
 }
