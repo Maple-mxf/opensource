@@ -71,7 +71,6 @@ class Actuator<T> {
         // 获取对应table对象
         Class clazz = null;
 
-
         // 开发者可能输入一些条件 也可能输入一些实体类
         IntermediateExpression<T> expression = delete.getQueryBuilder().getExpression();
         List<T> beans = delete.getQueryBuilder().getBeans();

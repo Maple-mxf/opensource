@@ -1,7 +1,7 @@
 package io.jopen.snack.common.serialize;
 
-import io.jopen.leopard.base.annotation.PrimaryKey;
-import io.jopen.leopard.base.annotation.Property;
+import io.jopen.snack.common.annotation.PrimaryKey;
+import io.jopen.snack.common.annotation.Property;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

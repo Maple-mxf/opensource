@@ -1,7 +1,7 @@
 package io.jopen.snack.common;
 
 import com.google.common.annotations.GwtCompatible;
-import io.jopen.leopard.base.storage.serialize.SFunction;
+import io.jopen.snack.common.serialize.SFunction;
 
 /**
  * @author maxuefeng
