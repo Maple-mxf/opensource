@@ -23,7 +23,7 @@
         <module>jopen-spark</module>
         <module>jopen-iot</module>
         <module>jopen-scheduling</module>
-        <module>jopen-leopard</module>
+        <module>jopen-snack</module>
         <module>jopen-test</module>
     </modules>
 

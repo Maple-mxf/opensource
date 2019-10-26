@@ -1,4 +1,4 @@
-package io.jopen.leopard.base.annotation;
+package io.jopen.snack.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,9 +9,8 @@ import java.lang.annotation.Target;
  * @author maxuefeng
  * @since 2019/9/24
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PrimaryKey {
-
-    String value() default "idVal";
+public @interface Entity {
+    String value();
 }
