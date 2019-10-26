@@ -7,7 +7,6 @@ import io.jopen.snack.common.Row;
 import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.common.serialize.KryoHelper;
 
-import javax.management.Query;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;

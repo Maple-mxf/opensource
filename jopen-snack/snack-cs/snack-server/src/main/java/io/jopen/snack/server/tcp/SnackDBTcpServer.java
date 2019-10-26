@@ -1,6 +1,5 @@
 package io.jopen.snack.server.tcp;
 
-import com.google.protobuf.Any;
 import io.jopen.snack.common.protol.RpcData;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
@@ -12,7 +11,7 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 
-import java.util.List;
+import java.io.IOException;
 
 /**
  * 处理客户端的请求
@@ -22,12 +21,13 @@ import java.util.List;
  */
 public class SnackDBTcpServer {
 
+    private static ClientIntentionParser clientIntentionParser = new ClientIntentionParser();
 
     public static void main(String[] args) {
 
     }
 
-    class ProtoServerInitializer extends ChannelInitializer<SocketChannel> {
+    static class ProtoServerInitializer extends ChannelInitializer<SocketChannel> {
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
             ChannelPipeline pipeline = ch.pipeline();
@@ -49,16 +49,12 @@ public class SnackDBTcpServer {
         }
     }
 
-    class ProtoServerHandler extends SimpleChannelInboundHandler<RpcData.C2S> {
+    static class ProtoServerHandler extends SimpleChannelInboundHandler<RpcData.C2S> {
         @Override
-        protected void channelRead0(ChannelHandlerContext ctx, RpcData.C2S data) {
-            List<Any> conditions = data.getConditionsList();
-
-            if (conditions == null) {
-            }
-
-
-            ctx.channel().writeAndFlush(data);
+        protected void channelRead0(ChannelHandlerContext ctx, RpcData.C2S data) throws IOException {
+            // 解析数据  并且进行执行得到结果 写入到流中
+            RpcData.S2C response = clientIntentionParser.parse(data);
+            ctx.channel().writeAndFlush(response);
         }
     }
 }
