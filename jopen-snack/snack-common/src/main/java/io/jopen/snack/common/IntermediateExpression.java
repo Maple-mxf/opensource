@@ -41,12 +41,6 @@ public class IntermediateExpression<T> implements Serializable {
         return this.targetClass;
     }
 
-
-    @FunctionalInterface
-    public interface Condition {
-        boolean test(Object row);
-    }
-
     private List<Condition> conditions = new ArrayList<>();
 
     public List<Condition> getConditions() {

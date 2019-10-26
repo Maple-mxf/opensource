@@ -1,12 +1,17 @@
 package io.jopen.snack.server.netty;
 
+import io.jopen.snack.common.IntermediateExpression;
+import io.jopen.snack.common.serialize.KryoHelper;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
 
 /**
  * <p>{@link io.netty.bootstrap.ServerBootstrap}</p>
@@ -67,10 +72,24 @@ public class NettyServer {
      * <p>{@link ChannelHandlerAdapter}</p>
      */
     class ServerChannelHandler extends ChannelInboundHandlerAdapter {
+        /**
+         * @param ctx
+         * @param msg
+         * @throws Exception
+         * @see ByteBuf
+         */
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             super.channelRead(ctx, msg);
-            System.err.println(msg.getClass());
+            ByteBuf buf = (ByteBuf) msg;
+
+            byte[] bytes = new byte[buf.readableBytes()];
+            byte[] array = buf.array();
+            System.err.println(array.length);
+
+
+            IntermediateExpression<Map> expression = KryoHelper.deserialization(bytes, IntermediateExpression.class);
+            System.err.println(expression);
         }
     }
 

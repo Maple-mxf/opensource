@@ -65,8 +65,16 @@ public class NettyClient {
             IntermediateExpression<Map> expression = IntermediateExpression.buildFor(Map.class);
             byte[] data = KryoHelper.serialization(expression);
             ByteBuf buffer = Unpooled.buffer();
+            System.err.println(data.length);
             buffer.writeBytes(data);
-            ctx.writeAndFlush(buffer);
+
+            ChannelFuture future = ctx.writeAndFlush(buffer);
+
+            future.addListener(future1 -> {
+                boolean success = future1.isSuccess();
+                System.err.println(String.format("发送 %s", success ? "成功" : "失败"));
+            });
+
         }
 
         @Override
