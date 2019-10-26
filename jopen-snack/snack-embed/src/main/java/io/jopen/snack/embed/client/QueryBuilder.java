@@ -126,7 +126,7 @@ public class QueryBuilder<T> {
         }
 
         // 执行删除操作
-        public int execute() {
+        public int execute() throws Throwable {
             return actuator.delete(this);
         }
 
