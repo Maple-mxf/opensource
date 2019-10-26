@@ -55,7 +55,7 @@ public class Server {
             //解码器，通过Google Protocol Buffers序列化框架动态的切割接收到的ByteBuf
             pipeline.addLast(new ProtobufVarint32FrameDecoder());
 
-            //服务器端接收的是客户端RequestUser对象，所以这边将接收对象进行解码生产实列
+            //服务器端接收的是客户端对象，所以这边将接收对象进行解码生产实列
             pipeline.addLast(new ProtobufDecoder(SerializationDataInfo.RpcExpression.getDefaultInstance()));
 
             //Google Protocol Buffers编码器
@@ -71,7 +71,6 @@ public class Server {
     class ProtoServerHandler extends SimpleChannelInboundHandler<SerializationDataInfo.RpcExpression> {
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, SerializationDataInfo.RpcExpression msg) {
-            // System.err.println(msg);
             List<Any> conditionsList = msg.getConditionsList();
             for (Any any : conditionsList) {
                 try {

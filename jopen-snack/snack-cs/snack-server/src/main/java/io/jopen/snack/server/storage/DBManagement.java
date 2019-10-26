@@ -1,4 +1,4 @@
-package io.jopen.snack.server;
+package io.jopen.snack.server.storage;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,4 +1,4 @@
-package io.jopen.snack.server;
+package io.jopen.snack.server.storage;
 
 import io.jopen.snack.common.ColumnType;
 import io.jopen.snack.common.annotation.PrimaryKey;

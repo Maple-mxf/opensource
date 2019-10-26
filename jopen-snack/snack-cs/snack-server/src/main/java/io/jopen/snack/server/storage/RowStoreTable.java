@@ -1,4 +1,4 @@
-package io.jopen.snack.server;
+package io.jopen.snack.server.storage;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Joiner;
@@ -250,6 +250,59 @@ class RowStoreTable implements Serializable {
                         return match;
                     }
             ).collect(Collectors.toList());
+        }
+        return matchingResult;
+    }
+
+    /**
+     * matching condition
+     *
+     * @param expressions
+     * @return
+     * @see IntermediateExpression#getConditions()
+     * @see IntermediateExpression#getTargetClass()
+     */
+    @NonNull
+    private List<Row> matching(@Nullable List<IntermediateExpression<Row>> expressions) {
+        List<Row> matchingResult;
+        // 全查询
+        if (expressions == null || expressions.size() == 0) {
+
+            matchingResult = rowsData.rowMap().entrySet().parallelStream().map(entry -> {
+                // 主键
+                Id rowKey = entry.getKey();
+                Row row = new Row(rowKey);
+                row.putAll(entry.getValue());
+                return row;
+            }).limit(maxAllQueryLimit).collect(Collectors.toList());
+        } else {
+            //
+
+            // map the element
+            Stream<Row> rowStream = this.rowsData.rowMap().entrySet().parallelStream()
+
+                    // 进行map修改数据
+                    .map(entry -> {
+                        Id pk = entry.getKey();
+                        Row tmpRow = new Row(pk);
+                        tmpRow.putAll(entry.getValue());
+                        return tmpRow;
+                    });
+
+            // filter the element
+            matchingResult = rowStream.filter(row -> {
+                boolean match = false;
+                for (IntermediateExpression<Row> expression : expressions) {
+                    List<Condition> conditions = expression.getConditions();
+                    for (Condition condition : conditions) {
+                        if (condition.test(row)) {
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+                return match;
+            }).collect(Collectors.toList());
         }
         return matchingResult;
     }

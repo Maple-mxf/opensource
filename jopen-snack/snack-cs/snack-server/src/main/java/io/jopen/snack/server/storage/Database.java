@@ -1,4 +1,4 @@
-package io.jopen.snack.server;
+package io.jopen.snack.server.storage;
 
 import com.google.common.base.Preconditions;
 import io.jopen.snack.common.annotation.Util;
