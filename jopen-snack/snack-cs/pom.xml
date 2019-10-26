@@ -16,5 +16,20 @@
         <module>snack-client</module>
     </modules>
 
+    <properties>
+        <netty.properties>4.1.42.Final</netty.properties>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.properties}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
 </project>

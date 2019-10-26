@@ -8,6 +8,7 @@ import io.jopen.snack.common.reflect.ReflectHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -19,7 +20,7 @@ import java.util.*;
  * @since 2019/10/23
  */
 @GwtCompatible
-public class IntermediateExpression<T> {
+public class IntermediateExpression<T> implements Serializable {
 
     private transient Class<T> targetClass;
 

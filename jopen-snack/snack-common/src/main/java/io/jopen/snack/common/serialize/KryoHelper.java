@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Base64;
 
 /**
  * 序列化协议
@@ -19,7 +18,7 @@ import java.util.Base64;
  */
 public final class KryoHelper {
 
-    public static String serialization(Object object) throws IOException {
+    public static byte[] serialization(Object object) throws IOException {
         Kryo kryo = new Kryo();
         kryo.setReferences(false);
         kryo.register(object.getClass(), new JavaSerializer());
@@ -36,14 +35,14 @@ public final class KryoHelper {
         baos.flush();
         baos.close();
 
-        return Base64.getEncoder().encodeToString(bytes);
+        return bytes;
     }
 
-    public static  <T extends Serializable> T deserialization(String objStr, Class<T> clazz) throws IOException {
+    public static  <T extends Serializable> T deserialization(byte[] bytes, Class<T> clazz) throws IOException {
         Kryo kryo = new Kryo();
         kryo.setReferences(false);
         kryo.register(clazz, new JavaSerializer());
-        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(objStr));
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         Input input = new Input(bais);
         T t = (T) kryo.readClassAndObject(input);
         bais.close();
