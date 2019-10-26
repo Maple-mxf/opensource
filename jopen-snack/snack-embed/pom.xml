@@ -12,4 +12,11 @@
     <artifactId>snack-embed</artifactId>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>io.jopen</groupId>
+            <artifactId>snack-common</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 </project>
