@@ -1,4 +1,4 @@
-package io.jopen.snack.common.serialize;
+package io.jopen.snack.common.reflect;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 

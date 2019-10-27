@@ -1,4 +1,6 @@
-package io.jopen.snack.common.serialize;
+package io.jopen.snack.common.reflect;
+
+import io.jopen.snack.common.serialize.SerializedLambda;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;

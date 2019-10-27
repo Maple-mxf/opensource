@@ -4,7 +4,7 @@ import io.jopen.snack.common.Id;
 import io.jopen.snack.common.IntermediateExpression;
 import io.jopen.snack.common.Row;
 import io.jopen.snack.common.annotation.PrimaryKey;
-import io.jopen.snack.common.serialize.Field2ColumnHelper;
+import io.jopen.snack.common.reflect.Field2ColumnHelper;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.reflect.Field;

@@ -1,4 +1,4 @@
-package io.jopen.snack.common.serialize;
+package io.jopen.snack.common.reflect;
 
 import io.jopen.snack.common.annotation.PrimaryKey;
 import io.jopen.snack.common.annotation.Property;

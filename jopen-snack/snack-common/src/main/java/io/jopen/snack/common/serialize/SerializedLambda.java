@@ -1,5 +1,7 @@
 package io.jopen.snack.common.serialize;
 
+import io.jopen.snack.common.reflect.ClassHelper;
+import io.jopen.snack.common.reflect.SFunction;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.*;
