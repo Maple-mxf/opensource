@@ -14,7 +14,6 @@ import java.util.Map;
 
 import static io.jopen.snack.common.protol.Message.failure;
 import static io.jopen.snack.common.protol.Message.success;
-import static io.jopen.snack.common.protol.RpcData.C2S.OperationType.*;
 
 /**
  * 客户端意图解析器

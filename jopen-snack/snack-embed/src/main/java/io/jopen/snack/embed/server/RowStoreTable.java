@@ -257,7 +257,6 @@ class RowStoreTable implements Serializable {
 
     @Override
     public String toString() {
-
         StringBuilder rowStoreTable = new StringBuilder("RowStoreTable");
         rowStoreTable.append(this.tableName).append("\n");
 

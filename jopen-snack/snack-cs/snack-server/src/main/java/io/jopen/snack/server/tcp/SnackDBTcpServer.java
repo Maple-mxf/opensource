@@ -26,10 +26,13 @@ public class SnackDBTcpServer {
     private static ClientIntentionParser clientIntentionParser = new ClientIntentionParser();
 
     public static void main(String[] args) {
+
+        //
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup wokerGroup = new NioEventLoopGroup();
 
         try {
+
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, wokerGroup).channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
