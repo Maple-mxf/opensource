@@ -584,6 +584,14 @@ public final class RpcData {
        * <code>modifyDB = 2;</code>
        */
       modifyDB(2),
+      /**
+       * <pre>
+       * 查询
+       * </pre>
+       *
+       * <code>showDBs = 3;</code>
+       */
+      showDBs(3),
       UNRECOGNIZED(-1),
       ;
 
@@ -611,6 +619,14 @@ public final class RpcData {
        * <code>modifyDB = 2;</code>
        */
       public static final int modifyDB_VALUE = 2;
+      /**
+       * <pre>
+       * 查询
+       * </pre>
+       *
+       * <code>showDBs = 3;</code>
+       */
+      public static final int showDBs_VALUE = 3;
 
 
       public final int getNumber() {
@@ -640,6 +656,7 @@ public final class RpcData {
           case 0: return createDB;
           case 1: return dropDB;
           case 2: return modifyDB;
+          case 3: return showDBs;
           default: return null;
         }
       }
@@ -725,6 +742,14 @@ public final class RpcData {
        * <code>modifyTable = 2;</code>
        */
       modifyTable(2),
+      /**
+       * <pre>
+       * 查询
+       * </pre>
+       *
+       * <code>showTables = 3;</code>
+       */
+      showTables(3),
       UNRECOGNIZED(-1),
       ;
 
@@ -752,6 +777,14 @@ public final class RpcData {
        * <code>modifyTable = 2;</code>
        */
       public static final int modifyTable_VALUE = 2;
+      /**
+       * <pre>
+       * 查询
+       * </pre>
+       *
+       * <code>showTables = 3;</code>
+       */
+      public static final int showTables_VALUE = 3;
 
 
       public final int getNumber() {
@@ -781,6 +814,7 @@ public final class RpcData {
           case 0: return createTable;
           case 1: return dropTable;
           case 2: return modifyTable;
+          case 3: return showTables;
           default: return null;
         }
       }
@@ -4354,7 +4388,7 @@ public final class RpcData {
   static {
     String[] descriptorData = {
       "\n\023rpcExpression.proto\022\034io.jopen.snack.co" +
-      "mmon.protol\032\022protobuf/any.proto\"\325\005\n\003C2S\022" +
+      "mmon.protol\032\022protobuf/any.proto\"\362\005\n\003C2S\022" +
       "(\n\nconditions\030\001 \003(\0132\024.google.protobuf.An" +
       "y\022\"\n\004rows\030\002 \003(\0132\024.google.protobuf.Any\022H\n" +
       "\016operationLevel\030\003 \001(\01620.io.jopen.snack.c" +
@@ -4368,14 +4402,15 @@ public final class RpcData {
       "\n\ttableInfo\030\014 \001(\0132\024.google.protobuf.Any\022" +
       "(\n\nupdateBody\030\r \001(\0132\024.google.protobuf.An" +
       "y\"2\n\016OperationLevel\022\014\n\010database\020\000\022\t\n\005tab" +
-      "le\020\001\022\007\n\003row\020\002\"5\n\013DBOperation\022\014\n\010createDB" +
-      "\020\000\022\n\n\006dropDB\020\001\022\014\n\010modifyDB\020\002\"A\n\016TableOpe" +
-      "ration\022\017\n\013createTable\020\000\022\r\n\tdropTable\020\001\022\017" +
-      "\n\013modifyTable\020\002\">\n\014RowOperation\022\n\n\006SELEC" +
-      "T\020\000\022\n\n\006UPDATE\020\001\022\n\n\006INSERT\020\002\022\n\n\006DELETE\020\004\"" +
-      "c\n\003S2C\022+\n\rcollectionRes\030\007 \003(\0132\024.google.p" +
-      "rotobuf.Any\022\021\n\tupdateRow\030\010 \001(\005\022\016\n\006errMsg" +
-      "\030\t \001(\t\022\014\n\004code\030\n \001(\005B\tB\007RpcDatab\006proto3"
+      "le\020\001\022\007\n\003row\020\002\"B\n\013DBOperation\022\014\n\010createDB" +
+      "\020\000\022\n\n\006dropDB\020\001\022\014\n\010modifyDB\020\002\022\013\n\007showDBs\020" +
+      "\003\"Q\n\016TableOperation\022\017\n\013createTable\020\000\022\r\n\t" +
+      "dropTable\020\001\022\017\n\013modifyTable\020\002\022\016\n\nshowTabl" +
+      "es\020\003\">\n\014RowOperation\022\n\n\006SELECT\020\000\022\n\n\006UPDA" +
+      "TE\020\001\022\n\n\006INSERT\020\002\022\n\n\006DELETE\020\004\"c\n\003S2C\022+\n\rc" +
+      "ollectionRes\030\007 \003(\0132\024.google.protobuf.Any" +
+      "\022\021\n\tupdateRow\030\010 \001(\005\022\016\n\006errMsg\030\t \001(\t\022\014\n\004c" +
+      "ode\030\n \001(\005B\tB\007RpcDatab\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -1,4 +1,4 @@
-package io.jopen.snack.server.tcp;
+package io.jopen.snack.server.operator;
 
 import com.google.common.collect.Lists;
 import com.google.protobuf.Any;

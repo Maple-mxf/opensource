@@ -76,4 +76,8 @@ class DBManagement implements Serializable {
         }
     }
 
+    public final synchronized void dropDatabase(DatabaseInfo databaseInfo) {
+
+    }
+
 }

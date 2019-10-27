@@ -13,8 +13,6 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-import java.io.IOException;
-
 /**
  * 处理客户端的请求
  *
@@ -72,7 +70,7 @@ public class SnackDBTcpServer {
 
     static class ProtoServerHandler extends SimpleChannelInboundHandler<RpcData.C2S> {
         @Override
-        protected void channelRead0(ChannelHandlerContext ctx, RpcData.C2S data) throws IOException {
+        protected void channelRead0(ChannelHandlerContext ctx, RpcData.C2S data) throws Exception {
             // 解析数据  并且进行执行得到结果 写入到流中
             RpcData.S2C response = clientIntentionParser.parse(data);
             ctx.channel().writeAndFlush(response);

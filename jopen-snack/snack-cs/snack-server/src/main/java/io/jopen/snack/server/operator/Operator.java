@@ -1,4 +1,4 @@
-package io.jopen.snack.server.tcp;
+package io.jopen.snack.server.operator;
 
 import com.google.common.collect.Lists;
 import com.google.protobuf.Any;
@@ -11,6 +11,7 @@ import io.jopen.snack.common.serialize.KryoHelper;
 import io.jopen.snack.server.storage.DBManagement;
 import io.jopen.snack.server.storage.Database;
 import io.jopen.snack.server.storage.RowStoreTable;
+import io.jopen.snack.server.tcp.SnackDBTcpServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 abstract class Operator {
 
-    final DBManagement dbManagement = DBManagement.DBA;
+    protected final DBManagement dbManagement = DBManagement.DBA;
 
 
     /**
