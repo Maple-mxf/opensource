@@ -28,6 +28,19 @@ public class SnackExceptionUtil {
         }
     }
 
+
+    public static void checkNull(@NonNull Class<? extends SnackRuntimeException> exType,
+                                 @NonNull String errorMsg, Object... objects) {
+        if (objects == null) {
+            checkNull(objects, exType, errorMsg);
+            return;
+        }
+        for (Object object : objects) {
+            checkNull(object, exType, errorMsg);
+        }
+    }
+
+
     public static <T> void check(@NonNull Predicate<T> predicate,
                                  @Nullable T arg,
                                  @NonNull Class<? extends SnackRuntimeException> exType,

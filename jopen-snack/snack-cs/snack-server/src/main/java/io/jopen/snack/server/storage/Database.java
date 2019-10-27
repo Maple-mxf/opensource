@@ -12,7 +12,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * {@link RowStoreTable}
@@ -101,6 +104,16 @@ class Database implements Serializable {
             return rowStoreTables.get(tableName);
         }
         throw new RuntimeException(String.format("table %s not exist", tableName));
+    }
+
+    public final synchronized boolean dropTable(TableInfo tableInfo) {
+        RowStoreTable storeTable = this.rowStoreTables.remove(tableInfo.getName());
+        return storeTable != null;
+    }
+
+    public final Set<String> showTables() {
+        Set<String> tables = this.rowStoreTables.entrySet().parallelStream().map(Map.Entry::getKey).collect(Collectors.toSet());
+        return tables;
     }
 
     /**
