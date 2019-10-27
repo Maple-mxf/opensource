@@ -1,5 +1,8 @@
 package io.jopen.snack.server.storage;
 
+import io.jopen.snack.common.DatabaseInfo;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,6 +33,10 @@ class DBManagement implements Serializable {
 
     public ConcurrentHashMap<String, Database> getDatabases() {
         return this.databases;
+    }
+
+    public Database getDatabase(@NonNull DatabaseInfo databaseInfo) {
+        return this.databases.get(databaseInfo.getName());
     }
 
 }

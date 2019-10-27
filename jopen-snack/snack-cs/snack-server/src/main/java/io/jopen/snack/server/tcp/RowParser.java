@@ -1,12 +1,18 @@
 package io.jopen.snack.server.tcp;
 
+import com.google.common.collect.Lists;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
+import io.jopen.snack.common.DatabaseInfo;
 import io.jopen.snack.common.IntermediateExpression;
 import io.jopen.snack.common.Row;
+import io.jopen.snack.common.TableInfo;
 import io.jopen.snack.common.exception.SnackRuntimeException;
 import io.jopen.snack.common.protol.RpcData;
+import io.jopen.snack.common.protol.RpcDataUtil;
 import io.jopen.snack.common.serialize.KryoHelper;
+import io.jopen.snack.server.storage.Database;
+import io.jopen.snack.server.storage.RowStoreTable;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -19,7 +25,8 @@ import static io.jopen.snack.common.protol.Message.success;
  * @author maxuefeng
  * @since 2019/10/27
  */
-public class RowParser {
+public final
+class RowParser extends Parser {
 
     private final
     Executor queryExecutor = new QueryExecutor();
@@ -27,14 +34,9 @@ public class RowParser {
     private final
     Executor deleteExecutor = new DeleteExecutor();
 
-    RpcData.S2C parse(RpcData.C2S requestInfo) throws IOException {
+    public RpcData.S2C parse(RpcData.C2S requestInfo) throws IOException {
 
         RpcData.C2S.RowOperation rowOption = requestInfo.getRowOption();
-
-        //
-        if (rowOption.equals(RpcData.C2S.RowOperation.SELECT)) {
-
-        }
 
         switch (rowOption) {
             case UPDATE: {
@@ -42,17 +44,25 @@ public class RowParser {
             }
             case INSERT: {
 
+                List<Row> rows = Lists.newArrayList();
                 List<Any> rowAnyList = requestInfo.getRowsList();
                 for (Any any : rowAnyList) {
-
+                    rows.add(KryoHelper.deserialization(any.getValue().toByteArray(), Row.class));
                 }
+                // 进行保存
+                // dbManagement
+                byte[] dbBytes = requestInfo.getDbInfo().toByteArray();
+                Database database = super.dbManagement.getDatabase(KryoHelper.deserialization(dbBytes, DatabaseInfo.class));
+                RowStoreTable rowStoreTable = database.getRowStoreTable(KryoHelper.deserialization(dbBytes, TableInfo.class));
 
+                // 进行保存  可能会抛出异常
+                int updateRow = rowStoreTable.saveBatch(rows);
 
-                break;
+                return RpcDataUtil.defaultSuccess(updateRow);
             }
             case DELETE: {
                 List<Any> anyList = requestInfo.getConditionsList();
-                int updateRows = 0;
+                int updateRows;
                 if (anyList == null || anyList.size() == 0) {
                     updateRows = queryExecutor.delete(IntermediateExpression.buildFor(Row.class));
                 } else if (anyList.size() == 1) {

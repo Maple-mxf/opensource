@@ -1,6 +1,7 @@
 package io.jopen.snack.server.storage;
 
 import com.google.common.base.Preconditions;
+import io.jopen.snack.common.TableInfo;
 import io.jopen.snack.common.annotation.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -27,6 +28,11 @@ class Database implements Serializable {
         Preconditions.checkNotNull(tableName);
         return this.rowStoreTables.get(tableName);
     }
+
+    public RowStoreTable getRowStoreTable(TableInfo tableInfo) {
+        return this.getRowStoreTable(tableInfo.getName());
+    }
+
 
     public String getDbName() {
         return dbName;
