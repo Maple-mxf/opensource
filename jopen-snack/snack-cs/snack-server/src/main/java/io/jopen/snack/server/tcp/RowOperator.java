@@ -3,19 +3,19 @@ package io.jopen.snack.server.tcp;
 import com.google.common.collect.Lists;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
-import io.jopen.snack.common.DatabaseInfo;
 import io.jopen.snack.common.IntermediateExpression;
 import io.jopen.snack.common.Row;
-import io.jopen.snack.common.TableInfo;
 import io.jopen.snack.common.exception.SnackRuntimeException;
 import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.common.protol.RpcDataUtil;
 import io.jopen.snack.common.serialize.KryoHelper;
-import io.jopen.snack.server.storage.Database;
 import io.jopen.snack.server.storage.RowStoreTable;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -37,7 +37,7 @@ class RowOperator extends Operator {
 
         RpcData.C2S.RowOperation rowOption = requestInfo.getRowOption();
         RowStoreTable targetTable = getTargetTable(requestInfo);
-        
+
         switch (rowOption) {
             case UPDATE: {
                 List<Any> conditionsList = requestInfo.getConditionsList();
@@ -115,10 +115,5 @@ class RowOperator extends Operator {
         }
     }
 
-    private RowStoreTable getTargetTable(RpcData.C2S requestInfo) throws IOException {
-        byte[] dbBytes = requestInfo.getDbInfo().toByteArray();
-        Database database = super.dbManagement.getDatabase(KryoHelper.deserialization(dbBytes, DatabaseInfo.class));
-        return database.getRowStoreTable(KryoHelper.deserialization(dbBytes, TableInfo.class));
-    }
 
 }

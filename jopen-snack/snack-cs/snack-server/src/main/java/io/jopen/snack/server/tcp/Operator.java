@@ -2,12 +2,17 @@ package io.jopen.snack.server.tcp;
 
 import com.google.common.collect.Lists;
 import com.google.protobuf.Any;
+import io.jopen.snack.common.DatabaseInfo;
 import io.jopen.snack.common.IntermediateExpression;
 import io.jopen.snack.common.Row;
+import io.jopen.snack.common.TableInfo;
 import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.common.serialize.KryoHelper;
 import io.jopen.snack.server.storage.DBManagement;
+import io.jopen.snack.server.storage.Database;
+import io.jopen.snack.server.storage.RowStoreTable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,5 +71,11 @@ abstract class Operator {
             }
         }
         return expressions;
+    }
+
+    RowStoreTable getTargetTable(RpcData.C2S requestInfo) throws IOException {
+        byte[] dbBytes = requestInfo.getDbInfo().toByteArray();
+        Database database = dbManagement.securityGetDatabase(KryoHelper.deserialization(dbBytes, DatabaseInfo.class));
+        return database.securityGetTable(KryoHelper.deserialization(dbBytes, TableInfo.class));
     }
 }
