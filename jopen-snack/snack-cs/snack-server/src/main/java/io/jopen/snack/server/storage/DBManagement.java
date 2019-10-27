@@ -6,7 +6,10 @@ import io.jopen.snack.common.exception.SnackRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * {@link SnackDBServer}
@@ -36,10 +39,6 @@ class DBManagement implements Serializable {
         return database;
     }
 
-    @Deprecated
-    public ConcurrentHashMap<String, Database> getDatabases() {
-        return this.databases;
-    }
 
     public Database getDatabase(@NonNull DatabaseInfo databaseInfo) {
         return this.databases.get(databaseInfo.getName());
@@ -76,8 +75,13 @@ class DBManagement implements Serializable {
         }
     }
 
-    public final synchronized void dropDatabase(DatabaseInfo databaseInfo) {
+    public final synchronized boolean dropDatabase(@NonNull DatabaseInfo databaseInfo) {
+        Database database = this.databases.remove(databaseInfo.getName());
+        return database != null;
+    }
 
+    public Set<String> getDatabases(){
+        return this.databases.entrySet().parallelStream().map(Map.Entry::getKey).collect(Collectors.toSet());
     }
 
 }

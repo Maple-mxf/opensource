@@ -27,4 +27,7 @@ class RpcDataUtil {
     public static RpcData.S2C defaultFailure() {
         return RpcData.S2C.newBuilder().setCode(failure.getCode()).setErrMsg(failure.getMsg()).build();
     }
+    public static RpcData.S2C defaultFailure(String msg) {
+        return RpcData.S2C.newBuilder().setCode(failure.getCode()).setErrMsg(msg).build();
+    }
 }

@@ -15,6 +15,7 @@ import java.util.stream.Stream;
  * @author maxuefeng
  * @since 2019/10/24
  */
+@Deprecated
 public final
 class Translator<T> {
 
