@@ -6,10 +6,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import io.jopen.snack.common.ColumnInfo;
-import io.jopen.snack.common.Id;
-import io.jopen.snack.common.IntermediateExpression;
-import io.jopen.snack.common.Row;
+import io.jopen.snack.common.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -227,7 +224,7 @@ class RowStoreTable implements Serializable {
             }).limit(maxAllQueryLimit).collect(Collectors.toList());
         } else {
             //
-            List<IntermediateExpression.Condition> conditions = expression.getConditions();
+            List<Condition> conditions = expression.getConditions();
 
             // map the element
             Stream<Row> rowStream = this.rowsData.rowMap().entrySet().parallelStream()
@@ -243,7 +240,7 @@ class RowStoreTable implements Serializable {
             // filter the element
             matchingResult = rowStream.filter(row -> {
                         boolean match = false;
-                        for (IntermediateExpression.Condition condition : conditions) {
+                        for (Condition condition : conditions) {
                             boolean test = condition.test(row);
                             if (test) {
                                 match = true;

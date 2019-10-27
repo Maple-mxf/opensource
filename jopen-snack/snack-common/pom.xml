@@ -25,7 +25,6 @@
             <version>4.12</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -33,13 +32,11 @@
         </dependency>
 
         <!--序列化支持-->
-        <!-- https://mvnrepository.com/artifact/com.esotericsoftware/kryo-shaded -->
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo-shaded</artifactId>
             <version>4.0.2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
