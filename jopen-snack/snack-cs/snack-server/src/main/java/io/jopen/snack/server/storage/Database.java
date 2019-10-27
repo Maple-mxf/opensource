@@ -1,16 +1,22 @@
 package io.jopen.snack.server.storage;
 
 import com.google.common.base.Preconditions;
+import io.jopen.snack.common.ColumnInfo;
 import io.jopen.snack.common.TableInfo;
 import io.jopen.snack.common.annotation.Util;
+import io.jopen.snack.common.exception.NoPrimaryKeyException;
+import io.jopen.snack.common.exception.SnackExceptionUtil;
+import io.jopen.snack.common.exception.SnackRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * {@link RowStoreTable}
+ * {@link DBManagement}
  *
  * @author maxuefeng
  * @since 2019/10/22
@@ -53,7 +59,33 @@ class Database implements Serializable {
         throw new RuntimeException(String.format("table %s not exist", tableName));
     }
 
-    public final <T> RowStoreTable createTable(@NonNull Class clazz) {
+    public final RowStoreTable createTable(TableInfo tableInfo) {
+        List<ColumnInfo> columnInfoList = tableInfo.getColumnInfoList();
+
+
+        // 检测是否存在主键
+        SnackExceptionUtil.check(input -> {
+            assert input != null;
+            return input.stream().noneMatch(ColumnInfo::getPrimaryKey);
+        }, columnInfoList, NoPrimaryKeyException.class, String.format("create table must has primary key，table info [ %s ] ", tableInfo));
+
+        // 创建表格
+        RowStoreTable rowStoreTable = new RowStoreTable(this, tableInfo.getName(), columnInfoList);
+
+        // 保证原子性
+        synchronized (this) {
+            // 检测重复性
+            SnackExceptionUtil.check(input -> Database.this.rowStoreTables.entrySet().parallelStream().anyMatch(entry -> entry.getKey().equals(input.getName())),
+                    tableInfo,
+                    SnackRuntimeException.class,
+                    String.format("table is exist, table info [ %s ] ", tableInfo));
+            this.rowStoreTables.put(tableInfo.getName(), rowStoreTable);
+        }
+        return rowStoreTable;
+    }
+
+    @Deprecated
+    public final synchronized RowStoreTable createTable(@NonNull Class clazz) {
         // 创建表格的先决条件  至少存在一个主键
         RowStoreTable rowStoreTable = translator.mapJavaBeanToTable(clazz, this);
         this.rowStoreTables.put(Util.entityVal(clazz), rowStoreTable);
@@ -69,5 +101,21 @@ class Database implements Serializable {
             return rowStoreTables.get(tableName);
         }
         throw new RuntimeException(String.format("table %s not exist", tableName));
+    }
+
+    /**
+     * 如果不存在指定table则需要主动创建
+     *
+     * @param tableInfo
+     * @return
+     */
+    @NonNull
+    public final RowStoreTable securityGetTable(@NonNull TableInfo tableInfo) {
+        try {
+            return this.createTable(tableInfo);
+        } catch (SnackRuntimeException ex) {
+            ex.printStackTrace();
+            return this.getRowStoreTable(tableInfo);
+        }
     }
 }

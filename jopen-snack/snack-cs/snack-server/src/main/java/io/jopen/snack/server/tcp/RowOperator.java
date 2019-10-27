@@ -25,13 +25,7 @@ import java.util.*;
  * @since 2019/10/27
  */
 public final
-class RowParser extends Parser {
-
-    private final
-    Executor queryExecutor = new QueryExecutor();
-
-    private final
-    Executor deleteExecutor = new DeleteExecutor();
+class RowOperator extends Operator {
 
     /**
      * @param requestInfo request info
@@ -42,7 +36,8 @@ class RowParser extends Parser {
     public RpcData.S2C parse(RpcData.C2S requestInfo) throws IOException {
 
         RpcData.C2S.RowOperation rowOption = requestInfo.getRowOption();
-
+        RowStoreTable targetTable = getTargetTable(requestInfo);
+        
         switch (rowOption) {
             case UPDATE: {
                 List<Any> conditionsList = requestInfo.getConditionsList();
@@ -54,8 +49,6 @@ class RowParser extends Parser {
                 if (expressions.size() == 0) {
                     return RpcDataUtil.defaultSuccess();
                 }
-
-                RowStoreTable targetTable = getTargetTable(requestInfo);
 
                 if (requestInfo.hasUpdateBody()) {
                     HashMap<String, Object> updateBody = KryoHelper.deserialization(requestInfo.getUpdateBody().getValue().toByteArray(), HashMap.class);
@@ -78,41 +71,39 @@ class RowParser extends Parser {
                     rows.add(KryoHelper.deserialization(any.getValue().toByteArray(), Row.class));
                 }
 
-                // 进行保存
-                RowStoreTable rowStoreTable = getTargetTable(requestInfo);
-
                 // 进行保存  可能会抛出异常
-                int updateRow = rowStoreTable.saveBatch(rows);
+                int updateRow = targetTable.saveBatch(rows);
 
                 return RpcDataUtil.defaultSuccess(updateRow);
             }
             case DELETE: {
                 List<Any> anyList = requestInfo.getConditionsList();
+
                 int updateRows;
                 if (anyList == null || anyList.size() == 0) {
-                    updateRows = queryExecutor.delete(IntermediateExpression.buildFor(Row.class));
+                    updateRows = targetTable.delete(IntermediateExpression.buildFor(Row.class)).size();
                 } else if (anyList.size() == 1) {
-                    IntermediateExpression<Row> expression = queryExecutor.convertByteArray2Expression(anyList.get(0));
-                    updateRows = deleteExecutor.delete(expression);
+                    IntermediateExpression<Row> expression = convertByteArray2Expression(anyList.get(0));
+                    updateRows = targetTable.delete(expression).size();
                 } else {
-                    List<IntermediateExpression<Row>> expressions = deleteExecutor.convertByteArray2Expressions(anyList);
-                    updateRows = deleteExecutor.delete(expressions);
+                    List<IntermediateExpression<Row>> expressions = convertByteArray2Expressions(anyList);
+                    updateRows = targetTable.delete(expressions).size();
                 }
                 return RpcDataUtil.defaultSuccess(updateRows);
             }
             case SELECT: {
 
                 List<Any> anyList = requestInfo.getConditionsList();
-                Collection<Map<String, Object>> collection;
+                Collection<Row> collection;
 
                 if (anyList == null || anyList.size() == 0) {
-                    collection = queryExecutor.query(IntermediateExpression.buildFor(Row.class));
+                    collection = targetTable.query(IntermediateExpression.buildFor(Row.class));
                 } else if (anyList.size() == 1) {
-                    IntermediateExpression<Row> expression = queryExecutor.convertByteArray2Expression(anyList.get(0));
-                    collection = queryExecutor.query(expression);
+                    IntermediateExpression<Row> expression = convertByteArray2Expression(anyList.get(0));
+                    collection = targetTable.query(expression);
                 } else {
-                    List<IntermediateExpression<Row>> expressions = queryExecutor.convertByteArray2Expressions(anyList);
-                    collection = queryExecutor.query(expressions);
+                    List<IntermediateExpression<Row>> expressions = convertByteArray2Expressions(anyList);
+                    collection = targetTable.query(expressions);
                 }
 
                 Any any = Any.newBuilder().setValue(ByteString.copyFrom(KryoHelper.serialization(collection))).build();

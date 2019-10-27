@@ -1,9 +1,9 @@
 package io.jopen.snack.common.exception;
 
+import com.google.common.base.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.function.Predicate;
 
 /**
  * @author maxuefeng
@@ -28,10 +28,10 @@ public class SnackExceptionUtil {
         }
     }
 
-    public static void check(@NonNull Predicate<Object> predicate,
-                             @Nullable Object arg,
-                             @NonNull Class<? extends SnackRuntimeException> exType,
-                             @NonNull String errorMsg) {
+    public static <T> void check(@NonNull Predicate<T> predicate,
+                                 @Nullable T arg,
+                                 @NonNull Class<? extends SnackRuntimeException> exType,
+                                 @NonNull String errorMsg) {
         boolean test = predicate.test(arg);
         if (!test) {
             try {

@@ -45,6 +45,13 @@ class RowStoreTable implements Serializable {
     // currentDatabase
     private transient Database database;
 
+    /**
+     * @param database    db obj
+     * @param tableName   table name
+     * @param columnInfos column info
+     * @see TableInfo
+     */
+    @Deprecated
     RowStoreTable(Database database, String tableName, List<ColumnInfo> columnInfos) {
         this.database = database;
         this.tableName = tableName;
@@ -182,6 +189,16 @@ class RowStoreTable implements Serializable {
      */
     @NonNull
     public List<Row> query(@Nullable IntermediateExpression<Row> expression) {
+        return matching(expression);
+    }
+
+    /**
+     * 查询
+     *
+     * @see IntermediateExpression
+     */
+    @NonNull
+    public List<Row> query(@Nullable List<IntermediateExpression<Row>> expression) {
         return matching(expression);
     }
 

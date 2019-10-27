@@ -4,25 +4,30 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.Any;
 import io.jopen.snack.common.IntermediateExpression;
 import io.jopen.snack.common.Row;
+import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.common.serialize.KryoHelper;
 import io.jopen.snack.server.storage.DBManagement;
-import io.jopen.snack.server.storage.SnackDBServer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
- * {@link io.jopen.snack.server.storage.RowStoreTable}
+ * 解析器顶级父类
  *
  * @author maxuefeng
- * @since 2019/10/26
+ * @since 2019/10/27
  */
-public interface Executor {
+abstract class Operator {
 
-    SnackDBServer SNACK_DB_TCP_SERVER = SnackDBServer.DB_DATABASE_SYSTEM;
-    DBManagement DB_MANAGEMENT = DBManagement.DBA;
+    final DBManagement dbManagement = DBManagement.DBA;
+
+
+    /**
+     * @param requestInfo request info
+     * @return response info
+     * @see SnackDBTcpServer
+     */
+    public abstract RpcData.S2C parse(RpcData.C2S requestInfo) throws Exception;
 
     /**
      * 转换数据
@@ -30,7 +35,7 @@ public interface Executor {
      * @param any
      * @return
      */
-    default IntermediateExpression<Row> convertByteArray2Expression(Any any) {
+    IntermediateExpression<Row> convertByteArray2Expression(Any any) {
 
         if (any == null) {
             return IntermediateExpression.buildFor(Row.class);
@@ -44,7 +49,7 @@ public interface Executor {
         }
     }
 
-    default List<IntermediateExpression<Row>> convertByteArray2Expressions(List<Any> anyList) {
+    List<IntermediateExpression<Row>> convertByteArray2Expressions(List<Any> anyList) {
 
         if (anyList == null || anyList.size() == 0) {
             return Lists.newArrayList(IntermediateExpression.buildFor(Row.class));
@@ -62,21 +67,4 @@ public interface Executor {
         }
         return expressions;
     }
-
-    default Collection<Map<String, Object>> query(IntermediateExpression<Row> expression) {
-        return null;
-    }
-
-    default Collection<Map<String, Object>> query(List<IntermediateExpression<Row>> expressions) {
-        return null;
-    }
-
-    default int delete(IntermediateExpression<Row> expression) {
-        return 0;
-    }
-
-    default int delete(List<IntermediateExpression<Row>> expressions) {
-        return 0;
-    }
-
 }
