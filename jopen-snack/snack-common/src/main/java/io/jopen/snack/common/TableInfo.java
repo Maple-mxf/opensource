@@ -10,7 +10,8 @@ import java.util.List;
  * @author maxuefeng
  * @since 2019/10/27
  */
-public final class TableInfo extends DBObject {
+public final
+class TableInfo extends DBObject {
 
     // table primary key
     private Id id;
