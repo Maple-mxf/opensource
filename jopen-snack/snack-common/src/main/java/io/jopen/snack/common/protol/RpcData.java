@@ -235,6 +235,33 @@ public final class RpcData {
      * <code>.google.protobuf.Any tableInfo = 12;</code>
      */
     com.google.protobuf.AnyOrBuilder getTableInfoOrBuilder();
+
+    /**
+     * <pre>
+     * 要更新的数据  约定数据结构为Map
+     * </pre>
+     *
+     * <code>.google.protobuf.Any updateBody = 13;</code>
+     * @return Whether the updateBody field is set.
+     */
+    boolean hasUpdateBody();
+    /**
+     * <pre>
+     * 要更新的数据  约定数据结构为Map
+     * </pre>
+     *
+     * <code>.google.protobuf.Any updateBody = 13;</code>
+     * @return The updateBody.
+     */
+    com.google.protobuf.Any getUpdateBody();
+    /**
+     * <pre>
+     * 要更新的数据  约定数据结构为Map
+     * </pre>
+     *
+     * <code>.google.protobuf.Any updateBody = 13;</code>
+     */
+    com.google.protobuf.AnyOrBuilder getUpdateBodyOrBuilder();
   }
   /**
    * Protobuf type {@code io.jopen.snack.common.protol.C2S}
@@ -352,6 +379,19 @@ public final class RpcData {
               if (subBuilder != null) {
                 subBuilder.mergeFrom(tableInfo_);
                 tableInfo_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 106: {
+              com.google.protobuf.Any.Builder subBuilder = null;
+              if (updateBody_ != null) {
+                subBuilder = updateBody_.toBuilder();
+              }
+              updateBody_ = input.readMessage(com.google.protobuf.Any.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(updateBody_);
+                updateBody_ = subBuilder.buildPartial();
               }
 
               break;
@@ -1207,6 +1247,41 @@ public final class RpcData {
       return getTableInfo();
     }
 
+    public static final int UPDATEBODY_FIELD_NUMBER = 13;
+    private com.google.protobuf.Any updateBody_;
+    /**
+     * <pre>
+     * 要更新的数据  约定数据结构为Map
+     * </pre>
+     *
+     * <code>.google.protobuf.Any updateBody = 13;</code>
+     * @return Whether the updateBody field is set.
+     */
+    public boolean hasUpdateBody() {
+      return updateBody_ != null;
+    }
+    /**
+     * <pre>
+     * 要更新的数据  约定数据结构为Map
+     * </pre>
+     *
+     * <code>.google.protobuf.Any updateBody = 13;</code>
+     * @return The updateBody.
+     */
+    public com.google.protobuf.Any getUpdateBody() {
+      return updateBody_ == null ? com.google.protobuf.Any.getDefaultInstance() : updateBody_;
+    }
+    /**
+     * <pre>
+     * 要更新的数据  约定数据结构为Map
+     * </pre>
+     *
+     * <code>.google.protobuf.Any updateBody = 13;</code>
+     */
+    public com.google.protobuf.AnyOrBuilder getUpdateBodyOrBuilder() {
+      return getUpdateBody();
+    }
+
     private byte memoizedIsInitialized = -1;
     @Override
     public final boolean isInitialized() {
@@ -1244,6 +1319,9 @@ public final class RpcData {
       }
       if (tableInfo_ != null) {
         output.writeMessage(12, getTableInfo());
+      }
+      if (updateBody_ != null) {
+        output.writeMessage(13, getUpdateBody());
       }
       unknownFields.writeTo(output);
     }
@@ -1286,6 +1364,10 @@ public final class RpcData {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(12, getTableInfo());
       }
+      if (updateBody_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(13, getUpdateBody());
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1318,6 +1400,11 @@ public final class RpcData {
       if (hasTableInfo()) {
         if (!getTableInfo()
             .equals(other.getTableInfo())) return false;
+      }
+      if (hasUpdateBody() != other.hasUpdateBody()) return false;
+      if (hasUpdateBody()) {
+        if (!getUpdateBody()
+            .equals(other.getUpdateBody())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -1353,6 +1440,10 @@ public final class RpcData {
       if (hasTableInfo()) {
         hash = (37 * hash) + TABLEINFO_FIELD_NUMBER;
         hash = (53 * hash) + getTableInfo().hashCode();
+      }
+      if (hasUpdateBody()) {
+        hash = (37 * hash) + UPDATEBODY_FIELD_NUMBER;
+        hash = (53 * hash) + getUpdateBody().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1521,6 +1612,12 @@ public final class RpcData {
           tableInfo_ = null;
           tableInfoBuilder_ = null;
         }
+        if (updateBodyBuilder_ == null) {
+          updateBody_ = null;
+        } else {
+          updateBody_ = null;
+          updateBodyBuilder_ = null;
+        }
         return this;
       }
 
@@ -1579,6 +1676,11 @@ public final class RpcData {
           result.tableInfo_ = tableInfo_;
         } else {
           result.tableInfo_ = tableInfoBuilder_.build();
+        }
+        if (updateBodyBuilder_ == null) {
+          result.updateBody_ = updateBody_;
+        } else {
+          result.updateBody_ = updateBodyBuilder_.build();
         }
         onBuilt();
         return result;
@@ -1697,6 +1799,9 @@ public final class RpcData {
         }
         if (other.hasTableInfo()) {
           mergeTableInfo(other.getTableInfo());
+        }
+        if (other.hasUpdateBody()) {
+          mergeUpdateBody(other.getUpdateBody());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2949,6 +3054,161 @@ public final class RpcData {
         }
         return tableInfoBuilder_;
       }
+
+      private com.google.protobuf.Any updateBody_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder> updateBodyBuilder_;
+      /**
+       * <pre>
+       * 要更新的数据  约定数据结构为Map
+       * </pre>
+       *
+       * <code>.google.protobuf.Any updateBody = 13;</code>
+       * @return Whether the updateBody field is set.
+       */
+      public boolean hasUpdateBody() {
+        return updateBodyBuilder_ != null || updateBody_ != null;
+      }
+      /**
+       * <pre>
+       * 要更新的数据  约定数据结构为Map
+       * </pre>
+       *
+       * <code>.google.protobuf.Any updateBody = 13;</code>
+       * @return The updateBody.
+       */
+      public com.google.protobuf.Any getUpdateBody() {
+        if (updateBodyBuilder_ == null) {
+          return updateBody_ == null ? com.google.protobuf.Any.getDefaultInstance() : updateBody_;
+        } else {
+          return updateBodyBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * 要更新的数据  约定数据结构为Map
+       * </pre>
+       *
+       * <code>.google.protobuf.Any updateBody = 13;</code>
+       */
+      public Builder setUpdateBody(com.google.protobuf.Any value) {
+        if (updateBodyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          updateBody_ = value;
+          onChanged();
+        } else {
+          updateBodyBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 要更新的数据  约定数据结构为Map
+       * </pre>
+       *
+       * <code>.google.protobuf.Any updateBody = 13;</code>
+       */
+      public Builder setUpdateBody(
+          com.google.protobuf.Any.Builder builderForValue) {
+        if (updateBodyBuilder_ == null) {
+          updateBody_ = builderForValue.build();
+          onChanged();
+        } else {
+          updateBodyBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 要更新的数据  约定数据结构为Map
+       * </pre>
+       *
+       * <code>.google.protobuf.Any updateBody = 13;</code>
+       */
+      public Builder mergeUpdateBody(com.google.protobuf.Any value) {
+        if (updateBodyBuilder_ == null) {
+          if (updateBody_ != null) {
+            updateBody_ =
+              com.google.protobuf.Any.newBuilder(updateBody_).mergeFrom(value).buildPartial();
+          } else {
+            updateBody_ = value;
+          }
+          onChanged();
+        } else {
+          updateBodyBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 要更新的数据  约定数据结构为Map
+       * </pre>
+       *
+       * <code>.google.protobuf.Any updateBody = 13;</code>
+       */
+      public Builder clearUpdateBody() {
+        if (updateBodyBuilder_ == null) {
+          updateBody_ = null;
+          onChanged();
+        } else {
+          updateBody_ = null;
+          updateBodyBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 要更新的数据  约定数据结构为Map
+       * </pre>
+       *
+       * <code>.google.protobuf.Any updateBody = 13;</code>
+       */
+      public com.google.protobuf.Any.Builder getUpdateBodyBuilder() {
+        
+        onChanged();
+        return getUpdateBodyFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * 要更新的数据  约定数据结构为Map
+       * </pre>
+       *
+       * <code>.google.protobuf.Any updateBody = 13;</code>
+       */
+      public com.google.protobuf.AnyOrBuilder getUpdateBodyOrBuilder() {
+        if (updateBodyBuilder_ != null) {
+          return updateBodyBuilder_.getMessageOrBuilder();
+        } else {
+          return updateBody_ == null ?
+              com.google.protobuf.Any.getDefaultInstance() : updateBody_;
+        }
+      }
+      /**
+       * <pre>
+       * 要更新的数据  约定数据结构为Map
+       * </pre>
+       *
+       * <code>.google.protobuf.Any updateBody = 13;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder> 
+          getUpdateBodyFieldBuilder() {
+        if (updateBodyBuilder_ == null) {
+          updateBodyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.google.protobuf.Any, com.google.protobuf.Any.Builder, com.google.protobuf.AnyOrBuilder>(
+                  getUpdateBody(),
+                  getParentForChildren(),
+                  isClean());
+          updateBody_ = null;
+        }
+        return updateBodyBuilder_;
+      }
       @Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -4094,7 +4354,7 @@ public final class RpcData {
   static {
     String[] descriptorData = {
       "\n\023rpcExpression.proto\022\034io.jopen.snack.co" +
-      "mmon.protol\032\022protobuf/any.proto\"\253\005\n\003C2S\022" +
+      "mmon.protol\032\022protobuf/any.proto\"\325\005\n\003C2S\022" +
       "(\n\nconditions\030\001 \003(\0132\024.google.protobuf.An" +
       "y\022\"\n\004rows\030\002 \003(\0132\024.google.protobuf.Any\022H\n" +
       "\016operationLevel\030\003 \001(\01620.io.jopen.snack.c" +
@@ -4105,16 +4365,17 @@ public final class RpcData {
       "ableOperation\022A\n\trowOption\030\006 \001(\0162..io.jo" +
       "pen.snack.common.protol.C2S.RowOperation" +
       "\022$\n\006dbInfo\030\013 \001(\0132\024.google.protobuf.Any\022\'" +
-      "\n\ttableInfo\030\014 \001(\0132\024.google.protobuf.Any\"" +
-      "2\n\016OperationLevel\022\014\n\010database\020\000\022\t\n\005table" +
-      "\020\001\022\007\n\003row\020\002\"5\n\013DBOperation\022\014\n\010createDB\020\000" +
-      "\022\n\n\006dropDB\020\001\022\014\n\010modifyDB\020\002\"A\n\016TableOpera" +
-      "tion\022\017\n\013createTable\020\000\022\r\n\tdropTable\020\001\022\017\n\013" +
-      "modifyTable\020\002\">\n\014RowOperation\022\n\n\006SELECT\020" +
-      "\000\022\n\n\006UPDATE\020\001\022\n\n\006INSERT\020\002\022\n\n\006DELETE\020\004\"c\n" +
-      "\003S2C\022+\n\rcollectionRes\030\007 \003(\0132\024.google.pro" +
-      "tobuf.Any\022\021\n\tupdateRow\030\010 \001(\005\022\016\n\006errMsg\030\t" +
-      " \001(\t\022\014\n\004code\030\n \001(\005B\tB\007RpcDatab\006proto3"
+      "\n\ttableInfo\030\014 \001(\0132\024.google.protobuf.Any\022" +
+      "(\n\nupdateBody\030\r \001(\0132\024.google.protobuf.An" +
+      "y\"2\n\016OperationLevel\022\014\n\010database\020\000\022\t\n\005tab" +
+      "le\020\001\022\007\n\003row\020\002\"5\n\013DBOperation\022\014\n\010createDB" +
+      "\020\000\022\n\n\006dropDB\020\001\022\014\n\010modifyDB\020\002\"A\n\016TableOpe" +
+      "ration\022\017\n\013createTable\020\000\022\r\n\tdropTable\020\001\022\017" +
+      "\n\013modifyTable\020\002\">\n\014RowOperation\022\n\n\006SELEC" +
+      "T\020\000\022\n\n\006UPDATE\020\001\022\n\n\006INSERT\020\002\022\n\n\006DELETE\020\004\"" +
+      "c\n\003S2C\022+\n\rcollectionRes\030\007 \003(\0132\024.google.p" +
+      "rotobuf.Any\022\021\n\tupdateRow\030\010 \001(\005\022\016\n\006errMsg" +
+      "\030\t \001(\t\022\014\n\004code\030\n \001(\005B\tB\007RpcDatab\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4126,7 +4387,7 @@ public final class RpcData {
     internal_static_io_jopen_snack_common_protol_C2S_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_io_jopen_snack_common_protol_C2S_descriptor,
-        new String[] { "Conditions", "Rows", "OperationLevel", "DbOperation", "TableOperation", "RowOption", "DbInfo", "TableInfo", });
+        new String[] { "Conditions", "Rows", "OperationLevel", "DbOperation", "TableOperation", "RowOption", "DbInfo", "TableInfo", "UpdateBody", });
     internal_static_io_jopen_snack_common_protol_S2C_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_io_jopen_snack_common_protol_S2C_fieldAccessorTable = new

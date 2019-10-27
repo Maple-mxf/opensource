@@ -1,5 +1,7 @@
 package io.jopen.snack.common.protol;
 
+import com.google.protobuf.Any;
+
 import static io.jopen.snack.common.protol.Message.failure;
 import static io.jopen.snack.common.protol.Message.success;
 
@@ -16,6 +18,10 @@ class RpcDataUtil {
 
     public static RpcData.S2C defaultSuccess(int updateRow) {
         return RpcData.S2C.newBuilder().setCode(success.getCode()).setErrMsg(success.getMsg()).setUpdateRow(updateRow).build();
+    }
+
+    public static RpcData.S2C defaultSuccess(Any any) {
+        return RpcData.S2C.newBuilder().setCode(success.getCode()).setErrMsg(success.getMsg()).setCollectionRes(0,any).build();
     }
 
     public static RpcData.S2C defaultFailure() {

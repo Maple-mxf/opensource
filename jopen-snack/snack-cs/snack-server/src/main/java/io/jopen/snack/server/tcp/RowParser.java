@@ -15,13 +15,12 @@ import io.jopen.snack.server.storage.Database;
 import io.jopen.snack.server.storage.RowStoreTable;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static io.jopen.snack.common.protol.Message.success;
 
 /**
+ * {@link RowStoreTable}
+ *
  * @author maxuefeng
  * @since 2019/10/27
  */
@@ -34,13 +33,42 @@ class RowParser extends Parser {
     private final
     Executor deleteExecutor = new DeleteExecutor();
 
+    /**
+     * @param requestInfo request info
+     * @return
+     * @throws IOException
+     * @see HashMap
+     */
     public RpcData.S2C parse(RpcData.C2S requestInfo) throws IOException {
 
         RpcData.C2S.RowOperation rowOption = requestInfo.getRowOption();
 
         switch (rowOption) {
             case UPDATE: {
-                break;
+                List<Any> conditionsList = requestInfo.getConditionsList();
+                List<IntermediateExpression<Row>> expressions = new ArrayList<>();
+                for (Any any : conditionsList) {
+                    expressions.add(KryoHelper.deserialization(any.getTypeUrlBytes().toByteArray(), IntermediateExpression.class));
+                }
+
+                if (expressions.size() == 0) {
+                    return RpcDataUtil.defaultSuccess();
+                }
+
+                RowStoreTable targetTable = getTargetTable(requestInfo);
+
+                if (requestInfo.hasUpdateBody()) {
+                    HashMap<String, Object> updateBody = KryoHelper.deserialization(requestInfo.getUpdateBody().getValue().toByteArray(), HashMap.class);
+                    int updateRows;
+                    if (expressions.size() == 1) {
+                        updateRows = targetTable.update(expressions.get(0), updateBody).size();
+                    } else {
+                        updateRows = targetTable.update(expressions, updateBody).size();
+                    }
+                    return RpcDataUtil.defaultSuccess(updateRows);
+                } else {
+                    return RpcDataUtil.defaultSuccess();
+                }
             }
             case INSERT: {
 
@@ -49,11 +77,9 @@ class RowParser extends Parser {
                 for (Any any : rowAnyList) {
                     rows.add(KryoHelper.deserialization(any.getValue().toByteArray(), Row.class));
                 }
+
                 // 进行保存
-                // dbManagement
-                byte[] dbBytes = requestInfo.getDbInfo().toByteArray();
-                Database database = super.dbManagement.getDatabase(KryoHelper.deserialization(dbBytes, DatabaseInfo.class));
-                RowStoreTable rowStoreTable = database.getRowStoreTable(KryoHelper.deserialization(dbBytes, TableInfo.class));
+                RowStoreTable rowStoreTable = getTargetTable(requestInfo);
 
                 // 进行保存  可能会抛出异常
                 int updateRow = rowStoreTable.saveBatch(rows);
@@ -72,7 +98,7 @@ class RowParser extends Parser {
                     List<IntermediateExpression<Row>> expressions = deleteExecutor.convertByteArray2Expressions(anyList);
                     updateRows = deleteExecutor.delete(expressions);
                 }
-                return RpcData.S2C.newBuilder().setCode(success.getCode()).setErrMsg(success.getMsg()).setUpdateRow(updateRows).build();
+                return RpcDataUtil.defaultSuccess(updateRows);
             }
             case SELECT: {
 
@@ -89,15 +115,19 @@ class RowParser extends Parser {
                     collection = queryExecutor.query(expressions);
                 }
 
-                Any.Builder value = Any.newBuilder().setValue(ByteString.copyFrom(KryoHelper.serialization(collection)));
-                return RpcData.S2C.newBuilder().setCode(success.getCode()).setErrMsg(success.getMsg()).setCollectionRes(0, value).setUpdateRow(0).build();
-
-                break;
+                Any any = Any.newBuilder().setValue(ByteString.copyFrom(KryoHelper.serialization(collection))).build();
+                return RpcDataUtil.defaultSuccess(any);
             }
             default: {
                 throw new SnackRuntimeException("unknown exception,cause rowOption is not match all option");
             }
         }
+    }
+
+    private RowStoreTable getTargetTable(RpcData.C2S requestInfo) throws IOException {
+        byte[] dbBytes = requestInfo.getDbInfo().toByteArray();
+        Database database = super.dbManagement.getDatabase(KryoHelper.deserialization(dbBytes, DatabaseInfo.class));
+        return database.getRowStoreTable(KryoHelper.deserialization(dbBytes, TableInfo.class));
     }
 
 }
