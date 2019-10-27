@@ -30,9 +30,16 @@ class ClientIntentionParser1 {
 
         if (RpcData.C2S.OperationLevel.database.equals(operationLevel)) {
 
+            RpcData.C2S.DBOperation dbOperation = requestInfo.getDbOperation();
+
+
+
         } else if (RpcData.C2S.OperationLevel.table.equals(operationLevel)) {
 
         } else if (RpcData.C2S.OperationLevel.row.equals(operationLevel)) {
+
+            RpcData.C2S.RowOperation rowOption = requestInfo.getRowOption();
+
 
         } else {
             throw new SnackRuntimeException("Unknow exception");
@@ -41,5 +48,7 @@ class ClientIntentionParser1 {
 
         return null;
     }
+
+
 
 }
