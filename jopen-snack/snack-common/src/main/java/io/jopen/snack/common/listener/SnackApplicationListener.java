@@ -27,8 +27,8 @@ public abstract class SnackApplicationListener {
                                     .build()));
 
 
-    final void submit(@NonNull Callable task,
-                      @NonNull FutureCallback<Boolean> callback) {
+    protected final void submit(@NonNull Callable task,
+                             @NonNull FutureCallback<Boolean> callback) {
 
         // 提交任务
         ListenableFuture future = this.service.submit(task);
@@ -37,5 +37,5 @@ public abstract class SnackApplicationListener {
     }
 
     // 把事件对象作为参数
-    abstract void handEvent(@NonNull SnackApplicationEvent event);
+    public abstract void handEvent(@NonNull SnackApplicationEvent event);
 }

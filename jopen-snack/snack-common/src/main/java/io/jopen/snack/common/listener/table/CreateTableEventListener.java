@@ -1,8 +1,9 @@
-package io.jopen.snack.common.listener;
+package io.jopen.snack.common.listener.table;
 
 import com.google.common.util.concurrent.FutureCallback;
 import io.jopen.snack.common.event.CreateTableEvent;
 import io.jopen.snack.common.event.SnackApplicationEvent;
+import io.jopen.snack.common.listener.SnackApplicationListener;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

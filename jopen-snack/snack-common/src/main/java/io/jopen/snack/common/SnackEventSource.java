@@ -1,5 +1,6 @@
-package io.jopen.snack.common.event;
+package io.jopen.snack.common;
 
+import io.jopen.snack.common.event.SnackApplicationEvent;
 import io.jopen.snack.common.listener.SnackApplicationListener;
 
 import java.util.Collection;
@@ -15,7 +16,7 @@ public class SnackEventSource {
     private Collection<SnackApplicationListener> listeners = new CopyOnWriteArraySet<>();
 
     //注册监听器
-    public void addEventListener(SnackApplicationListener listener) {
+    public void registerListener(SnackApplicationListener listener) {
         this.listeners.add(listener);
     }
 
@@ -29,7 +30,7 @@ public class SnackEventSource {
      *
      * @param event 触发条件
      */
-    protected void fireEvent(SnackApplicationEvent event) {
+    public void fireEvent(SnackApplicationEvent event) {
         notifyListener(event);
     }
 

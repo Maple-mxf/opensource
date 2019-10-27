@@ -1,6 +1,7 @@
 package io.jopen.snack.common.event;
 
-import io.jopen.snack.common.listener.CreateTableEventListener;
+import io.jopen.snack.common.SnackEventSource;
+import io.jopen.snack.common.listener.table.CreateTableEventListener;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ public class EventTest {
 
     @Before
     public void before() {
-        snackEventSource.addEventListener(createTableEventListener);
+        snackEventSource.registerListener(createTableEventListener);
     }
 
     @Test

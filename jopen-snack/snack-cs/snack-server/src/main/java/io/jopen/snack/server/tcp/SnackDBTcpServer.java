@@ -1,5 +1,14 @@
 package io.jopen.snack.server.tcp;
 
+import io.jopen.snack.common.SnackEventSource;
+import io.jopen.snack.common.listener.db.CreateDatabaseListener;
+import io.jopen.snack.common.listener.db.DropDatabaseListener;
+import io.jopen.snack.common.listener.row.DeleteRowListener;
+import io.jopen.snack.common.listener.row.InsertRowListener;
+import io.jopen.snack.common.listener.row.UpdateRowListener;
+import io.jopen.snack.common.listener.table.CreateTableEventListener;
+import io.jopen.snack.common.listener.table.DropTableListener;
+import io.jopen.snack.common.listener.table.ModifyTableListener;
 import io.jopen.snack.common.protol.RpcData;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -24,7 +33,6 @@ public class SnackDBTcpServer {
     private static ClientIntentionParser clientIntentionParser = new ClientIntentionParser();
 
     public static void main(String[] args) {
-
         //
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup wokerGroup = new NioEventLoopGroup();
@@ -75,5 +83,24 @@ public class SnackDBTcpServer {
             RpcData.S2C response = clientIntentionParser.parse(data);
             ctx.channel().writeAndFlush(response);
         }
+    }
+
+    private final static SnackEventSource eventSource = new SnackEventSource();
+
+    static {
+        // 表格监听器
+        eventSource.registerListener(new CreateTableEventListener());
+        eventSource.registerListener(new DropTableListener());
+        eventSource.registerListener(new ModifyTableListener());
+
+
+        // 数据库监听器
+        eventSource.registerListener(new CreateDatabaseListener());
+        eventSource.registerListener(new DropDatabaseListener());
+
+        // row元数据监听器
+        eventSource.registerListener(new UpdateRowListener());
+        eventSource.registerListener(new InsertRowListener());
+        eventSource.registerListener(new DeleteRowListener());
     }
 }
