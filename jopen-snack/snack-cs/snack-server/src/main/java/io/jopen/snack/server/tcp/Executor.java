@@ -5,6 +5,8 @@ import com.google.protobuf.Any;
 import io.jopen.snack.common.IntermediateExpression;
 import io.jopen.snack.common.Row;
 import io.jopen.snack.common.serialize.KryoHelper;
+import io.jopen.snack.server.storage.DBManagement;
+import io.jopen.snack.server.storage.SnackDBServer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +20,9 @@ import java.util.Map;
  * @since 2019/10/26
  */
 public interface Executor {
+
+    SnackDBServer SNACK_DB_TCP_SERVER = SnackDBServer.DB_DATABASE_SYSTEM;
+    DBManagement DB_MANAGEMENT = DBManagement.DBA;
 
     /**
      * 转换数据
@@ -65,4 +70,13 @@ public interface Executor {
     default Collection<Map<String, Object>> query(List<IntermediateExpression<Row>> expressions) {
         return null;
     }
+
+    default int delete(IntermediateExpression<Row> expression) {
+        return 0;
+    }
+
+    default int delete(List<IntermediateExpression<Row>> expressions) {
+        return 0;
+    }
+
 }

@@ -1,6 +1,6 @@
 package io.jopen.snack.embed.server;
 
-import io.jopen.snack.common.ColumnType;
+import io.jopen.snack.common.ColumnInfo;
 import io.jopen.snack.common.annotation.PrimaryKey;
 import io.jopen.snack.common.annotation.Property;
 import io.jopen.snack.common.annotation.Util;
@@ -30,7 +30,7 @@ class Translator<T> {
             throw new RuntimeException(String.format("class %s has no property", clazz.getName()));
         }
 
-        List<ColumnType> columnTypes = Stream.of(fields).map(field -> {
+        List<ColumnInfo> columnInfos = Stream.of(fields).map(field -> {
             PrimaryKey pkAnno = field.getDeclaredAnnotation(PrimaryKey.class);
             Property proAnno = field.getDeclaredAnnotation(Property.class);
             boolean pk = false;
@@ -41,9 +41,9 @@ class Translator<T> {
             } else if (proAnno != null) {
                 columnName = proAnno.value();
             }
-            return new ColumnType(field.getType(), columnName, pk);
+            return new ColumnInfo(field.getType(), columnName, pk);
         }).collect(Collectors.toList());
-        return new RowStoreTable(database, Util.entityVal(clazz), columnTypes);
+        return new RowStoreTable(database, Util.entityVal(clazz), columnInfos);
     }
 
 }

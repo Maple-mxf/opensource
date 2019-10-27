@@ -14,18 +14,18 @@ import java.util.concurrent.Executors;
  * @since 2019/10/23
  */
 public final
-class LeopardServer extends AbstractService {
+class SnackDBServer extends AbstractService {
 
     private final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(50));
 
     // 任务队列
     private final BlockingQueue<Task<Object>> taskBlockingQueue = Queues.newLinkedBlockingQueue();
 
-    private LeopardServer() {
+    private SnackDBServer() {
     }
 
     // 初始化
-    public static final LeopardServer DB_DATABASE_SYSTEM = new LeopardServer();
+    public static final SnackDBServer DB_DATABASE_SYSTEM = new SnackDBServer();
 
     /**
      * 同步启动方式
@@ -55,7 +55,7 @@ class LeopardServer extends AbstractService {
             while (true) {
                 try {
                     Task<Object> task = taskBlockingQueue.take();
-                    ListenableFuture<Object> future = LeopardServer.this.service.submit(task);
+                    ListenableFuture<Object> future = SnackDBServer.this.service.submit(task);
                     // 添加任务完成回调函数
                     Futures.addCallback(future, task.completeCallback(), service);
                 } catch (InterruptedException ignored) {

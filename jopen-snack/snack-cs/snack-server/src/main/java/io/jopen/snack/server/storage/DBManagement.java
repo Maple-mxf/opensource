@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * {@link LeopardServer}
+ * {@link SnackDBServer}
  *
  * @author maxuefeng
  * @since 2019/10/23

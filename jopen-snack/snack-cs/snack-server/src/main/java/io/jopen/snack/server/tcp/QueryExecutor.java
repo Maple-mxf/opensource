@@ -12,12 +12,11 @@ import java.util.Map;
  */
 public class QueryExecutor implements Executor {
 
-    void execute(){}
+    void execute() {
+    }
 
     @Override
     public Collection<Map<String, Object>> query(IntermediateExpression<Row> expression) {
-
-
         return null;
     }
 }

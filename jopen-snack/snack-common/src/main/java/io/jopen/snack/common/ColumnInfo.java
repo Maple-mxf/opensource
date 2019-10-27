@@ -7,7 +7,7 @@ import com.google.common.base.Preconditions;
  * @since 2019/10/24
  */
 public final
-class ColumnType {
+class ColumnInfo {
 
     // 对应的java数据类型
     private Class javaType;
@@ -18,11 +18,11 @@ class ColumnType {
     // 是否为主键
     private Boolean primaryKey;
 
-    ColumnType(Class javaType, String columnName) {
+    ColumnInfo(Class javaType, String columnName) {
         this(javaType, columnName, false);
     }
 
-    public ColumnType(Class javaType, String columnName, Boolean primaryKey) {
+    public ColumnInfo(Class javaType, String columnName, Boolean primaryKey) {
         Preconditions.checkNotNull(javaType);
         Preconditions.checkNotNull(columnName);
         Preconditions.checkNotNull(primaryKey);

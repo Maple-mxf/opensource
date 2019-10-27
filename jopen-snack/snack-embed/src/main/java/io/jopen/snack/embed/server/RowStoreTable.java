@@ -6,7 +6,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import io.jopen.snack.common.ColumnType;
+import io.jopen.snack.common.ColumnInfo;
 import io.jopen.snack.common.Id;
 import io.jopen.snack.common.IntermediateExpression;
 import io.jopen.snack.common.Row;
@@ -43,15 +43,15 @@ class RowStoreTable implements Serializable {
     private String tableName;
 
     // 列的属性
-    private List<ColumnType> columnTypes;
+    private List<ColumnInfo> columnInfos;
 
     // currentDatabase
     private transient Database database;
 
-    RowStoreTable(Database database, String tableName, List<ColumnType> columnTypes) {
+    RowStoreTable(Database database, String tableName, List<ColumnInfo> columnInfos) {
         this.database = database;
         this.tableName = tableName;
-        this.columnTypes = columnTypes;
+        this.columnInfos = columnInfos;
     }
 
 
@@ -88,16 +88,16 @@ class RowStoreTable implements Serializable {
         }
 
         // 检测主键
-        List<ColumnType> primaryKeyColumnTypes = RowStoreTable.this.columnTypes.parallelStream()
-                .filter(ColumnType::getPrimaryKey).collect(Collectors.toList());
+        List<ColumnInfo> primaryKeyColumnInfos = RowStoreTable.this.columnInfos.parallelStream()
+                .filter(ColumnInfo::getPrimaryKey).collect(Collectors.toList());
 
         // 检测大小
-        if (primaryKeyColumnTypes.size() != primaryKey.size()) {
+        if (primaryKeyColumnInfos.size() != primaryKey.size()) {
             return false;
         }
 
         // 检测具体的值是否为空
-        Optional<ColumnType> optional = primaryKeyColumnTypes.parallelStream()
+        Optional<ColumnInfo> optional = primaryKeyColumnInfos.parallelStream()
                 .filter(pct -> row.get(pct.getColumnName()) == null)
                 .findAny();
         return optional.isPresent();
@@ -265,7 +265,7 @@ class RowStoreTable implements Serializable {
         rowStoreTable.append(this.tableName).append("\n");
 
         // 拼接列名
-        String columnNames = Joiner.on("\t\t\t\t\t\t\t\t").join(columnTypes.parallelStream().map(ColumnType::getColumnName).collect(Collectors.toList()));
+        String columnNames = Joiner.on("\t\t\t\t\t\t\t\t").join(columnInfos.parallelStream().map(ColumnInfo::getColumnName).collect(Collectors.toList()));
         rowStoreTable.append(columnNames);
         rowStoreTable.append("\n");
 
@@ -274,8 +274,8 @@ class RowStoreTable implements Serializable {
         Set<Id> ids = rowsData.rowKeySet();
 
         for (Id id : ids) {
-            for (ColumnType columnType : this.columnTypes) {
-                Object cell = rowsData.get(id, columnType.getColumnName());
+            for (ColumnInfo columnInfo : this.columnInfos) {
+                Object cell = rowsData.get(id, columnInfo.getColumnName());
                 rowStoreTable.append(cell);
                 rowStoreTable.append("\t\t\t");
             }
