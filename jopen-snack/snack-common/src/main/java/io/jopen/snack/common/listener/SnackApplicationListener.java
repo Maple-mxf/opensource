@@ -16,6 +16,10 @@ import java.util.concurrent.*;
  * @see java.lang.Thread.UncaughtExceptionHandler
  * @see org.apache.commons.lang3.ThreadUtils
  * @see org.apache.commons.lang3.concurrent.BasicThreadFactory
+ * <p>{@link ExecutionException} 任务执行异常 可能并不会在外层接收到此异常</p>
+ * <p>{@link InterruptedException} 线程中断异常，此异常认为因素大一点</p>
+ * <p>{@link TimeoutException} 任务执行超时异常，跟所设定的执行时间期限有关系</p>
+ * <p>{@link com.google.common.util.concurrent.TimeoutFuture.TimeoutFutureException}</p>
  * @see ExecutorService
  * {@code}
  * @since 2019/10/27
@@ -68,7 +72,7 @@ public abstract class SnackApplicationListener {
 
         // 提交任务
         ListenableFuture future = this.guavaDecoratorService.submit(task);
-        
+
         // 回调函数
         Futures.addCallback(future, callback, guavaDecoratorService);
     }
@@ -78,7 +82,7 @@ public abstract class SnackApplicationListener {
 
     /**
      * 启动任务执行
-     * <p>{@link RejectedExecutionException}</p>
+     * <p>{@link RejectedExecutionException}  任务拒绝策略</p>
      */
     public void start() {
         new Thread(() -> {
@@ -86,14 +90,29 @@ public abstract class SnackApplicationListener {
                 try {
 
                     Callable<Object> callable = SnackApplicationListener.this.taskQueue.take();
+
                     // 提交任务会抛出异常  线程池的拒绝策略
-                    this.guavaDecoratorService.submit(callable);
+                    ListenableFuture<Object> future = this.guavaDecoratorService.submit(callable);
+
+                    // future.addListener();
+                    // Futures.catchingAsync()
+                    Futures.addCallback();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
 
         }).start();
+    }
+
+    abstract class PersistenceTask<V> implements Callable<V> {
+        Runnable taskExecuteListener;
+        FutureCallback<V> futureCallback;
+
+        PersistenceTask(Runnable taskExecuteListener, FutureCallback<V> futureCallback) {
+            this.taskExecuteListener = taskExecuteListener;
+            this.futureCallback = futureCallback;
+        }
 
 
     }
