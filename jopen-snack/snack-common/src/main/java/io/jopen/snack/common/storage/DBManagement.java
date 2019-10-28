@@ -1,4 +1,4 @@
-package io.jopen.snack.server.storage;
+package io.jopen.snack.common.storage;
 
 import io.jopen.snack.common.DatabaseInfo;
 import io.jopen.snack.common.exception.SnackExceptionUtil;

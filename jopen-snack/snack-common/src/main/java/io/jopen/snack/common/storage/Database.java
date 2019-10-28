@@ -1,4 +1,4 @@
-package io.jopen.snack.server.storage;
+package io.jopen.snack.common.storage;
 
 import com.google.common.base.Preconditions;
 import io.jopen.snack.common.ColumnInfo;

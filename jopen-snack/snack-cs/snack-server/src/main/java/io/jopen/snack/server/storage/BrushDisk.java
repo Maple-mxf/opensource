@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author maxuefeng
  * @since 2019/10/23
  */
+@Deprecated
 public class BrushDisk extends Task<Boolean> {
 
     public BrushDisk(String obj) {

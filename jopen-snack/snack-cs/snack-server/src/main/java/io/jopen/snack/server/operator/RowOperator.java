@@ -9,7 +9,7 @@ import io.jopen.snack.common.exception.SnackRuntimeException;
 import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.common.protol.RpcDataUtil;
 import io.jopen.snack.common.serialize.KryoHelper;
-import io.jopen.snack.server.storage.RowStoreTable;
+import io.jopen.snack.common.storage.RowStoreTable;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
  * @see com.google.common.util.concurrent.Service
  * @since 2019/10/23
  */
+@Deprecated
 public abstract class Task<T> implements Callable<T> {
 
     @Override

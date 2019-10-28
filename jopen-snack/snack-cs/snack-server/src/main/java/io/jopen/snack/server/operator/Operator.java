@@ -8,9 +8,9 @@ import io.jopen.snack.common.Row;
 import io.jopen.snack.common.TableInfo;
 import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.common.serialize.KryoHelper;
-import io.jopen.snack.server.storage.DBManagement;
-import io.jopen.snack.server.storage.Database;
-import io.jopen.snack.server.storage.RowStoreTable;
+import io.jopen.snack.common.storage.DBManagement;
+import io.jopen.snack.common.storage.Database;
+import io.jopen.snack.common.storage.RowStoreTable;
 import io.jopen.snack.server.tcp.SnackDBTcpServer;
 
 import java.io.IOException;

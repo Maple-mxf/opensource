@@ -2,6 +2,7 @@ package io.jopen.snack.server.storage;
 
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.*;
+import io.jopen.snack.common.storage.DBManagement;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
@@ -13,6 +14,7 @@ import java.util.concurrent.Executors;
  * {@link DBManagement#DBA 初始化DBA信息 }
  * @since 2019/10/23
  */
+@Deprecated
 public final
 class SnackDBServer extends AbstractService {
 
