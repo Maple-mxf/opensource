@@ -68,6 +68,7 @@ public abstract class SnackApplicationListener {
 
         // 提交任务
         ListenableFuture future = this.guavaDecoratorService.submit(task);
+        
         // 回调函数
         Futures.addCallback(future, callback, guavaDecoratorService);
     }
@@ -77,6 +78,7 @@ public abstract class SnackApplicationListener {
 
     /**
      * 启动任务执行
+     * <p>{@link RejectedExecutionException}</p>
      */
     public void start() {
         new Thread(() -> {
