@@ -1,8 +1,8 @@
 package io.jopen.snack.common.listener.table;
 
 import com.google.common.util.concurrent.FutureCallback;
-import io.jopen.snack.common.event.CreateTableEvent;
 import io.jopen.snack.common.event.SnackApplicationEvent;
+import io.jopen.snack.common.event.TableEvent;
 import io.jopen.snack.common.listener.SnackApplicationListener;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -18,7 +18,7 @@ public class CreateTableEventListener extends SnackApplicationListener {
     @Override
     public void handEvent(@NonNull SnackApplicationEvent event) {
         // 如果是
-        if (event instanceof CreateTableEvent) {
+        if (event instanceof TableEvent.Create) {
 
             // 提交创建
             // ListenableFuture<Boolean> future = service.submit(new PersistenceTableInfoTask());

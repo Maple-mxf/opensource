@@ -12,6 +12,9 @@ import java.util.concurrent.Executors;
  *
  * @author maxuefeng
  * @see com.google.common.util.concurrent.ThreadFactoryBuilder
+ * @see java.lang.Thread.UncaughtExceptionHandler
+ * @see org.apache.commons.lang3.ThreadUtils
+ * @see org.apache.commons.lang3.concurrent.BasicThreadFactory
  * @since 2019/10/27
  */
 public abstract class SnackApplicationListener {
@@ -28,7 +31,7 @@ public abstract class SnackApplicationListener {
 
 
     protected final void submit(@NonNull Callable task,
-                             @NonNull FutureCallback<Boolean> callback) {
+                                @NonNull FutureCallback<Boolean> callback) {
 
         // 提交任务
         ListenableFuture future = this.service.submit(task);
