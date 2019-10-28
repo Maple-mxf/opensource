@@ -12,7 +12,7 @@ public abstract class DatabaseListener extends SnackApplicationListener {
 
     public static class Create extends DatabaseListener {
         @Override
-        public void handEvent(@NonNull SnackApplicationEvent event) {
+        public void apply(@NonNull SnackApplicationEvent event) {
             if (event instanceof DatabaseEvent.Create) {
                 DatabaseEvent createEvent = (DatabaseEvent) event;
                 this.submit(() -> {
@@ -26,7 +26,7 @@ public abstract class DatabaseListener extends SnackApplicationListener {
 
     public static class Drop extends SnackApplicationListener {
         @Override
-        public void handEvent(@NonNull SnackApplicationEvent event) {
+        public void apply(@NonNull SnackApplicationEvent event) {
             if (event instanceof DatabaseEvent.Drop) {
                 DatabaseEvent createEvent = (DatabaseEvent) event;
                 this.submit(() -> {

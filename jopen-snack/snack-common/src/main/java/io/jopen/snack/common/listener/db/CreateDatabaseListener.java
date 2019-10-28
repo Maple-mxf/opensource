@@ -11,7 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class CreateDatabaseListener extends SnackApplicationListener {
 
     @Override
-    public void handEvent(@NonNull SnackApplicationEvent event) {
+    public void apply(@NonNull SnackApplicationEvent event) {
 
     }
 }

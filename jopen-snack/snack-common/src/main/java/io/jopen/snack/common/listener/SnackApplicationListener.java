@@ -5,6 +5,7 @@ import io.jopen.snack.common.event.SnackApplicationEvent;
 import io.jopen.snack.common.storage.DBManagement;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.concurrent.*;
 
@@ -24,7 +25,7 @@ import java.util.concurrent.*;
  * {@code}
  * @since 2019/10/27
  */
-public abstract class SnackApplicationListener {
+public abstract class SnackApplicationListener<V> {
 
     private final BlockingQueue<Runnable> threadBlockingQueue = new LinkedBlockingQueue<>();
 
@@ -62,7 +63,7 @@ public abstract class SnackApplicationListener {
     // 执行任务的监听器
     private final ListeningExecutorService guavaDecoratorService = MoreExecutors.listeningDecorator(javaService);
 
-    private final BlockingQueue<Callable<Object>> taskQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<PersistenceTask<V>> taskQueue = new LinkedBlockingQueue<>();
 
     protected final DBManagement dbManagement = DBManagement.DBA;
 
@@ -78,7 +79,7 @@ public abstract class SnackApplicationListener {
     }
 
     // 把事件对象作为参数
-    public abstract void handEvent(@NonNull SnackApplicationEvent event);
+    public abstract void apply(@NonNull SnackApplicationEvent event);
 
     /**
      * 启动任务执行
@@ -88,16 +89,14 @@ public abstract class SnackApplicationListener {
         new Thread(() -> {
             while (true) {
                 try {
-
-                    Callable<Object> callable = SnackApplicationListener.this.taskQueue.take();
+                    PersistenceTask<V> persistenceTask = SnackApplicationListener.this.taskQueue.take();
 
                     // 提交任务会抛出异常  线程池的拒绝策略
-                    ListenableFuture<Object> future = this.guavaDecoratorService.submit(callable);
+                    ListenableFuture<V> future = this.guavaDecoratorService.submit(persistenceTask);
+                    future.addListener(persistenceTask.taskExecuteListener, this.guavaDecoratorService);
+                    Futures.addCallback(future, persistenceTask.futureCallback, this.guavaDecoratorService);
 
-                    // future.addListener();
-                    // Futures.catchingAsync()
-                    Futures.addCallback();
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -105,15 +104,27 @@ public abstract class SnackApplicationListener {
         }).start();
     }
 
-    abstract class PersistenceTask<V> implements Callable<V> {
+    /**
+     * 持久化任务顶级父类
+     *
+     * @param <T>
+     */
+    abstract class PersistenceTask<T> implements Callable<T> {
         Runnable taskExecuteListener;
-        FutureCallback<V> futureCallback;
+        FutureCallback<T> futureCallback;
 
-        PersistenceTask(Runnable taskExecuteListener, FutureCallback<V> futureCallback) {
+        //
+        PersistenceTask(@Nullable Runnable taskExecuteListener,
+                        @NonNull FutureCallback<T> futureCallback) {
             this.taskExecuteListener = taskExecuteListener;
             this.futureCallback = futureCallback;
         }
 
+        @Override
+        public T call() throws Exception {
+            return execute();
+        }
 
+        public abstract T execute();
     }
 }

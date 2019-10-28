@@ -43,7 +43,7 @@ public class SnackEventSource {
 
         for (SnackApplicationListener evt : listeners) {
             //实例监听器对象，并调用监听器的方法
-            evt.handEvent(event);
+            evt.apply(event);
         }
     }
 

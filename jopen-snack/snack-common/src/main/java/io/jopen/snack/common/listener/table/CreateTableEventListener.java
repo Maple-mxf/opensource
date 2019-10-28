@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 public class CreateTableEventListener extends SnackApplicationListener {
 
     @Override
-    public void handEvent(@NonNull SnackApplicationEvent event) {
+    public void apply(@NonNull SnackApplicationEvent event) {
         // 如果是
         if (event instanceof TableEvent.Create) {
 
