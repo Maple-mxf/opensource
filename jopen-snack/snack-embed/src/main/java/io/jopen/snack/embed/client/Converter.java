@@ -1,5 +1,6 @@
 package io.jopen.snack.embed.client;
 
+import io.jopen.snack.common.Condition;
 import io.jopen.snack.common.Id;
 import io.jopen.snack.common.IntermediateExpression;
 import io.jopen.snack.common.Row;
@@ -83,7 +84,7 @@ class Converter<T> {
         IntermediateExpression<Row> expression = IntermediateExpression.buildFor(Row.class);
 
         // 获取条件
-        List<IntermediateExpression.Condition> originConditions = originExpression.getConditions();
+        List<Condition> originConditions = originExpression.getConditions();
 
         expression.setTargetClass(Row.class);
         expression.setConditions(originConditions);

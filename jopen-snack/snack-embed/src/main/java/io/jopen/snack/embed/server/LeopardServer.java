@@ -66,9 +66,9 @@ class LeopardServer extends AbstractService {
     }
 
 //    private void load() {
-//        File file = new File("./memdb");
-//        if (file.exists()) {
-//            File[] files = file.listFiles();
+//        File topDir = new File("./memdb");
+//        if (topDir.exists()) {
+//            File[] files = topDir.listFiles();
 //            if (files != null) {
 //                Stream.of(files).filter(File::isDirectory).forEach(f -> {
 //                    // 获取数据库名称

@@ -2723,7 +2723,6 @@ public final class RpcData {
        * <pre>
        * 行操作符
        * </pre>
-       *
        * <code>.io.jopen.snack.common.protol.C2S.RowOperation rowOption = 6;</code>
        * @param value The enum numeric value on the wire for rowOption to set.
        * @return This builder for chaining.

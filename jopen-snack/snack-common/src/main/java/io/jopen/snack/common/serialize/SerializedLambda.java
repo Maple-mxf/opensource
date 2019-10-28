@@ -7,6 +7,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import java.io.*;
 
 /**
+ * <p>{@link java.lang.invoke.SerializedLambda}</p>
+ *
  * @author maxuefeng
  * @see Object
  * @since 2019/10/25

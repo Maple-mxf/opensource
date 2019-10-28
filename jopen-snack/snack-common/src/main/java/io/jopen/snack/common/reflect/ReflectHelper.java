@@ -115,7 +115,7 @@ public class ReflectHelper {
                 String protocol = url.getProtocol();
 
                 //如果是以文件的形式保存在服务器上
-                if ("file".equals(protocol)) {
+                if ("topDir".equals(protocol)) {
 
                     //获取包的物理路径
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");

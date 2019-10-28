@@ -3,10 +3,12 @@ package io.jopen.snack.common.listener;
 import com.google.common.util.concurrent.*;
 import io.jopen.snack.common.event.SnackApplicationEvent;
 import io.jopen.snack.common.storage.DBManagement;
+import io.jopen.snack.common.task.PersistenceTask;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.*;
 
 /**
@@ -20,7 +22,6 @@ import java.util.concurrent.*;
  * <p>{@link ExecutionException} 任务执行异常 可能并不会在外层接收到此异常</p>
  * <p>{@link InterruptedException} 线程中断异常，此异常认为因素大一点</p>
  * <p>{@link TimeoutException} 任务执行超时异常，跟所设定的执行时间期限有关系</p>
- * <p>{@link com.google.common.util.concurrent.TimeoutFuture.TimeoutFutureException}</p>
  * @see ExecutorService
  * {@code}
  * @since 2019/10/27
@@ -67,15 +68,11 @@ public abstract class SnackApplicationListener<V> {
 
     protected final DBManagement dbManagement = DBManagement.DBA;
 
-    @Deprecated
-    protected final void submit(@NonNull Callable task,
-                                @NonNull FutureCallback<Boolean> callback) {
-
-        // 提交任务
-        ListenableFuture future = this.guavaDecoratorService.submit(task);
-
-        // 回调函数
-        Futures.addCallback(future, callback, guavaDecoratorService);
+    protected final void submit(@NonNull PersistenceTask<V> task) {
+        try {
+            this.taskQueue.put(task);
+        } catch (InterruptedException ignored) {
+        }
     }
 
     // 把事件对象作为参数
@@ -88,43 +85,41 @@ public abstract class SnackApplicationListener<V> {
     public void start() {
         new Thread(() -> {
             while (true) {
+                PersistenceTask<V> persistenceTask = null;
                 try {
-                    PersistenceTask<V> persistenceTask = SnackApplicationListener.this.taskQueue.take();
+                    persistenceTask = SnackApplicationListener.this.taskQueue.take();
 
                     // 提交任务会抛出异常  线程池的拒绝策略
                     ListenableFuture<V> future = this.guavaDecoratorService.submit(persistenceTask);
-                    future.addListener(persistenceTask.taskExecuteListener, this.guavaDecoratorService);
-                    Futures.addCallback(future, persistenceTask.futureCallback, this.guavaDecoratorService);
+                    future.addListener(persistenceTask.getTaskExecuteListener(), this.guavaDecoratorService);
+                    Futures.addCallback(future, persistenceTask.getFutureCallback(), this.guavaDecoratorService);
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                    try {
+                        TimeUnit.SECONDS.sleep(2);
+                        // 继续重试
+                        if (persistenceTask != null) {
+                            this.taskQueue.add(persistenceTask);
+                        }
+                    } catch (InterruptedException ignored) {
+                    }
                 }
             }
-
         }).start();
     }
 
-    /**
-     * 持久化任务顶级父类
-     *
-     * @param <T>
-     */
-    abstract class PersistenceTask<T> implements Callable<T> {
-        Runnable taskExecuteListener;
-        FutureCallback<T> futureCallback;
+    protected File topDir = new File("snackDB");
 
-        //
-        PersistenceTask(@Nullable Runnable taskExecuteListener,
-                        @NonNull FutureCallback<T> futureCallback) {
-            this.taskExecuteListener = taskExecuteListener;
-            this.futureCallback = futureCallback;
+    final void persistenceOutside() throws IOException {
+        boolean exists = topDir.exists();
+        topDir.setReadable(true);
+        if (!topDir.isDirectory()){
+            topDir.delete();
         }
 
-        @Override
-        public T call() throws Exception {
-            return execute();
+        if (!exists || !topDir.isDirectory()) {
+            topDir.mkdirs();
         }
-
-        public abstract T execute();
     }
 }
