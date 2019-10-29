@@ -51,6 +51,7 @@ public class JsonTest {
         String source = "{\"ossKey\":\"583889989516001280\",\"data\":[\"饺子店\",\"5天前消费\"],\"accessUrl\":\"http://biz-qmbx.oss-cn-beijing.aliyuncs.com/583889989516001280\",\"ossBucket\":\"biz-qmbx\",\"formatName\":\"jpg\",\"OCRMode\":\"Tess\",\"ocrDataMode\":\"Single_text\",\"type\":1,\"insertTime\":1559280623044,\"uid\":\"582505345674469376\",\"identification\":-46766217,\"size\":68.1240234375,\"originCreateTime\":1559280620000,\"device\":\"ios\",\"originName\":\"1.jpg\"}";
 
         JSONObject jsonObject = JSONObject.parseObject(source);
+        System.err.println(jsonObject);
 
         JSONArray jsonArray = jsonObject.getJSONArray("data");
 

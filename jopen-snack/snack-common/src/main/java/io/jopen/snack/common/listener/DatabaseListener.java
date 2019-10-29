@@ -49,17 +49,7 @@ public abstract class DatabaseListener extends SnackApplicationListener<Boolean>
                     Create.super.persistenceOutside();
                     //
                     String path = topDir.getAbsolutePath();
-                    String dbPath;
-
-                    if (path.endsWith("\\") || path.endsWith("/")) {
-                        dbPath = path + databaseInfo.getName();
-                    } else {
-                        if (path.contains("\\")) {
-                            dbPath = Joiner.on("\\").join(new String[]{path, databaseInfo.getName()});
-                        } else {
-                            dbPath = Joiner.on("/").join(new String[]{path, databaseInfo.getName()});
-                        }
-                    }
+                    String dbPath = Joiner.on("/").join(new String[]{path, databaseInfo.getName()});
                     File dbDir = new File(dbPath);
                     dbDir.mkdir();
 
@@ -94,7 +84,9 @@ public abstract class DatabaseListener extends SnackApplicationListener<Boolean>
         @Override
         public void apply(@NonNull SnackApplicationEvent event) {
             if (event instanceof DatabaseEvent.Drop) {
-                DatabaseEvent createEvent = (DatabaseEvent) event;
+                DatabaseEvent.Drop dropEvent = (DatabaseEvent.Drop) event;
+                PersistenceTask<Boolean> task = new Create.Task(() -> System.err.println("create database task completed "), new Create.Callback(), dropEvent);
+                submit(task);
             }
         }
     }
