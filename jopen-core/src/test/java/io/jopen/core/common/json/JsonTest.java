@@ -2,6 +2,7 @@ package io.jopen.core.common.json;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.jopen.core.common.text.StringHelper;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -58,5 +59,10 @@ public class JsonTest {
         List<String> list = jsonArray.toJavaList(String.class);
 
         System.err.println(list);
+    }
+
+    @Test
+    public void testGetRandomStr(){
+        System.err.println(StringHelper.randomString(16));
     }
 }

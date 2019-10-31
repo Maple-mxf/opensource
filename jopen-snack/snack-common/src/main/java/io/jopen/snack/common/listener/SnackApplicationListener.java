@@ -8,7 +8,6 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.*;
 
 /**
@@ -111,7 +110,7 @@ public abstract class SnackApplicationListener<V> {
 
     protected File topDir = new File("snackDB");
 
-    final void persistenceOutside() throws IOException {
+    final void persistenceOutside() {
         boolean exists = topDir.exists();
         topDir.setReadable(true);
         if (!topDir.isDirectory()){

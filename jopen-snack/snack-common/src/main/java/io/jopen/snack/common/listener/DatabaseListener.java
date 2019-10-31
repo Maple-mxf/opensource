@@ -81,12 +81,58 @@ public abstract class DatabaseListener extends SnackApplicationListener<Boolean>
 
 
     public static class Drop extends SnackApplicationListener {
+
         @Override
         public void apply(@NonNull SnackApplicationEvent event) {
             if (event instanceof DatabaseEvent.Drop) {
                 DatabaseEvent.Drop dropEvent = (DatabaseEvent.Drop) event;
-                PersistenceTask<Boolean> task = new Create.Task(() -> System.err.println("create database task completed "), new Create.Callback(), dropEvent);
+                PersistenceTask<Boolean> task = new Task(() -> System.err.println("create database task completed "), new Callback(), dropEvent);
                 submit(task);
+            }
+        }
+
+        private class Callback implements FutureCallback<Boolean> {
+            @Override
+            public void onSuccess(@Nullable Boolean result) {
+                System.err.println(String.format("database drop success result [ %s ] ", result));
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.getCause().printStackTrace();
+            }
+        }
+
+        private class Task extends PersistenceTask<Boolean> {
+            protected Task(@Nullable Runnable taskExecuteListener,
+                           @NonNull FutureCallback<Boolean> futureCallback,
+                           @NonNull SnackApplicationEvent event) {
+                super(taskExecuteListener, futureCallback, event);
+            }
+
+            @Override
+            public Boolean execute() {
+                DatabaseEvent dropEvent = (DatabaseEvent) this.event;
+                DatabaseInfo databaseInfo = dropEvent.getDatabaseInfo();
+
+                Drop.this.dbManagement.dropDatabase(databaseInfo);
+                // 进行持久化操作
+                // 检测外部
+                Drop.super.persistenceOutside();
+                //
+                String path = topDir.getAbsolutePath();
+                String dbPath = Joiner.on("/").join(new String[]{path, databaseInfo.getName()});
+                File dbDir = new File(dbPath);
+                try {
+                    dbDir.delete();
+                    // 持久化数据库信息 {DatabaseInfo}
+                    File dbInfoFile = new File(dbDir + "/dbinfo.sdb");
+                    dbInfoFile.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return Boolean.FALSE;
+                }
+                return Boolean.TRUE;
             }
         }
     }

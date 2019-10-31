@@ -5,6 +5,7 @@ import io.jopen.snack.common.event.SnackApplicationEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 /**
@@ -31,7 +32,7 @@ public abstract class PersistenceTask<T> implements Callable<T> {
         return execute();
     }
 
-    public abstract T execute();
+    public abstract T execute() throws IOException;
 
     public Runnable getTaskExecuteListener() {
         return taskExecuteListener;
