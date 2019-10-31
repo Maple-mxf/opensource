@@ -41,13 +41,14 @@ public class RowEvent implements SnackApplicationEvent {
     }
 
     public static class Insert extends RowEvent {
-        public Insert(DatabaseInfo databaseInfo,TableInfo tableInfo){
+        public Insert(DatabaseInfo databaseInfo, TableInfo tableInfo) {
             this.databaseInfo = databaseInfo;
             this.tableInfo = tableInfo;
         }
     }
 
     public static class Delete extends RowEvent {
+
     }
 
     public static class Query extends RowEvent {
