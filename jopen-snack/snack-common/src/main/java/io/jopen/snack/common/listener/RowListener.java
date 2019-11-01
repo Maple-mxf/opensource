@@ -1,5 +1,8 @@
 package io.jopen.snack.common.listener;
 
+import com.google.common.io.ByteSink;
+import com.google.common.io.FileWriteMode;
+import com.google.common.io.Files;
 import com.google.common.util.concurrent.FutureCallback;
 import io.jopen.snack.common.*;
 import io.jopen.snack.common.event.RowEvent;
@@ -10,6 +13,8 @@ import io.jopen.snack.common.task.PersistenceTask;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -61,7 +66,18 @@ public abstract class RowListener extends SnackApplicationListener {
                         return 0;
                     }
                 }
-                return rowStoreTable.saveBatch(insertEvent.getRows());
+                Collection<Row> rows = insertEvent.getRows();
+
+                if (rows.size() == 0) {
+                    return 0;
+                }
+
+                int updateRows = rowStoreTable.saveBatch(rows);
+
+                
+
+                // 持久化保存的数据
+                return updateRows;
             }
         }
 
@@ -132,7 +148,7 @@ public abstract class RowListener extends SnackApplicationListener {
     }
 
     public static class Update extends RowListener {
-        
+
         @Override
         public void apply(@NonNull SnackApplicationEvent event) {
 
