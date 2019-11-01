@@ -1,12 +1,11 @@
 package io.jopen.snack.common.listener;
 
 import com.google.common.base.Joiner;
-import com.google.common.io.Files;
 import com.google.common.util.concurrent.FutureCallback;
 import io.jopen.snack.common.DatabaseInfo;
 import io.jopen.snack.common.event.DatabaseEvent;
 import io.jopen.snack.common.event.SnackApplicationEvent;
-import io.jopen.snack.common.serialize.KryoHelper;
+import io.jopen.snack.common.storage.Database;
 import io.jopen.snack.common.task.PersistenceTask;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -47,16 +46,12 @@ public abstract class DatabaseListener extends SnackApplicationListener<Boolean>
                     // 进行持久化操作
                     // 检测外部
                     Create.super.persistenceOutside();
-                    //
-                    String path = topDir.getAbsolutePath();
-                    String dbPath = Joiner.on("/").join(new String[]{path, databaseInfo.getName()});
-                    File dbDir = new File(dbPath);
-                    dbDir.mkdir();
 
-                    // 持久化数据库信息 {DatabaseInfo}
-                    File dbInfoFile = new File(dbDir + "/dbinfo.sdb");
-                    Files.write(KryoHelper.serialization(databaseInfo), dbInfoFile);
+                    Database database = persistenceDatabase(databaseInfo);
 
+                    if (database == null) {
+                        return Boolean.FALSE;
+                    }
                     return Boolean.TRUE;
                 } catch (Exception e) {
                     e.printStackTrace();

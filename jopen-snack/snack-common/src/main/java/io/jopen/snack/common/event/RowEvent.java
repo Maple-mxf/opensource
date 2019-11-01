@@ -1,8 +1,13 @@
 package io.jopen.snack.common.event;
 
 import io.jopen.snack.common.DatabaseInfo;
+import io.jopen.snack.common.IntermediateExpression;
+import io.jopen.snack.common.Row;
 import io.jopen.snack.common.TableInfo;
 import io.jopen.snack.common.protol.RpcData;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author maxuefeng
@@ -41,14 +46,38 @@ public class RowEvent implements SnackApplicationEvent {
     }
 
     public static class Insert extends RowEvent {
-        public Insert(DatabaseInfo databaseInfo, TableInfo tableInfo) {
+        private Collection<Row> rows;
+
+        public Insert(DatabaseInfo databaseInfo, TableInfo tableInfo, Collection<Row> rows) {
             this.databaseInfo = databaseInfo;
             this.tableInfo = tableInfo;
+            this.rows = rows;
+        }
+
+        public Collection<Row> getRows() {
+            return rows;
+        }
+
+        public void setRows(Collection<Row> rows) {
+            this.rows = rows;
         }
     }
 
     public static class Delete extends RowEvent {
+        private List<IntermediateExpression<Row>> expressions;
+        public Delete(DatabaseInfo databaseInfo, TableInfo tableInfo, List<IntermediateExpression<Row>> expressions) {
+            this.databaseInfo = databaseInfo;
+            this.tableInfo = tableInfo;
+            this.expressions = expressions;
+        }
 
+        public List<IntermediateExpression<Row>> getExpressions() {
+            return expressions;
+        }
+
+        public void setExpressions(List<IntermediateExpression<Row>> expressions) {
+            this.expressions = expressions;
+        }
     }
 
     public static class Query extends RowEvent {

@@ -1,14 +1,26 @@
 package io.jopen.snack.common.listener;
 
+import com.google.common.base.Joiner;
+import com.google.common.io.Files;
 import com.google.common.util.concurrent.*;
+import io.jopen.snack.common.DatabaseInfo;
+import io.jopen.snack.common.TableInfo;
 import io.jopen.snack.common.event.SnackApplicationEvent;
+import io.jopen.snack.common.serialize.KryoHelper;
 import io.jopen.snack.common.storage.DBManagement;
+import io.jopen.snack.common.storage.Database;
+import io.jopen.snack.common.storage.RowStoreTable;
 import io.jopen.snack.common.task.PersistenceTask;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.*;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+
+import static io.jopen.snack.common.constant.FileConst.*;
 
 /**
  * <p>{@link io.jopen.snack.common.event.SnackApplicationEvent}</p>
@@ -65,9 +77,9 @@ public abstract class SnackApplicationListener<V> {
 
     private final BlockingQueue<PersistenceTask<V>> taskQueue = new LinkedBlockingQueue<>();
 
-    protected final DBManagement dbManagement = DBManagement.DBA;
+    final DBManagement dbManagement = DBManagement.DBA;
 
-    protected final void submit(@NonNull PersistenceTask<V> task) {
+    final void submit(@NonNull PersistenceTask<V> task) {
         try {
             this.taskQueue.put(task);
         } catch (InterruptedException ignored) {
@@ -113,7 +125,7 @@ public abstract class SnackApplicationListener<V> {
     final void persistenceOutside() {
         boolean exists = topDir.exists();
         topDir.setReadable(true);
-        if (!topDir.isDirectory()){
+        if (!topDir.isDirectory()) {
             topDir.delete();
         }
 
@@ -121,4 +133,139 @@ public abstract class SnackApplicationListener<V> {
             topDir.mkdirs();
         }
     }
+
+    final Database persistenceDatabase(DatabaseInfo databaseInfo) {
+        Database database = this.dbManagement.createDatabase(databaseInfo);
+        String dbPath = dbPath(databaseInfo);
+        File dbDir = new File(dbPath);
+
+
+        // 持久化数据库信息 {DatabaseInfo}
+        try {
+            dbDir.mkdir();
+            File dbInfoFile = new File(dbDir + "/" + databaseInfo.getName() + "." + dbInfoFileSuffix);
+            Files.write(KryoHelper.serialization(databaseInfo), dbInfoFile);
+            return database;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    final RowStoreTable persistenceTable(DatabaseInfo databaseInfo, TableInfo tableInfo) {
+        Database database = this.dbManagement.getDatabase(databaseInfo);
+
+        if (database == null) {
+            database = persistenceDatabase(databaseInfo);
+        }
+        if (database == null) {
+            return null;
+        }
+
+        RowStoreTable rowStoreTable = database.getRowStoreTable(tableInfo);
+        if (rowStoreTable != null) {
+            return rowStoreTable;
+        }
+
+        rowStoreTable = database.createTable(tableInfo);
+        String dbPath = dbPath(databaseInfo);
+        File destTableDataFile = new File(dbPath + "/" + tableInfo.getName() + "." + tableDataFileSuffix);
+        File destTableInfoFile = new File(dbPath + "/" + tableInfo.getName() + "." + tableInfoFileSuffix);
+
+        try {
+            // 创建数据文件
+            Files.write(KryoHelper.serialization(rowStoreTable), destTableDataFile);
+        } catch (IOException ignored) {
+            return null;
+        }
+
+        try {
+            // 创建表格信息文件
+            Files.write(KryoHelper.serialization(tableInfo), destTableInfoFile);
+        } catch (IOException ignored) {
+            return null;
+        }
+        return rowStoreTable;
+    }
+
+
+    final RowStoreTable clearTable(DatabaseInfo databaseInfo, TableInfo tableInfo) {
+        Database database = this.dbManagement.getDatabase(databaseInfo);
+
+        if (database == null) {
+            database = persistenceDatabase(databaseInfo);
+        }
+        if (database == null) {
+            return null;
+        }
+
+        RowStoreTable rowStoreTable = database.getRowStoreTable(tableInfo);
+        if (rowStoreTable == null) {
+            return null;
+        }
+
+        String dbPath = dbPath(databaseInfo);
+        // 清除数据文件
+        // 清除info文件
+        File tableInfoFile = new File(dbPath + "/" + tableInfo.getName() + "." + tableInfoFileSuffix);
+        File tableDataFile = new File(dbPath + "/" + tableInfo.getName() + "." + tableDataFileSuffix);
+
+        try {
+            tableInfoFile.setWritable(true);
+            tableDataFile.setWritable(true);
+            tableInfoFile.delete();
+            tableDataFile.delete();
+            return rowStoreTable;
+        } catch (Exception ignored) {
+            return null;
+        }
+
+    }
+
+    private String dbPath(DatabaseInfo databaseInfo) {
+        String path = topDir.getAbsolutePath();
+        return Joiner.on("/").join(new String[]{path, databaseInfo.getName()});
+    }
+
+    @Deprecated
+    final Predicate<DatabaseInfo> createDB = databaseInfo -> {
+        Database result = SnackApplicationListener.this.dbManagement.createDatabase(databaseInfo);
+        if (result == null) {
+            return false;
+        }
+        result = SnackApplicationListener.this.persistenceDatabase(databaseInfo);
+
+        if (result == null) {
+            SnackApplicationListener.this.dbManagement.dropDatabase(databaseInfo);
+            return false;
+        }
+        return true;
+    };
+
+    final BiPredicate<DatabaseInfo, TableInfo> createTable = (databaseInfo, tableInfo) -> {
+        Database database = SnackApplicationListener.this.dbManagement.getDatabase(databaseInfo);
+        if (database == null) {
+            // 创建数据库
+            dbManagement.createDatabase(databaseInfo);
+            database = persistenceDatabase(databaseInfo);
+
+            if (database == null) {
+                dbManagement.dropDatabase(databaseInfo);
+                return false;
+            }
+        }
+
+        RowStoreTable table = database.getRowStoreTable(tableInfo);
+
+        if (table != null) {
+            return false;
+        }
+
+        database.createTable(tableInfo);
+        table = persistenceTable(databaseInfo, tableInfo);
+
+        return table != null;
+    };
+
 }

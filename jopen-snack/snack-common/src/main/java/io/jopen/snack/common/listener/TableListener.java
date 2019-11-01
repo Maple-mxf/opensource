@@ -6,6 +6,7 @@ import io.jopen.snack.common.TableInfo;
 import io.jopen.snack.common.event.SnackApplicationEvent;
 import io.jopen.snack.common.event.TableEvent;
 import io.jopen.snack.common.storage.Database;
+import io.jopen.snack.common.storage.RowStoreTable;
 import io.jopen.snack.common.task.PersistenceTask;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -41,17 +42,18 @@ public abstract class TableListener extends SnackApplicationListener {
 
             @Override
             public Boolean execute() {
+
                 TableEvent tableEvent = (TableEvent) this.event;
                 DatabaseInfo databaseInfo = tableEvent.getDatabaseInfo();
                 Database database = Create.super.dbManagement.getDatabase(databaseInfo);
                 if (database == null) {
                     database = Create.super.dbManagement.createDatabase(databaseInfo);
-                    // TODO  持久化数据库info信息
+                    Create.super.persistenceDatabase(databaseInfo);
                 }
+
                 TableInfo tableInfo = tableEvent.getTableInfo();
                 database.createTable(tableInfo);
-
-                // TODO 持久化表格信息
+                Create.super.persistenceTable(databaseInfo, tableInfo);
                 return Boolean.TRUE;
             }
         }
@@ -92,21 +94,25 @@ public abstract class TableListener extends SnackApplicationListener {
 
             @Override
             public Boolean execute() {
+
                 TableEvent tableEvent = (TableEvent) this.event;
                 DatabaseInfo databaseInfo = tableEvent.getDatabaseInfo();
                 Database database = Drop.super.dbManagement.getDatabase(databaseInfo);
+
                 if (database == null) {
                     database = Drop.super.dbManagement.createDatabase(databaseInfo);
-                    // TODO  持久化数据库info信息
+                    Drop.super.persistenceDatabase(databaseInfo);
                     return Boolean.FALSE;
                 }
                 TableInfo tableInfo = tableEvent.getTableInfo();
+
+                RowStoreTable table = database.getRowStoreTable(tableInfo);
+                if (table == null) {
+                    return Boolean.FALSE;
+                }
                 database.dropTable(tableInfo);
-
-                // TODO 删除表格文件
-
-
-                return Boolean.TRUE;
+                // 删除表格文件
+                return clearTable(databaseInfo, tableInfo) != null;
             }
         }
 
@@ -121,6 +127,7 @@ public abstract class TableListener extends SnackApplicationListener {
         }
     }
 
+    // TODO  暂时不支持modify操作
     public static class Modify extends TableListener {
         @Override
         public void apply(@NonNull SnackApplicationEvent event) {
