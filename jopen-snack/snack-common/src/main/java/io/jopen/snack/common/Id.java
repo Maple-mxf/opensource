@@ -2,6 +2,7 @@ package io.jopen.snack.common;
 
 import com.google.common.base.Preconditions;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
@@ -12,10 +13,10 @@ import java.util.Optional;
  * @since 2019/10/24
  */
 public final
-class Id {
+class Id implements Serializable {
 
     private Map<String, Object> ids;
-    
+
     private Id(Map<String, Object> ids) {
         this.ids = ids;
     }

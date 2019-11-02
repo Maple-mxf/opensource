@@ -1,11 +1,11 @@
 package io.jopen.snack.common;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableBiMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * {@link com.google.common.collect.Table.Cell}
@@ -29,9 +29,9 @@ class Row extends HashMap<String, Object> {
     }
 
     //
-    public static Row row(@Nullable Id rowKey, @NonNull ImmutableBiMap<String, Object> biMap) {
+    public static Row row(@Nullable Id rowKey, @NonNull Map<String, Object> map) {
         Row row = new Row(rowKey);
-        row.putAll(biMap);
+        row.putAll(map);
         return row;
     }
 }

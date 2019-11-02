@@ -149,32 +149,32 @@ class RowStoreTable implements Serializable {
     }
 
 
-    public List<Id> update(@Nullable IntermediateExpression<Row> expression, HashMap<String, Object> updateBody) {
+    public List<Row> update(@Nullable IntermediateExpression<Row> expression, HashMap<String, Object> updateBody) {
         List<Row> matchingResult = matching(expression);
         Set<Id> rowKeys = matchingResult.parallelStream().map(Row::getRowKey).collect(Collectors.toSet());
 
         // TODO  batch update update  注意类型检查   如果类型不匹配 存储没问题  mapper to  java  bean会出现问题
-        List<Id> idList = new ArrayList<>();
+        List<Row> idList = new ArrayList<>();
         this.rowsData.rowMap().forEach((rowKey, columnValues) -> {
             if (rowKeys.contains(rowKey)) {
                 columnValues.putAll(updateBody);
-                idList.add(rowKey);
+                idList.add(Row.row(rowKey, columnValues));
             }
         });
 
         return idList;
     }
 
-    public List<Id> update(@Nullable List<IntermediateExpression<Row>> expressions, HashMap<String, Object> updateBody) {
+    public List<Row> update(@Nullable List<IntermediateExpression<Row>> expressions, HashMap<String, Object> updateBody) {
         List<Row> matchingResult = matching(expressions);
         Set<Id> rowKeys = matchingResult.parallelStream().map(Row::getRowKey).collect(Collectors.toSet());
 
         // TODO  batch update update  注意类型检查   如果类型不匹配 存储没问题  mapper to  java  bean会出现问题
-        List<Id> idList = new ArrayList<>();
+        List<Row> idList = new ArrayList<>();
         this.rowsData.rowMap().forEach((rowKey, columnValues) -> {
             if (rowKeys.contains(rowKey)) {
                 columnValues.putAll(updateBody);
-                idList.add(rowKey);
+                idList.add(Row.row(rowKey, columnValues));
             }
         });
 
