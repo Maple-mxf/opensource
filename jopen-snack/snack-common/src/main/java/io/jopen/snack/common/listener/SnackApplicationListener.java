@@ -120,7 +120,7 @@ public abstract class SnackApplicationListener<V> {
         }).start();
     }
 
-    protected File topDir = new File("snackDB");
+    protected static File topDir = new File("snackDB");
 
     final void persistenceOutside() {
         boolean exists = topDir.exists();

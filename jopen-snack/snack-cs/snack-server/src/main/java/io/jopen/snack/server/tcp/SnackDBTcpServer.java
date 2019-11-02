@@ -1,13 +1,8 @@
 package io.jopen.snack.server.tcp;
 
-import io.jopen.snack.common.listener.db.CreateDatabaseListener;
-import io.jopen.snack.common.listener.db.DropDatabaseListener;
-import io.jopen.snack.common.listener.row.DeleteRowListener;
-import io.jopen.snack.common.listener.row.InsertRowListener;
-import io.jopen.snack.common.listener.row.UpdateRowListener;
-import io.jopen.snack.common.listener.table.CreateTableEventListener;
-import io.jopen.snack.common.listener.table.DropTableListener;
-import io.jopen.snack.common.listener.table.ModifyTableListener;
+import io.jopen.snack.common.listener.DatabaseListener;
+import io.jopen.snack.common.listener.RowListener;
+import io.jopen.snack.common.listener.TableListener;
 import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.server.PersistenceContext;
 import io.netty.bootstrap.ServerBootstrap;
@@ -86,19 +81,18 @@ public class SnackDBTcpServer {
     }
 
     static {
-        // 表格监听器
-        PersistenceContext.eventSource.registerListener(new CreateTableEventListener());
-        PersistenceContext.eventSource.registerListener(new DropTableListener());
-        PersistenceContext.eventSource.registerListener(new ModifyTableListener());
-
-
         // 数据库监听器
-        PersistenceContext.eventSource.registerListener(new CreateDatabaseListener());
-        PersistenceContext.eventSource.registerListener(new DropDatabaseListener());
+        PersistenceContext.eventSource.registerListener(new DatabaseListener.Create());
+        PersistenceContext.eventSource.registerListener(new DatabaseListener.Drop());
+
+        // 表格监听器
+        PersistenceContext.eventSource.registerListener(new TableListener.Create());
+        PersistenceContext.eventSource.registerListener(new TableListener.Drop());
+        PersistenceContext.eventSource.registerListener(new TableListener.Modify());
 
         // row元数据监听器
-        PersistenceContext.eventSource.registerListener(new UpdateRowListener());
-        PersistenceContext.eventSource.registerListener(new InsertRowListener());
-        PersistenceContext.eventSource.registerListener(new DeleteRowListener());
+        PersistenceContext.eventSource.registerListener(new RowListener.Delete());
+        PersistenceContext.eventSource.registerListener(new RowListener.Update());
+        PersistenceContext.eventSource.registerListener(new RowListener.Insert());
     }
 }

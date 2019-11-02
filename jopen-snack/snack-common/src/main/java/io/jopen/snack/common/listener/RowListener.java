@@ -28,22 +28,22 @@ public abstract
 class RowListener extends SnackApplicationListener {
 
 
-    private File getTempTableFileTypesOfInsert(DatabaseInfo databaseInfo, TableInfo tableInfo) {
+    private static File getTempTableFileTypesOfInsert(DatabaseInfo databaseInfo, TableInfo tableInfo) {
         String filePath = Joiner.on("/").join(new String[]{topDir.getAbsolutePath(), databaseInfo.getName(), tableInfo.getName()}) + "-insert-temp.rdb";
         return new File(filePath);
     }
 
-    private File getTempTableFileTypesOfDelete(DatabaseInfo databaseInfo, TableInfo tableInfo) {
+    private static File getTempTableFileTypesOfDelete(DatabaseInfo databaseInfo, TableInfo tableInfo) {
         String filePath = Joiner.on("/").join(new String[]{topDir.getAbsolutePath(), databaseInfo.getName(), tableInfo.getName()}) + "-delete-temp.rdb";
         return new File(filePath);
     }
 
-    private File getTempTableFileTypesOfUpdate(DatabaseInfo databaseInfo, TableInfo tableInfo) {
+    private static File getTempTableFileTypesOfUpdate(DatabaseInfo databaseInfo, TableInfo tableInfo) {
         String filePath = Joiner.on("/").join(new String[]{topDir.getAbsolutePath(), databaseInfo.getName(), tableInfo.getName()}) + "-update-temp.rdb";
         return new File(filePath);
     }
 
-    public class Insert extends RowListener {
+    public static class Insert extends RowListener {
         @Override
         public void apply(@NonNull SnackApplicationEvent event) {
             if (event instanceof RowEvent.Insert) {
@@ -92,7 +92,7 @@ class RowListener extends SnackApplicationListener {
                     return 0;
                 }
                 // 写入文件
-                RowListener.this.atomicChangeTempFile(TypesOf.insert, databaseInfo, tableInfo, rows, null, null);
+                RowListener.atomicChangeTempFile(TypesOf.insert, databaseInfo, tableInfo, rows, null, null);
 
                 return rows.size();
             }
@@ -109,7 +109,7 @@ class RowListener extends SnackApplicationListener {
         }
     }
 
-    public class Delete extends RowListener {
+    public static class Delete extends RowListener {
         @Override
         public void apply(@NonNull SnackApplicationEvent event) {
             if (event instanceof RowEvent.Delete) {
@@ -149,7 +149,7 @@ class RowListener extends SnackApplicationListener {
                 }
 
                 // 进行持久化操作
-                RowListener.this.atomicChangeTempFile(TypesOf.insert, databaseInfo, tableInfo, null, deleteEvent.getDeleteIds(), null);
+                RowListener.atomicChangeTempFile(TypesOf.insert, databaseInfo, tableInfo, null, deleteEvent.getDeleteIds(), null);
                 return deleteEvent.getDeleteIds().size();
             }
         }
@@ -165,7 +165,7 @@ class RowListener extends SnackApplicationListener {
         }
     }
 
-    public class Update extends RowListener {
+    public static class Update extends RowListener {
 
         @Override
         public void apply(@NonNull SnackApplicationEvent event) {
@@ -205,7 +205,7 @@ class RowListener extends SnackApplicationListener {
                 }
 
                 // 进行持久化操作
-                RowListener.this.atomicChangeTempFile(TypesOf.insert, databaseInfo, tableInfo, null, null, updateEvent.getRows());
+                RowListener.atomicChangeTempFile(TypesOf.insert, databaseInfo, tableInfo, null, null, updateEvent.getRows());
 
                 return null;
             }
@@ -228,13 +228,13 @@ class RowListener extends SnackApplicationListener {
      * @throws IOException
      * @see RowStoreTable
      */
-    private void atomicChangeTempFile(@NonNull TypesOf typesOf,
-                                      @NonNull DatabaseInfo databaseInfo,
-                                      @NonNull TableInfo tableInfo,
-                                      Collection<Row> insertRows,
-                                      Collection<Id> deleteIds,
-                                      Collection<Row> updateRows) throws IOException {
-        synchronized (this) {
+    private static void atomicChangeTempFile(@NonNull TypesOf typesOf,
+                                             @NonNull DatabaseInfo databaseInfo,
+                                             @NonNull TableInfo tableInfo,
+                                             Collection<Row> insertRows,
+                                             Collection<Id> deleteIds,
+                                             Collection<Row> updateRows) throws IOException {
+        synchronized (RowListener.class) {
             switch (typesOf) {
                 case delete: {
 

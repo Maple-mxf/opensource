@@ -7,20 +7,23 @@ import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
+ * <p>{@link SnackApplicationEvent}</p>
+ * <p>{@link SnackApplicationListener}</p>
+ *
  * @author maxuefeng
  * @since 2019/10/27
  */
 public class SnackEventSource {
 
-    //保存监听器的列表，类似观察者模式中保存所有观察者的集合；子类可以保存自己的监听器。
+    // 保存监听器的列表，类似观察者模式中保存所有观察者的集合；子类可以保存自己的监听器。
     private Collection<SnackApplicationListener> listeners = new CopyOnWriteArraySet<>();
 
-    //注册监听器
+    // 注册监听器
     public void registerListener(SnackApplicationListener listener) {
         this.listeners.add(listener);
     }
 
-    //删除监听
+    // 删除监听
     public void removeListener(SnackApplicationListener listener) {
         this.listeners.remove(listener);
     }
@@ -42,7 +45,7 @@ public class SnackEventSource {
     public void notifyListener(SnackApplicationEvent event) {
 
         for (SnackApplicationListener evt : listeners) {
-            //实例监听器对象，并调用监听器的方法
+            // 实例监听器对象，并调用监听器的方法
             evt.apply(event);
         }
     }
