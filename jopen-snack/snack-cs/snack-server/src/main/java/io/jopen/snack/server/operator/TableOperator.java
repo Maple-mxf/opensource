@@ -4,6 +4,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import io.jopen.snack.common.DatabaseInfo;
 import io.jopen.snack.common.TableInfo;
+import io.jopen.snack.common.event.TableEvent;
 import io.jopen.snack.common.exception.ParamIsNullException;
 import io.jopen.snack.common.exception.SnackExceptionUtil;
 import io.jopen.snack.common.exception.SnackRuntimeException;
@@ -11,6 +12,7 @@ import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.common.protol.RpcDataUtil;
 import io.jopen.snack.common.serialize.KryoHelper;
 import io.jopen.snack.common.storage.Database;
+import io.jopen.snack.server.PersistenceContext;
 
 /**
  * {@link Operator}
@@ -45,6 +47,8 @@ public class TableOperator extends Operator {
                 boolean deleteResult = database.dropTable(tableInfo);
 
                 if (deleteResult) {
+                    // 激活删除表格事件
+                    PersistenceContext.eventSource.fireEvent(new TableEvent.Drop(databaseInfo, tableInfo));
                     return RpcDataUtil.defaultSuccess();
                 } else {
                     return RpcDataUtil.defaultFailure(String.format("table is not exist ，table info [ %s ] ", tableInfo));
@@ -71,6 +75,9 @@ public class TableOperator extends Operator {
                 DatabaseInfo databaseInfo = KryoHelper.deserialization(dbInfoByStr.toByteArray(), DatabaseInfo.class);
                 Database database = dbManagement.securityGetDatabase(databaseInfo);
                 database.securityGetTable(tableInfo);
+
+                // 激活创建表格事件
+                PersistenceContext.eventSource.fireEvent(new TableEvent.Create(databaseInfo, tableInfo));
 
                 return RpcDataUtil.defaultSuccess();
             }

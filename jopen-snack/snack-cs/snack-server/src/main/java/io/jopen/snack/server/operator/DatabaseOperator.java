@@ -3,12 +3,14 @@ package io.jopen.snack.server.operator;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import io.jopen.snack.common.DatabaseInfo;
+import io.jopen.snack.common.event.DatabaseEvent;
 import io.jopen.snack.common.exception.ParamIsNullException;
 import io.jopen.snack.common.exception.SnackExceptionUtil;
 import io.jopen.snack.common.exception.SnackRuntimeException;
 import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.common.protol.RpcDataUtil;
 import io.jopen.snack.common.serialize.KryoHelper;
+import io.jopen.snack.server.PersistenceContext;
 
 import java.util.Set;
 
@@ -40,6 +42,8 @@ public class DatabaseOperator extends Operator {
                 boolean dropResult = super.dbManagement.dropDatabase(databaseInfo);
 
                 if (dropResult) {
+                    // 激活删除数据库事件
+                    PersistenceContext.eventSource.fireEvent(new DatabaseEvent.Drop(databaseInfo));
                     return RpcDataUtil.defaultSuccess();
                 } else {
                     return RpcDataUtil.defaultFailure(String.format("database [ %s ] is not exist", databaseInfo));
@@ -57,13 +61,18 @@ public class DatabaseOperator extends Operator {
 
                 DatabaseInfo databaseInfo = KryoHelper.deserialization(byteString.toByteArray(), DatabaseInfo.class);
                 try {
+                    // 激活删除数据库事件
                     super.dbManagement.createDatabase(databaseInfo);
+                    PersistenceContext.eventSource.fireEvent(new DatabaseEvent.Create(databaseInfo));
                     return RpcDataUtil.defaultSuccess();
                 } catch (SnackRuntimeException ex) {
                     return RpcDataUtil.defaultFailure(ex.getMessage());
                 }
             }
             case modifyDB: {
+
+                //
+
             }
             default: {
             }

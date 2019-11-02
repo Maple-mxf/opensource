@@ -9,7 +9,7 @@ import io.jopen.snack.common.event.SnackApplicationEvent;
  */
 public class PersistenceContext {
 
-    public static final SnackEventSource eventSource = new SnackEventSource();
+    public static final SnackEventSource eventSource = SnackEventSource.SNACK_EVENT_SOURCE;
 
     public static void addEvent(Class clazz) {
         try {

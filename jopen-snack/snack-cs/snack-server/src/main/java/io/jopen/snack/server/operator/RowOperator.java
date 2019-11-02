@@ -3,19 +3,17 @@ package io.jopen.snack.server.operator;
 import com.google.common.collect.Lists;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
-import io.jopen.snack.common.IntermediateExpression;
-import io.jopen.snack.common.Row;
+import io.jopen.snack.common.*;
+import io.jopen.snack.common.event.RowEvent;
 import io.jopen.snack.common.exception.SnackRuntimeException;
 import io.jopen.snack.common.protol.RpcData;
 import io.jopen.snack.common.protol.RpcDataUtil;
 import io.jopen.snack.common.serialize.KryoHelper;
 import io.jopen.snack.common.storage.RowStoreTable;
+import io.jopen.snack.server.PersistenceContext;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -53,11 +51,26 @@ class RowOperator extends Operator {
                 if (requestInfo.hasUpdateBody()) {
                     HashMap<String, Object> updateBody = KryoHelper.deserialization(requestInfo.getUpdateBody().getValue().toByteArray(), HashMap.class);
                     int updateRows;
+                    List<Row> rows;
                     if (expressions.size() == 1) {
-                        updateRows = targetTable.update(expressions.get(0), updateBody).size();
+                        rows = targetTable.update(expressions.get(0), updateBody);
                     } else {
-                        updateRows = targetTable.update(expressions, updateBody).size();
+                        rows = targetTable.update(expressions, updateBody);
                     }
+
+                    updateRows = rows.size();
+
+                    if (updateRows > 0) {
+                        // 持久化数据记录
+                        PersistenceContext.eventSource.fireEvent(new RowEvent.Update(
+                                // database info
+                                KryoHelper.deserialization(requestInfo.getDbInfo().getValue().toByteArray(), DatabaseInfo.class),
+                                // table info
+                                KryoHelper.deserialization(requestInfo.getTableInfo().getValue().toByteArray(), TableInfo.class),
+                                // rows
+                                rows));
+                    }
+
                     return RpcDataUtil.defaultSuccess(updateRows);
                 } else {
                     return RpcDataUtil.defaultSuccess();
@@ -74,20 +87,47 @@ class RowOperator extends Operator {
                 // 进行保存  可能会抛出异常
                 int updateRow = targetTable.saveBatch(rows);
 
+                if (updateRow > 0) {
+                    // 持久化插入的数据记录
+                    PersistenceContext.eventSource.fireEvent(new RowEvent.Insert(
+                            // database info
+                            KryoHelper.deserialization(requestInfo.getDbInfo().getValue().toByteArray(), DatabaseInfo.class),
+                            // table info
+                            KryoHelper.deserialization(requestInfo.getTableInfo().getValue().toByteArray(), TableInfo.class),
+                            // rows
+                            rows));
+                }
+
+
                 return RpcDataUtil.defaultSuccess(updateRow);
             }
             case DELETE: {
                 List<Any> anyList = requestInfo.getConditionsList();
 
                 int updateRows;
+                List<Id> idList = null;
+
                 if (anyList == null || anyList.size() == 0) {
-                    updateRows = targetTable.delete(IntermediateExpression.buildFor(Row.class)).size();
+                    idList = targetTable.delete(IntermediateExpression.buildFor(Row.class));
                 } else if (anyList.size() == 1) {
                     IntermediateExpression<Row> expression = convertByteArray2Expression(anyList.get(0));
-                    updateRows = targetTable.delete(expression).size();
+                    idList = targetTable.delete(expression);
                 } else {
                     List<IntermediateExpression<Row>> expressions = convertByteArray2Expressions(anyList);
-                    updateRows = targetTable.delete(expressions).size();
+                    idList = targetTable.delete(expressions);
+                }
+
+                updateRows = idList.size();
+
+                if (updateRows > 0) {
+                    // 持久化删除数据记录
+                    PersistenceContext.eventSource.fireEvent(new RowEvent.Delete(
+                            // database info
+                            KryoHelper.deserialization(requestInfo.getDbInfo().getValue().toByteArray(), DatabaseInfo.class),
+                            // table info
+                            KryoHelper.deserialization(requestInfo.getTableInfo().getValue().toByteArray(), TableInfo.class),
+                            // rows
+                            new HashSet<>(idList)));
                 }
                 return RpcDataUtil.defaultSuccess(updateRows);
             }

@@ -13,7 +13,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author maxuefeng
  * @since 2019/10/27
  */
-public class SnackEventSource {
+public final class SnackEventSource {
+
+    public final static SnackEventSource SNACK_EVENT_SOURCE = new SnackEventSource();
+
+    private SnackEventSource(){}
 
     // 保存监听器的列表，类似观察者模式中保存所有观察者的集合；子类可以保存自己的监听器。
     private Collection<SnackApplicationListener> listeners = new CopyOnWriteArraySet<>();
