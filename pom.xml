@@ -25,6 +25,7 @@
         <module>jopen-scheduling</module>
         <module>jopen-snack</module>
         <module>jopen-test</module>
+        <module>jopen-mapreduce</module>
     </modules>
 
 

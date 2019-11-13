@@ -151,10 +151,10 @@ public abstract class TableListener extends SnackApplicationListener {
 
             @Override
             public Boolean execute() {
-                TableEvent tableEvent = (TableEvent) this.event;
-                DatabaseInfo databaseInfo = tableEvent.getDatabaseInfo();
-                TableInfo tableInfo = tableEvent.getTableInfo();
-                TableInfo targetTableInfo = tableEvent.getTargetTableInfo();
+                TableEvent.Modify modifyTableEvent = (TableEvent.Modify) this.event;
+                DatabaseInfo databaseInfo = modifyTableEvent.getDatabaseInfo();
+                TableInfo tableInfo = modifyTableEvent.getTableInfo();
+                TableInfo targetTableInfo = modifyTableEvent.getTargetTableInfo();
                 Database database = Modify.super.dbManagement.getDatabase(databaseInfo);
                 if (database == null) {
                     database = Modify.super.dbManagement.createDatabase(databaseInfo);
