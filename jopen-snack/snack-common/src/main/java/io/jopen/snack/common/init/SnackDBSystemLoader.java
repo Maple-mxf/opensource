@@ -1,8 +1,13 @@
 package io.jopen.snack.common.init;
 
+import com.google.common.annotations.GwtCompatible;
+
 /**
  * @author maxuefeng
  * @since 2019/11/2
  */
-public class SnackDBSystemLoader {
+@GwtCompatible
+public final
+class SnackDBSystemLoader {
+
 }
