@@ -26,6 +26,7 @@
         <module>jopen-snack</module>
         <module>jopen-test</module>
         <module>jopen-mapreduce</module>
+        <module>jopen-quick-configuration</module>
     </modules>
 
 

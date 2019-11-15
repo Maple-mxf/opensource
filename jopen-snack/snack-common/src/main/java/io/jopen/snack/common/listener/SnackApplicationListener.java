@@ -267,5 +267,4 @@ public abstract class SnackApplicationListener<V> {
 
         return table != null;
     };
-
 }
