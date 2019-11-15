@@ -1,8 +1,6 @@
 package io.jopen.core.common.json;
 
 import com.alibaba.fastjson.JSONPath;
-import lombok.Getter;
-import lombok.Setter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -12,8 +10,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public class JsonElesParser {
 
-    @Getter
-    @Setter
     public static class ParamTypeException extends RuntimeException {
         private String msg;
 
