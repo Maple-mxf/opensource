@@ -32,6 +32,11 @@ public class DistributeCollectionTest {
     }
 
     /*generic set*/
+
+    /**
+     * @throws InterruptedException e
+     * @see com.google.common.base.Joiner
+     */
     @Test
     public void testDistributeSet() throws InterruptedException {
         RSet<Object> genericSet = client.getSet("GenericSet");
@@ -43,9 +48,7 @@ public class DistributeCollectionTest {
 
         // 当元素过期时的回调函数
         genericSet.addListenerAsync((ExpiredObjectListener) s -> System.err.println(String.format("当前元素 %s 马上过期", s)));
-        /**
-         * @see com.google.common.base.Joiner
-         */
+
         // 对当前集合中的所有元素进行java8流式处理
         Object java8MapReduceRes = genericSet.stream()
                 .map((Function<Object, Object>) Object::toString)
@@ -54,6 +57,7 @@ public class DistributeCollectionTest {
 
         // 对当前元素进行大数据计算风格的流式处理
         RCollectionMapReduce<Object, Object, Object> collectionMapReduce = genericSet.mapReduce();
+
         collectionMapReduce
                 // 进行map自定义元素操作
                 .mapper((RCollectionMapper<Object, Object, Object>) (value, collector) -> collector.emit(UUID.randomUUID(), value))
