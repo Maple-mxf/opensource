@@ -181,6 +181,7 @@ class RowListener extends SnackApplicationListener {
             }
 
             @Override
+            @NonNull
             public Integer execute() throws IOException {
                 RowEvent.Update updateEvent = (RowEvent.Update) event;
                 DatabaseInfo databaseInfo = updateEvent.getDatabaseInfo();

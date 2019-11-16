@@ -34,9 +34,9 @@ public abstract class TableListener extends SnackApplicationListener {
         }
 
         private class Task extends PersistenceTask<Boolean> {
-            protected Task(@Nullable Runnable taskExecuteListener,
-                           @NonNull FutureCallback<Boolean> futureCallback,
-                           @NonNull SnackApplicationEvent event) {
+            Task(@Nullable Runnable taskExecuteListener,
+                 @NonNull FutureCallback<Boolean> futureCallback,
+                 @NonNull SnackApplicationEvent event) {
                 super(taskExecuteListener, futureCallback, event);
             }
 
@@ -86,9 +86,9 @@ public abstract class TableListener extends SnackApplicationListener {
         }
 
         private class Task extends PersistenceTask<Boolean> {
-            protected Task(@Nullable Runnable taskExecuteListener,
-                           @NonNull FutureCallback<Boolean> futureCallback,
-                           @NonNull SnackApplicationEvent event) {
+            Task(@Nullable Runnable taskExecuteListener,
+                 @NonNull FutureCallback<Boolean> futureCallback,
+                 @NonNull SnackApplicationEvent event) {
                 super(taskExecuteListener, futureCallback, event);
             }
 
@@ -143,9 +143,9 @@ public abstract class TableListener extends SnackApplicationListener {
         }
 
         private class Task extends PersistenceTask<Boolean> {
-            protected Task(@Nullable Runnable taskExecuteListener,
-                           @NonNull FutureCallback<Boolean> futureCallback,
-                           @NonNull SnackApplicationEvent event) {
+            Task(@Nullable Runnable taskExecuteListener,
+                 @NonNull FutureCallback<Boolean> futureCallback,
+                 @NonNull SnackApplicationEvent event) {
                 super(taskExecuteListener, futureCallback, event);
             }
 
