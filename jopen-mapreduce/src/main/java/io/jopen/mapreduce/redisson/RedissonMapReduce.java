@@ -100,7 +100,9 @@ public class RedissonMapReduce {
 
     public static void main(String[] args) {
         RedissonMapReduce redissonMapReduce = new RedissonMapReduce();
+
         RMap<String, String> map = redissonMapReduce.client.getMap("wordsMap");
+
         map.put("line1", "Alice was beginning to get very tired");
         map.put("line2", "of sitting by her sister on the bank and");
         map.put("line3", "of having nothing to do once or twice she");

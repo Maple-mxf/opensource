@@ -21,7 +21,7 @@ import java.lang.annotation.*;
 
 
 /**
- * Optional annotation for specifying persistence behavior
+ * Optional io.jopen.springboot.encryption.annotation for specifying persistence behavior
  *
  * @author Olafur Gauti Gudmundsson
  * @author Scott Hernandez

@@ -30,7 +30,7 @@ public class Util {
 
 
         if (primaryKeyFields.size() == 0) {
-            throw new IllegalArgumentException("not idVal annotation,must have @PrimaryKey");
+            throw new IllegalArgumentException("not idVal io.jopen.springboot.encryption.annotation,must have @PrimaryKey");
         }
 
         return primaryKeyFields;

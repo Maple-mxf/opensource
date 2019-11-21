@@ -27,6 +27,8 @@
         <module>jopen-test</module>
         <module>jopen-mapreduce</module>
         <module>jopen-quick-configuration</module>
+        <module>jopen-springboot-encryption</module>
+        <module>jopen-computer-vision</module>
     </modules>
 
 

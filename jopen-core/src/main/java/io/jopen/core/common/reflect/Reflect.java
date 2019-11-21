@@ -21,7 +21,7 @@ public class Reflect {
      * Supplier&lt;String> supplier = Reflect.compile(
      *   "org.joor.DBTest",
      *   "package org.joor;\n" +
-     *   "class DBTest implements java.util.function.Supplier&lt;String> {\n" +
+     *   "class DBTest implements java.io.jopen.springboot.encryption.util.function.Supplier&lt;String> {\n" +
      *   "  public String get() {\n" +
      *   "    return \"Hello World!\";\n" +
      *   "  }\n" +
@@ -45,7 +45,7 @@ public class Reflect {
      * Supplier&lt;String> supplier = Reflect.compile(
      *   "org.joor.DBTest",
      *   "package org.joor;\n" +
-     *   "class DBTest implements java.util.function.Supplier&lt;String> {\n" +
+     *   "class DBTest implements java.io.jopen.springboot.encryption.util.function.Supplier&lt;String> {\n" +
      *   "  public String get() {\n" +
      *   "    return \"Hello World!\";\n" +
      *   "  }\n" +
@@ -69,7 +69,7 @@ public class Reflect {
      *
      * @param name A fully qualified class name
      * @return A wrapped class object, to be used for further reflection.
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      * @see #onClass(Class)
      * @deprecated [#78] 0.9.11, use {@link #onClass(String)} instead.
      */
@@ -88,7 +88,7 @@ public class Reflect {
      * @param classLoader The class loader in whose context the class should be
      *                    loaded.
      * @return A wrapped class object, to be used for further reflection.
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      * @see #onClass(Class)
      * @deprecated [#78] 0.9.11, use {@link #onClass(String, ClassLoader)} instead.
      */
@@ -120,7 +120,7 @@ public class Reflect {
      *
      * @param name A fully qualified class name
      * @return A wrapped class object, to be used for further reflection.
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      * @see #onClass(Class)
      */
     public static Reflect onClass(String name) throws ReflectException {
@@ -137,7 +137,7 @@ public class Reflect {
      * @param classLoader The class loader in whose context the class should be
      *                    loaded.
      * @return A wrapped class object, to be used for further reflection.
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      * @see #onClass(Class)
      */
     public static Reflect onClass(String name, ClassLoader classLoader) throws ReflectException {
@@ -326,7 +326,7 @@ public class Reflect {
      * @param name  The field name
      * @param value The new field value
      * @return The same wrapped object, to be used for further reflection.
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      */
     public Reflect set(String name, Object value) throws ReflectException {
         try {
@@ -364,7 +364,7 @@ public class Reflect {
      *
      * @param name The field name
      * @return The field value
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      * @see #field(String)
      */
     public <T> T get(String name) throws ReflectException {
@@ -381,7 +381,7 @@ public class Reflect {
      *
      * @param name The field name
      * @return The wrapped field
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      */
     public Reflect field(String name) throws ReflectException {
         try {
@@ -462,7 +462,7 @@ public class Reflect {
      * @return The wrapped method result or the same wrapped object if the
      * method returns <code>void</code>, to be used for further
      * reflection.
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      * @see #call(String, Object...)
      */
     public Reflect call(String name) throws ReflectException {
@@ -504,7 +504,7 @@ public class Reflect {
      * @return The wrapped method result or the same wrapped object if the
      * method returns <code>void</code>, to be used for further
      * reflection.
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      */
     public Reflect call(String name, Object... args) throws ReflectException {
         Class<?>[] types = types(args);
@@ -608,7 +608,7 @@ public class Reflect {
      * <code>create(new Object[0])</code>
      *
      * @return The wrapped new object, to be used for further reflection.
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      * @see #create(Object...)
      */
     public Reflect create() throws ReflectException {
@@ -639,7 +639,7 @@ public class Reflect {
      *
      * @param args The constructor arguments
      * @return The wrapped new object, to be used for further reflection.
-     * @throws ReflectException If any reflection exception occurred.
+     * @throws ReflectException If any reflection io.jopen.springboot.encryption.exception occurred.
      */
     public Reflect create(Object... args) throws ReflectException {
         Class<?>[] types = types(args);

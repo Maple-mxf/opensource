@@ -20,9 +20,9 @@ public class ClassHelper {
             "net.sf.cglib.proxy.Factory"
             // cglib
             , "org.springframework.cglib.proxy.Factory"
-            , "javassist.util.proxy.ProxyObject"
+            , "javassist.io.jopen.springboot.encryption.util.proxy.ProxyObject"
             // javassist
-            , "org.apache.ibatis.javassist.util.proxy.ProxyObject");
+            , "org.apache.ibatis.javassist.io.jopen.springboot.encryption.util.proxy.ProxyObject");
 
     private ClassHelper() {
     }

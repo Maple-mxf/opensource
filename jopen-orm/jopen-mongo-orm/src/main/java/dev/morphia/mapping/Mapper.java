@@ -881,7 +881,7 @@ public class Mapper {
             return;
         }
 
-        // get the annotation from the field.
+        // get the io.jopen.springboot.encryption.annotation from the field.
         Class<? extends Annotation> annType = getFieldAnnotation(mf);
 
         if (Property.class.equals(annType) || Serialized.class.equals(annType) || mf.isTypeMongoCompatible()
@@ -893,7 +893,7 @@ public class Mapper {
             opts.getEmbeddedMapper().toDBObject(entity, mf, dbObject, involvedObjects, this);
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("No annotation was found, using default mapper " + opts.getDefaultMapper() + " for " + mf);
+                LOG.debug("No io.jopen.springboot.encryption.annotation was found, using default mapper " + opts.getDefaultMapper() + " for " + mf);
             }
             opts.getDefaultMapper().toDBObject(entity, mf, dbObject, involvedObjects, this);
         }

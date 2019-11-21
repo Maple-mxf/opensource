@@ -31,7 +31,7 @@ public class ReferenceToUnidentifiable extends FieldConstraint {
                 ve.add(new ConstraintViolation(Level.FATAL, mc, mf, getClass(),
                                                mf.getFullName() + " is annotated as a @" + Reference.class.getSimpleName() + " but the "
                                                + mf.getType().getName()
-                                               + " class is missing the @" + Id.class.getSimpleName() + " annotation"));
+                                               + " class is missing the @" + Id.class.getSimpleName() + " io.jopen.springboot.encryption.annotation"));
             }
         }
     }

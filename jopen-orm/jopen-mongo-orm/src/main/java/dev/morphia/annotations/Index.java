@@ -34,7 +34,7 @@ import java.lang.annotation.*;
 public @interface Index {
     /**
      * @return List of fields to include in the index.  At least one field must be defined unless defining a text index. Use of this
-     * field implies use of {@link #options()} and any options defined directly on this annotation will be ignored.
+     * field implies use of {@link #options()} and any options defined directly on this io.jopen.springboot.encryption.annotation will be ignored.
      */
     Field[] fields() default {};
 

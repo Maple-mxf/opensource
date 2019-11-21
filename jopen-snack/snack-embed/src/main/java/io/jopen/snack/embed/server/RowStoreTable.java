@@ -118,7 +118,7 @@ class RowStoreTable implements Serializable {
         // this.rowsData.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
         boolean res = saveCellPreconditionId.apply(row);
         if (res) {
-            throw new RuntimeException("save exception");
+            throw new RuntimeException("save io.jopen.springboot.encryption.exception");
         }
 
         // put data

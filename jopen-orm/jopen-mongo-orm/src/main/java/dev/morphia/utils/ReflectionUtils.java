@@ -386,22 +386,22 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Returns the @Embedded annotation on a Class if present
+     * Returns the @Embedded io.jopen.springboot.encryption.annotation on a Class if present
      *
      * @param c the class to examine
-     * @return the annotation.  may be null.
+     * @return the io.jopen.springboot.encryption.annotation.  may be null.
      */
     public static Embedded getClassEmbeddedAnnotation(final Class c) {
         return getAnnotation(c, Embedded.class);
     }
 
     /**
-     * Returns an annotation on a Class if present
+     * Returns an io.jopen.springboot.encryption.annotation on a Class if present
      *
      * @param c          the class to examine
-     * @param annotation the annotation to find
-     * @param <T>        the type of the annotation
-     * @return the annotation.  may be null.
+     * @param annotation the io.jopen.springboot.encryption.annotation to find
+     * @param <T>        the type of the io.jopen.springboot.encryption.annotation
+     * @return the io.jopen.springboot.encryption.annotation.  may be null.
      */
     public static <T> T getAnnotation(final Class c, final Class<T> annotation) {
         final List<T> found = getAnnotations(c, annotation);
@@ -413,11 +413,11 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Returns the (first) instance of the annotation, on the class (or any superclass, or interfaces implemented).
+     * Returns the (first) instance of the io.jopen.springboot.encryption.annotation, on the class (or any superclass, or interfaces implemented).
      *
      * @param c          the class to examine
-     * @param annotation the annotation to find
-     * @param <T>        the type of the annotation
+     * @param annotation the io.jopen.springboot.encryption.annotation to find
+     * @param <T>        the type of the io.jopen.springboot.encryption.annotation
      * @return the list of annotations
      */
     @SuppressWarnings("unchecked")
@@ -450,15 +450,15 @@ public final class ReflectionUtils {
                 found.add((T) interfaceClass.getAnnotation(annotation));
             }
         }
-        // no annotation found, use the defaults
+        // no io.jopen.springboot.encryption.annotation found, use the defaults
         return found;
     }
 
     /**
-     * Returns the @Entity annotation on a Class if present
+     * Returns the @Entity io.jopen.springboot.encryption.annotation on a Class if present
      *
      * @param c the class to examine
-     * @return the annotation.  may be null.
+     * @return the io.jopen.springboot.encryption.annotation.  may be null.
      */
     public static Entity getClassEntityAnnotation(final Class c) {
         return getAnnotation(c, Entity.class);

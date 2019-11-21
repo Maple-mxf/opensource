@@ -31,7 +31,7 @@ public class HTemplate {
     public void before() throws IOException {
         Configuration conf = HBaseConfiguration.create();
 
-        conf.set("hbase.zookeeper.quorum", "master");
+        conf.set("hbase.zookeeper.quorum", "192.168.1.84");
         connection = ConnectionFactory.createConnection(conf);
         this.admin = connection.getAdmin();
     }

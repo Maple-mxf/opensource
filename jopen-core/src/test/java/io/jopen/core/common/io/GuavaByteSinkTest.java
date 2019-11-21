@@ -56,6 +56,6 @@ public class GuavaByteSinkTest {
             e.printStackTrace();
             return null;
         }
-        // ignore close exception
+        // ignore close io.jopen.springboot.encryption.exception
     }
 }

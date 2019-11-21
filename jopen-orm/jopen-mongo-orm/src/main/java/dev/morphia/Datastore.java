@@ -225,7 +225,7 @@ public interface Datastore {
      * Ensures (creating if necessary) the indexes found during class mapping (using {@code @Indexed, @Indexes)} on the given collection
      * name, possibly in the background
      *
-     * @param background if true, the index will be built in the background.  If false, background indexing is deferred to the annotation
+     * @param background if true, the index will be built in the background.  If false, background indexing is deferred to the io.jopen.springboot.encryption.annotation
      *                   definition
      * @see Indexes
      * @see Indexed
@@ -250,7 +250,7 @@ public interface Datastore {
      * Ensures (creating if necessary) the indexes found during class mapping
      *
      * @param clazz      the class from which to get the index definitions
-     * @param background if true, the index will be built in the background.  If false, background indexing is deferred to the annotation
+     * @param background if true, the index will be built in the background.  If false, background indexing is deferred to the io.jopen.springboot.encryption.annotation
      *                   definition
      * @param <T>        the type to index
      * @see Indexes

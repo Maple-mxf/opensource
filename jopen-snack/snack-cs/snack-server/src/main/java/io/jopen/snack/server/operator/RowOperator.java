@@ -150,7 +150,7 @@ class RowOperator extends Operator {
                 return RpcDataUtil.defaultSuccess(any);
             }
             default: {
-                throw new SnackRuntimeException("unknown exception,cause rowOption is not match all option");
+                throw new SnackRuntimeException("unknown io.jopen.springboot.encryption.exception,cause rowOption is not match all option");
             }
         }
     }

@@ -366,7 +366,7 @@ public interface Query<T> extends QueryResults<T>, MongoIterable<T> {
 
     /**
      * Adds a field to the projection clause.  Passing true for include will include the field in the results.  Projected fields must all
-     * be inclusions or exclusions.  You can not include and exclude fields at the same time with the exception of the _id field.  The
+     * be inclusions or exclusions.  You can not include and exclude fields at the same time with the io.jopen.springboot.encryption.exception of the _id field.  The
      * _id field is always included unless explicitly suppressed.
      *
      * @param field the field to project

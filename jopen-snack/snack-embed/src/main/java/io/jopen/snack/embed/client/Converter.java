@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * converter java bean object to row {@link Row}
+ * converter java io.jopen.springboot.encryption.bean object to row {@link Row}
  *
  * @author maxuefeng
  * @since 2019/10/24
@@ -28,9 +28,9 @@ class Converter<T> {
     }
 
     /**
-     * @param beans java bean object
+     * @param beans java io.jopen.springboot.encryption.bean object
      * @return rows
-     * <p>{@link RuntimeException} may be throw some exception </p>
+     * <p>{@link RuntimeException} may be throw some io.jopen.springboot.encryption.exception </p>
      * @see Row
      */
     @NonNull

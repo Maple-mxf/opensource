@@ -23,7 +23,7 @@ import org.redisson.config.Config;
  * <p>
  * 闭锁
  * <p>
- * 基于Redisson的Redisson分布式闭锁（CountDownLatch）Java对象RCountDownLatch采用了与java.util.concurrent.CountDownLatch相似的接口和用法。
+ * 基于Redisson的Redisson分布式闭锁（CountDownLatch）Java对象RCountDownLatch采用了与java.io.jopen.springboot.encryption.util.concurrent.CountDownLatch相似的接口和用法。
  * <p>{@link java.util.concurrent.CountDownLatch}</p>
  * <p>{@link org.redisson.api.RCountDownLatch}</p>
  *

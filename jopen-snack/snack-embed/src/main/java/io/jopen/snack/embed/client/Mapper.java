@@ -23,7 +23,7 @@ class Mapper<T> {
      * @param <T>
      * @param <U>
      * @param <R>
-     * @see java.util.function.BiFunction not throw exception
+     * @see java.util.function.BiFunction not throw io.jopen.springboot.encryption.exception
      */
     public interface BiThrFunction<T, U, R> {
         @NonNull

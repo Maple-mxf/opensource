@@ -16,7 +16,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spark.version>2.4.4</spark.version>
-        <scala.version>2.12</scala.version>
+        <scala.version>2.11</scala.version>
         <spark.cope>compile</spark.cope>
     </properties>
 

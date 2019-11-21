@@ -183,7 +183,7 @@ public class MappedClass {
     }
 
     /**
-     * Adds an annotation for Morphia to retain when mapping.
+     * Adds an io.jopen.springboot.encryption.annotation for Morphia to retain when mapping.
      *
      * @param annotation the type to retain
      */
@@ -195,7 +195,7 @@ public class MappedClass {
      * Adds the given Annotation to the internal list for the given Class.
      *
      * @param clazz the type to add
-     * @param ann   the annotation to add
+     * @param ann   the io.jopen.springboot.encryption.annotation to add
      */
     public void addAnnotation(final Class<? extends Annotation> clazz, final Annotation ann) {
         if (ann == null || clazz == null) {
@@ -212,7 +212,7 @@ public class MappedClass {
     /**
      * Call the lifecycle methods
      *
-     * @param event  the lifecycle annotation
+     * @param event  the lifecycle io.jopen.springboot.encryption.annotation
      * @param entity the entity to process
      * @param dbObj  the dbObject to use
      * @param mapper  the Mapper to use
@@ -286,7 +286,7 @@ public class MappedClass {
     }
 
     /**
-     * Looks for an annotation of the type given
+     * Looks for an io.jopen.springboot.encryption.annotation of the type given
      *
      * @param clazz the type to search for
      * @return the instance if it was found, if more than one was found, the last one added
@@ -297,10 +297,10 @@ public class MappedClass {
     }
 
     /**
-     * Looks for an annotation in the annotations found on a class while mapping
+     * Looks for an io.jopen.springboot.encryption.annotation in the annotations found on a class while mapping
      *
      * @param clazz the class to search for
-     * @param <T>   the type of annotation to find
+     * @param <T>   the type of io.jopen.springboot.encryption.annotation to find
      * @return the instance if it was found, if more than one was found, the last one added
      */
     @SuppressWarnings("unchecked")
@@ -563,7 +563,7 @@ public class MappedClass {
     }
 
     /**
-     * Adds the annotation, if it exists on the field.
+     * Adds the io.jopen.springboot.encryption.annotation, if it exists on the field.
      */
     private void addAnnotation(final Class<? extends Annotation> clazz) {
         final List<? extends Annotation> annotations = ReflectionUtils.getAnnotations(getClazz(), clazz);

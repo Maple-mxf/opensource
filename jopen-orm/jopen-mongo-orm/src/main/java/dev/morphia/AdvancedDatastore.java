@@ -226,7 +226,7 @@ public interface AdvancedDatastore extends Datastore {
      *
      * @param keyOrEntity    the value to check for
      * @param readPreference Uses the supplied ReadPreference for the check.  If readPreference is null the preference is taken from the
-     *                       annotation or uses the default preference.
+     *                       io.jopen.springboot.encryption.annotation or uses the default preference.
      * @return the key if the entity exists
      * @morphia.inline
      * @see #exists(Object)

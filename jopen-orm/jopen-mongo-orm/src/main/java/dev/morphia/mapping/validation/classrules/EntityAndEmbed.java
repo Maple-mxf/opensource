@@ -23,7 +23,7 @@ public class EntityAndEmbed implements ClassConstraint {
     public void check(final Mapper mapper, final MappedClass mc, final Set<ConstraintViolation> ve) {
 
         if (mc.getEntityAnnotation() != null && mc.getEmbeddedAnnotation() != null) {
-            ve.add(new ConstraintViolation(Level.FATAL, mc, getClass(), format("Cannot have both @%s and @%s annotation at class level.",
+            ve.add(new ConstraintViolation(Level.FATAL, mc, getClass(), format("Cannot have both @%s and @%s io.jopen.springboot.encryption.annotation at class level.",
                 Entity.class.getSimpleName(), Embedded.class.getSimpleName())));
         }
 

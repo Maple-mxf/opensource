@@ -22,8 +22,8 @@ public class ContradictingFieldAnnotation extends FieldConstraint {
     /**
      * Creates a ContradictingFieldAnnotation validation with the two incompatible annotations.
      *
-     * @param a1 the first annotation
-     * @param a2 the second annotation
+     * @param a1 the first io.jopen.springboot.encryption.annotation
+     * @param a2 the second io.jopen.springboot.encryption.annotation
      */
     public ContradictingFieldAnnotation(final Class<? extends Annotation> a1, final Class<? extends Annotation> a2) {
         this.a1 = a1;

@@ -20,7 +20,7 @@ public class MappingException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates an exception with a message
+     * Creates an io.jopen.springboot.encryption.exception with a message
      *
      * @param message the message to record
      */
@@ -29,7 +29,7 @@ public class MappingException extends RuntimeException {
     }
 
     /**
-     * Creates an exception with a message and a cause
+     * Creates an io.jopen.springboot.encryption.exception with a message and a cause
      *
      * @param message the message to record
      * @param cause   the

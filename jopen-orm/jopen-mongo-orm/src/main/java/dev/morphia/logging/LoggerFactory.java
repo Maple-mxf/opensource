@@ -18,7 +18,7 @@ package dev.morphia.logging;
 
 /**
  * A generic logger factory interface used internally by Morphia.  At runtime the actual implementation used is chosen to match which
- * logging framework (e.g., java.util.logging vs slf4j) is used in the application.
+ * logging framework (e.g., java.io.jopen.springboot.encryption.util.logging vs slf4j) is used in the application.
  */
 public interface LoggerFactory {
     /**

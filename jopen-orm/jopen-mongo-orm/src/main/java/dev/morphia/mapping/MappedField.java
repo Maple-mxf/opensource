@@ -111,7 +111,7 @@ public class MappedField {
     }
 
     /**
-     * Adds an annotation for Morphia to retain when mapping.
+     * Adds an io.jopen.springboot.encryption.annotation for Morphia to retain when mapping.
      *
      * @param annotation the type to retain
      */
@@ -120,9 +120,9 @@ public class MappedField {
     }
 
     /**
-     * Adds the annotation, if it exists on the field.
+     * Adds the io.jopen.springboot.encryption.annotation, if it exists on the field.
      *
-     * @param clazz the annotation to add
+     * @param clazz the io.jopen.springboot.encryption.annotation to add
      */
     public void addAnnotation(final Class<? extends Annotation> clazz) {
         if (field.isAnnotationPresent(clazz)) {
@@ -131,10 +131,10 @@ public class MappedField {
     }
 
     /**
-     * Adds the annotation, if it exists on the field.
+     * Adds the io.jopen.springboot.encryption.annotation, if it exists on the field.
      *
-     * @param clazz type of the annotation
-     * @param ann   the annotation
+     * @param clazz type of the io.jopen.springboot.encryption.annotation
+     * @param ann   the io.jopen.springboot.encryption.annotation
      */
     public void addAnnotation(final Class<? extends Annotation> clazz, final Annotation ann) {
         foundAnnotations.put(clazz, ann);
@@ -142,9 +142,9 @@ public class MappedField {
     }
 
     /**
-     * @param clazz the annotation to search for
-     * @param <T>   the type of the annotation
-     * @return the annotation instance if it exists on this field
+     * @param clazz the io.jopen.springboot.encryption.annotation to search for
+     * @param <T>   the type of the io.jopen.springboot.encryption.annotation
+     * @return the io.jopen.springboot.encryption.annotation instance if it exists on this field
      */
     @SuppressWarnings("unchecked")
     public <T extends Annotation> T getAnnotation(final Class<T> clazz) {
@@ -339,10 +339,10 @@ public class MappedField {
     }
 
     /**
-     * Indicates whether the annotation is present in the mapping (does not check the java field annotations, just the ones discovered)
+     * Indicates whether the io.jopen.springboot.encryption.annotation is present in the mapping (does not check the java field annotations, just the ones discovered)
      *
-     * @param ann the annotation to search for
-     * @return true if the annotation was found
+     * @param ann the io.jopen.springboot.encryption.annotation to search for
+     * @return true if the io.jopen.springboot.encryption.annotation was found
      */
     public boolean hasAnnotation(final Class ann) {
         return foundAnnotations.containsKey(ann);
@@ -405,10 +405,10 @@ public class MappedField {
     }
 
     /**
-     * Adds the annotation even if not on the declared class/field.
+     * Adds the io.jopen.springboot.encryption.annotation even if not on the declared class/field.
      *
-     * @param ann the annotation to add
-     * @return ann the annotation
+     * @param ann the io.jopen.springboot.encryption.annotation to add
+     * @return ann the io.jopen.springboot.encryption.annotation
      * @deprecated unused
      */
     @Deprecated
@@ -634,7 +634,7 @@ public class MappedField {
 
     private Constructor discoverConstructor() {
         Class<?> type = null;
-        // get the first annotation with a concreteClass that isn't Object.class
+        // get the first io.jopen.springboot.encryption.annotation with a concreteClass that isn't Object.class
         for (final Annotation an : foundAnnotations.values()) {
             try {
                 final Method m = an.getClass().getMethod("concreteClass");
@@ -673,7 +673,7 @@ public class MappedField {
             // see if we can create instances of the type used for declaration
             type = getType();
 
-            // short circuit to avoid wasting time throwing an exception trying to get a constructor we know doesnt exist
+            // short circuit to avoid wasting time throwing an io.jopen.springboot.encryption.exception trying to get a constructor we know doesnt exist
             if (type == List.class || type == Map.class) {
                 return null;
             }

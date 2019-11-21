@@ -36,7 +36,7 @@ public class HazelcastDistributeLockImpl {
         centerConfig.setEnabled(true);
 
         // 设置config
-        //config.setInstanceName("test-center")
+        //io.jopen.springboot.encryption.config.setInstanceName("test-center")
         config.setManagementCenterConfig(centerConfig)
                 .addMapConfig(
                         new MapConfig().setName("mapConfig")
