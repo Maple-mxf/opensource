@@ -346,5 +346,4 @@ public class ImageHelper {
         byte[] imgBytes = decoder.decodeBuffer(imgData);
         return ImageHelper.bytes2Image(imgBytes);
     }
-
 }

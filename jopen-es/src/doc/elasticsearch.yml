@@ -1,0 +1,12 @@
+path:
+  logs: /opt/software/elasticsearch/logs
+  data: /opt/software/elasticsearch/data
+
+cluster.name: es-cluster
+node.name: node0
+network.host: 0.0.0.0
+
+discovery.seed_hosts:
+  - 114.67.246.62:9300
+cluster.initial_master_nodes:
+  - node0

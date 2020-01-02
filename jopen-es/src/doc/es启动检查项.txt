@@ -1,0 +1,21 @@
+启动错误信息
+ERROR: [2] bootstrap checks failed
+[1]: max file descriptors [4096] for elasticsearch process is too low, increase to at least [65535]
+[2]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+
+修改系统配置
+vim /etc/security/limits.conf
+添加
+*        hard    nofile           65536
+*        soft    nofile           65536
+
+vim /etc/sysctl.conf
+添加
+vm.max_map_count=262144
+
+最后执行
+/sbin/sysctl -p
+
+
+
+

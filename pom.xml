@@ -29,7 +29,21 @@
         <module>jopen-quick-configuration</module>
         <module>jopen-springboot-encryption</module>
         <module>jopen-computer-vision</module>
+        <module>jopen-es</module>
+        <module>jopen-concurrent</module>
+        <module>jopen-json</module>
+        <module>jopen-dataframe</module>
     </modules>
 
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>28.1-jre</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

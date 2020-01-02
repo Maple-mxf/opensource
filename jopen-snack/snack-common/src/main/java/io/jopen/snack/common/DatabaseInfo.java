@@ -1,6 +1,7 @@
 package io.jopen.snack.common;
 
 import java.io.Serializable;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * <p>{@link DBObject}</p>
@@ -11,7 +12,17 @@ import java.io.Serializable;
  */
 public final class DatabaseInfo extends DBObject implements Serializable {
 
+    private CopyOnWriteArraySet<TableInfo> tableInfoSet = new CopyOnWriteArraySet<>();
+
     public DatabaseInfo(String name, Long createTs) {
         super(name, createTs);
+    }
+
+    public CopyOnWriteArraySet<TableInfo> getTableInfoSet() {
+        return tableInfoSet;
+    }
+
+    public void setTableInfoSet(CopyOnWriteArraySet<TableInfo> tableInfoSet) {
+        this.tableInfoSet = tableInfoSet;
     }
 }

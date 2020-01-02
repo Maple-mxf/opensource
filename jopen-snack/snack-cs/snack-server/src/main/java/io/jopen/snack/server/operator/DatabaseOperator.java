@@ -61,7 +61,7 @@ public class DatabaseOperator extends Operator {
 
                 DatabaseInfo databaseInfo = KryoHelper.deserialization(byteString.toByteArray(), DatabaseInfo.class);
                 try {
-                    // 激活删除数据库事件
+                    // 激活创建数据库事件
                     super.dbManagement.createDatabase(databaseInfo);
                     PersistenceContext.eventSource.fireEvent(new DatabaseEvent.Create(databaseInfo));
                     return RpcDataUtil.defaultSuccess();
