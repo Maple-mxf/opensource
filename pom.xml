@@ -33,6 +33,7 @@
         <module>jopen-concurrent</module>
         <module>jopen-json</module>
         <module>jopen-dataframe</module>
+        <module>jopen-python-rocketmq</module>
     </modules>
 
 
