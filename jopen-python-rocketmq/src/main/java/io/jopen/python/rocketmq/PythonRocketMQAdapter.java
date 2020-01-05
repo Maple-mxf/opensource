@@ -23,14 +23,13 @@ public class PythonRocketMQAdapter {
 
     private volatile boolean continueConsume = false;
 
-    public PythonRocketMQAdapter(String namesrvAddr, String topic) throws MQClientException {
-
+    public PythonRocketMQAdapter(String namesrvAddr, String group, String topic) throws MQClientException {
         // consumerGroup
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("python-consumer-image");
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(group);
         consumer.setNamesrvAddr(namesrvAddr);
         consumer.subscribe(topic, "*");
-        consumer.setConsumeThreadMax(1);
         consumer.setConsumeMessageBatchMaxSize(1);
+        consumer.setVipChannelEnabled(false);
         consumer.registerMessageListener(new Callback());
 
         // start
@@ -65,7 +64,9 @@ public class PythonRocketMQAdapter {
     }
 
     public String take() throws InterruptedException {
-        return this.dataCache.take();
+        String value = this.dataCache.take();
+        System.err.println(String.format("获取value %s ", value));
+        return value;
     }
 
     /**
