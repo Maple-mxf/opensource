@@ -1,7 +1,5 @@
 package io.jopen.util.concurrent;
 
-import com.google.common.util.concurrent.Futures;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +22,7 @@ public class SoundThreadPoolExecutor extends ThreadPoolExecutor {
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
         super.beforeExecute(t, r);
-        Futures.addCallback();
+        // Futures.addCallback();
     }
 
     @Override
