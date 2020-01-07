@@ -38,7 +38,6 @@ public class ForkJoinTest {
         @Override
         @NonNull
         protected Integer compute() {
-
             int size = this.text.size();
             if (size > threshold) {
                 // 向上取整  获取到要拆分的数量
@@ -55,8 +54,16 @@ public class ForkJoinTest {
                 // 对于拆分玩的任务进行reduce合并;并且返回执行结果
                 return reduceTaskList.parallelStream().map(ForkJoinTask::join).reduce((integer, integer2) -> integer + integer2)
                         .orElse(0);
+            } else {
+                try {
+                    System.err.println(this.text.size());
+                    saveAsFile();
+                    return this.text.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return 0;
+                }
             }
-            return size;
         }
 
         /**
@@ -95,7 +102,7 @@ public class ForkJoinTest {
 
         // 数据生成
         Random random = new Random();
-        List<String> text = Stream.generate(() -> String.valueOf(random.doubles())).limit(10000).collect(Collectors.toList());
+        List<String> text = Stream.generate(() -> String.valueOf(random.nextInt())).limit(100).collect(Collectors.toList());
 
         // 提交任务 并且返回合并的任务
         ForkJoinTask<Integer> reduceTask = forkJoinPool.submit(new Task(text));
@@ -105,5 +112,6 @@ public class ForkJoinTest {
          * 此处会阻塞主线程
          */
         System.err.println(reduceTask.get());
+
     }
 }
