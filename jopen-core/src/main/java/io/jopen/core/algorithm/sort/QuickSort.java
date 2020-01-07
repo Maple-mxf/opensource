@@ -26,6 +26,14 @@ public class QuickSort {
         }
     }
 
+    /**
+     * 双指针移动查询
+     *
+     * @param array
+     * @param fromIndex
+     * @param toIndex
+     * @return
+     */
     public static int partition(int[] array, int fromIndex, int toIndex) {
         int base = array[fromIndex], i = fromIndex, j = toIndex;
         while (i < j) {
@@ -46,6 +54,5 @@ public class QuickSort {
             System.err.print(i);
         }
     }
-
 
 }
