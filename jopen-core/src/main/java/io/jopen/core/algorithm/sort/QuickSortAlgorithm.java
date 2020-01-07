@@ -60,9 +60,9 @@ public class QuickSortAlgorithm implements SortAlgorithm {
             ++t;
         }
 
-        sort(left, i - 1);// 继续处理左边的
+        sort(left, i - 1); // 继续处理左边的
 
-        sort(i + 1, right);// 继续处理右边的
+        sort(i + 1, right); // 继续处理右边的
 
         return origin;
     }
