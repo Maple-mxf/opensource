@@ -26,7 +26,6 @@
         <module>jopen-snack</module>
         <module>jopen-mapreduce</module>
         <module>jopen-quick-configuration</module>
-        <module>jopen-springboot-encryption</module>
         <module>jopen-computer-vision</module>
         <module>jopen-es</module>
         <module>jopen-concurrent</module>
