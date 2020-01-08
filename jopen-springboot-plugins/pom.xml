@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>opensource</artifactId>
+        <groupId>io.jopen</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>jopen-springboot-plugins</artifactId>
+
+    <packaging>pom</packaging>
+
+
+
+
+    <modules>
+        <module>jopen-springboot-plugin-aop</module>
+        <module>jopen-springboot-plugin-limit</module>
+        <module>jopen-springboot-plugin-annotation-cache</module>
+        <module>jopen-springboot-plugin-common</module>
+        <module>jopen-springboot-plugin-param-test</module>
+        <module>jopen-springboot-plugin-mongo-template-builder</module>
+        <module>jopen-springboot-plugin-init</module>
+        <module>jopen-springboot-plugin-encryption</module>
+    </modules>
+
+
+</project>

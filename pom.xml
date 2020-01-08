@@ -24,7 +24,6 @@
         <module>jopen-iot</module>
         <module>jopen-scheduling</module>
         <module>jopen-snack</module>
-        <module>jopen-test</module>
         <module>jopen-mapreduce</module>
         <module>jopen-quick-configuration</module>
         <module>jopen-springboot-encryption</module>
@@ -35,6 +34,8 @@
         <module>jopen-dataframe</module>
         <module>jopen-python-rocketmq</module>
         <module>jopen-hazelcast</module>
+        <module>jopen-springboot-plugins</module>
+        <!--        <module>jopen-springboot-plugin</module>-->
     </modules>
 
 
