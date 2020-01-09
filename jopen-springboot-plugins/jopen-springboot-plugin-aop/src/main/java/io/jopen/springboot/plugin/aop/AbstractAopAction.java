@@ -29,11 +29,8 @@ public abstract class AbstractAopAction {
 
 
     protected void doBefore(Object[] args) throws Throwable {
-
         for (ThrowingBeforeFunction action : beforeActions.keySet()) {
-
             ReturnValue returnValue = action.accept(args);
-
             beforeActions.get(action).handler(returnValue);
         }
     }
@@ -41,9 +38,7 @@ public abstract class AbstractAopAction {
     protected void doAfter(Object[] args, Object result) throws Throwable {
 
         for (ThrowingBiAroundFunction action : aroundActions.keySet()) {
-
             ReturnValue returnValue = action.accept(args, result);
-
             aroundActions.get(action).handler(returnValue);
         }
     }

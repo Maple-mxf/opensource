@@ -12,7 +12,7 @@ import java.util.Collection;
 /**
  * {@link com.mongodb.QueryBuilder}
  * {@link IQuery}
- * {@link SFunction}
+ * {@link SFunction} 利用方法引用的形式进行参数传递
  * {@link Query}
  * {@link Criteria}
  */

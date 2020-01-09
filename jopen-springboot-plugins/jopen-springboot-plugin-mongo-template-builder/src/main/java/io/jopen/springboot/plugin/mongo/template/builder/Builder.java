@@ -5,7 +5,6 @@ import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.beans.PropertyDescriptor;
-import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.util.function.Function;
 

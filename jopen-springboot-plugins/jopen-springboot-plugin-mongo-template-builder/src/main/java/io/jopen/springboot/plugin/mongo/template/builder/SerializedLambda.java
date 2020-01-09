@@ -46,4 +46,59 @@ public class SerializedLambda implements Serializable {
         }
     }
 
+    /**
+     * 获取接口 class
+     *
+     * @return 返回 class 名称
+     */
+    public String getFunctionalInterfaceClassName() {
+        return normalName(functionalInterfaceClass);
+    }
+
+    /**
+     * 获取实现的 class
+     *
+     * @return 实现类
+     */
+    public Class getImplClass() {
+        return ClassHelper.toClassConfident(getImplClassName());
+    }
+
+    /**
+     * 获取 class 的名称
+     *
+     * @return 类名
+     */
+    public String getImplClassName() {
+        return normalName(implClass);
+    }
+
+    /**
+     * 获取实现者的方法名称
+     *
+     * @return 方法名称
+     */
+    public String getImplMethodName() {
+        return implMethodName;
+    }
+
+    /**
+     * 正常化类名称，将类名称中的 / 替换为 .
+     *
+     * @param name 名称
+     * @return 正常的类名
+     */
+    private String normalName(String name) {
+        return name.replace('/', '.');
+    }
+
+    /**
+     * @return 字符串形式
+     */
+    @Override
+    public String toString() {
+        return String.format("%s -> %s::%s", getFunctionalInterfaceClassName(), getImplClass().getSimpleName(),
+                implMethodName);
+    }
+
 }

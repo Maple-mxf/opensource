@@ -18,7 +18,6 @@ import static org.springframework.util.ObjectUtils.nullSafeHashCode;
 /**
  * @author maxuefeng
  * @see Query
- * @see com.planet.biz.core.mongo.MongoPagination
  * Spring Mongo自带的Query存在查询限制  限制查询字段
  * @since 2019/11/28
  */
