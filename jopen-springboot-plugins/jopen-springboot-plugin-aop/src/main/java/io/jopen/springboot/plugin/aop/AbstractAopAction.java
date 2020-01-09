@@ -20,7 +20,7 @@ public abstract class AbstractAopAction {
     protected LinkedHashMap<ThrowingBeforeFunction, ResultHandler> beforeActions = new LinkedHashMap<>();
 
     // afterActions
-    protected LinkedHashMap<ThrowingBiAroundFunction, ResultHandler> aroundActions = new LinkedHashMap<>();
+    protected LinkedHashMap<ThrowingBiAfterFunction, ResultHandler> afterActions = new LinkedHashMap<>();
 
     /**
      * 定义切面
@@ -37,9 +37,9 @@ public abstract class AbstractAopAction {
 
     protected void doAfter(Object[] args, Object result) throws Throwable {
 
-        for (ThrowingBiAroundFunction action : aroundActions.keySet()) {
+        for (ThrowingBiAfterFunction action : afterActions.keySet()) {
             ReturnValue returnValue = action.accept(args, result);
-            aroundActions.get(action).handler(returnValue);
+            afterActions.get(action).handler(returnValue);
         }
     }
 

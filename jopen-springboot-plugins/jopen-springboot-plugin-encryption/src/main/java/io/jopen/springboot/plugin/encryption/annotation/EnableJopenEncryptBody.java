@@ -21,5 +21,5 @@ import java.lang.annotation.*;
         HttpConverterConfig.class,
         EncryptResponseBodyAdvice.class,
         DecryptRequestBodyAdvice.class})
-public @interface EnableEncryptBody {
+public @interface EnableJopenEncryptBody {
 }

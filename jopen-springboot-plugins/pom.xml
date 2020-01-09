@@ -25,6 +25,7 @@
         <module>jopen-springboot-plugin-mongo-template-builder</module>
         <module>jopen-springboot-plugin-init</module>
         <module>jopen-springboot-plugin-encryption</module>
+        <module>jopen-springboot-apply-plugin-demo</module>
     </modules>
 
 

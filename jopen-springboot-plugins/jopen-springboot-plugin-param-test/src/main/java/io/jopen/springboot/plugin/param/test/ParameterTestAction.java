@@ -28,7 +28,7 @@ public class ParameterTestAction   {
 
     private Logger L = LoggerFactory.getLogger(ParameterTestAction.class);
 
-    Method getMarkMethod(MethodInvocationProceedingJoinPoint p) {
+    private Method getMarkMethod(MethodInvocationProceedingJoinPoint p) {
 
         // 获取注解
         MethodSignature signature = (MethodSignature) p.getSignature();
@@ -40,7 +40,7 @@ public class ParameterTestAction   {
      *
      * @param p
      */
-    @Around("io.jopen.springboot.plugin.param.test.CheckParamNotNull")
+    @Around("@annotation(io.jopen.springboot.plugin.param.test.CheckParamNotNull)")
     public Object around(ProceedingJoinPoint p) throws Throwable {
 
         if (p instanceof MethodInvocationProceedingJoinPoint) {

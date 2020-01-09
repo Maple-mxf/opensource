@@ -4,7 +4,7 @@ package io.jopen.springboot.plugin.aop;
  * @author maxuefeng
  */
 @FunctionalInterface
-public interface ThrowingBiAroundFunction {
+public interface ThrowingBiAfterFunction {
 
     /**
      * @param args

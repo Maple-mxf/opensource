@@ -1,7 +1,7 @@
 package io.jopen.springboot.plugin.common;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import jdk.internal.joptsimple.internal.Strings;
 
 import java.io.File;
 import java.io.IOException;
