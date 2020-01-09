@@ -1,8 +1,5 @@
 package io.jopen.rpc.thrift;
 
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.transport.TServerSocket;
-import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,4 +12,7 @@ import org.slf4j.LoggerFactory;
 public class RpcPythonJavaIsClient {
     Logger logger = LoggerFactory.getLogger(RpcPythonJavaIsClient.class);
 
+    public static void main(String[] args) {
+        System.err.println("￥".equals("￥"));
+    }
 }

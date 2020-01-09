@@ -31,7 +31,7 @@ public class JOpenNettyServer {
     static class InitChannel extends ChannelInitializer<SocketChannel> {
 
         protected void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline().addLast()
+            ch.pipeline().addLast();
         }
     }
 }

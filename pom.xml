@@ -19,7 +19,6 @@
         <module>jopen-mq</module>
         <module>jopen-distribute-lock</module>
         <module>jopen-quartz</module>
-        <module>jopen-web</module>
         <module>jopen-spark</module>
         <module>jopen-iot</module>
         <module>jopen-scheduling</module>
@@ -34,7 +33,6 @@
         <module>jopen-python-rocketmq</module>
         <module>jopen-hazelcast</module>
         <module>jopen-springboot-plugins</module>
-        <!--        <module>jopen-springboot-plugin</module>-->
     </modules>
 
 

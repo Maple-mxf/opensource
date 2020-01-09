@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * 参考分而治之算法
  * {@link java.util.concurrent.BlockingQueue}
  * {@link java.util.concurrent.TransferQueue}
  * {@link java.util.concurrent.ForkJoinTask}
@@ -44,9 +45,8 @@ public class ForkJoinTest {
                 int partitionNum = (int) Math.ceil(size / threshold);
                 ArrayList<Task> taskList = new ArrayList<>();
                 for (int i = 0; i < partitionNum; ) {
-                    List<String> collection = this.text.subList(i, i + partitionNum);
+                    List<String> collection = this.text.subList(i, (i = (int) (i + threshold)));
                     taskList.add(new Task(collection));
-                    i += partitionNum;
                 }
                 // 并发执行拆分完的任务
                 Collection<Task> reduceTaskList = invokeAll(taskList);
