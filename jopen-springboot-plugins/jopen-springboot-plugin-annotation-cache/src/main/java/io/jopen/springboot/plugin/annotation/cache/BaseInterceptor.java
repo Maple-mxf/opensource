@@ -107,14 +107,12 @@ public class BaseInterceptor implements HandlerInterceptor {
      * @param handler 目标接口方法
      * @return 返回指定的注解实例
      */
-    @Nullable
-    protected <TYPE extends Annotation> TYPE getMark(@NonNull Class<TYPE> type,
+    @Nullable <TYPE extends Annotation> TYPE getMark(@NonNull Class<TYPE> type,
                                                      @NonNull Object handler) {
-
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         int key = handlerMethod.getMethod().toGenericString().hashCode();
         ClassToInstanceMap<Annotation> classToInstanceMap = annotationCache.get(key);
-        return classToInstanceMap.getInstance(type);
+        return classToInstanceMap == null ? null : classToInstanceMap.getInstance(type);
     }
 
 }
