@@ -8,8 +8,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author maxuefeng
+ * @see com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper
  * @since 2020/1/9
  */
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -31,4 +33,5 @@ public class User extends BaseModel {
     private double weight;
 
     private long birth;
+
 }

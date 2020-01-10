@@ -1,5 +1,7 @@
 package io.jopen.springboot.plugin.mongo.template.builder;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * @author maxuefeng
  * @see java.util.function.Function
@@ -7,5 +9,5 @@ package io.jopen.springboot.plugin.mongo.template.builder;
  */
 @FunctionalInterface
 public interface SFunction<I, O> extends java.io.Serializable {
-    O apply(I input);
+    O apply(@NonNull I input);
 }

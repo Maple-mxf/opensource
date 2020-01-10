@@ -13,9 +13,6 @@
 
     <packaging>pom</packaging>
 
-
-
-
     <modules>
         <module>jopen-springboot-plugin-aop</module>
         <module>jopen-springboot-plugin-limit</module>

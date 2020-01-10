@@ -1,9 +1,6 @@
-package com.planet.biz.core.mongo.query;
+package io.jopen.springboot.plugin.mongo.template.builder;
 
-import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -72,7 +69,7 @@ public class Builder<T> {
                         field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class);
 
 
-                if (fanno != null && StringUtils.isNotBlank(fanno.value())) {
+                if (fanno != null && Strings.isNotEmpty(fanno.value())) {
                     eqName = fanno.value();
                     break;
                 } else {
