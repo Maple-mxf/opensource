@@ -1,11 +1,18 @@
-package io.jopen.springboot.plugin.mongo.template.builder;
+package com.planet.biz.core.mongo.query;
 
-import com.google.common.base.Strings;
+import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.beans.PropertyDescriptor;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
@@ -18,9 +25,23 @@ public class Builder<T> {
 
     MongoTemplate mongoTemplate;
 
-    Function<SFunction<T, ?>, String> produceValName = sFunction -> {
+    /*缓存数据*/
+    private static final ConcurrentHashMap<Class<?>, WeakReference<SerializedLambda>> SF_CACHE = new ConcurrentHashMap<>();
 
-        SerializedLambda lambda = LambdaUtils.resolve(sFunction);
+    Function<SFunction<T, ?>, String> produceValName = sFunction -> {
+        WeakReference<SerializedLambda> weakReference = SF_CACHE.get(sFunction.getClass());
+        SerializedLambda serializedLambda = Optional.ofNullable(weakReference)
+                .map(Reference::get)
+                .orElseGet(() -> {
+                    SerializedLambda lambda = LambdaUtils.resolve(sFunction);
+                    SF_CACHE.put(sFunction.getClass(), new WeakReference<>(lambda));
+                    return lambda;
+                });
+        return this.resolve(serializedLambda);
+    };
+
+    private String resolve(SerializedLambda lambda) {
+
         String implMethodName = lambda.getImplMethodName();
 
         // 忽略大小写
@@ -35,7 +56,6 @@ public class Builder<T> {
         }
 
         String eqName = "";
-
         PropertyDescriptor[] descriptors = ReflectUtils.getBeanProperties(clazz);
 
         for (PropertyDescriptor descriptor : descriptors) {
@@ -52,7 +72,7 @@ public class Builder<T> {
                         field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class);
 
 
-                if (fanno != null && Strings.isNullOrEmpty(fanno.value())) {
+                if (fanno != null && StringUtils.isNotBlank(fanno.value())) {
                     eqName = fanno.value();
                     break;
                 } else {
@@ -62,6 +82,6 @@ public class Builder<T> {
             }
         }
         return eqName;
-    };
+    }
 
 }

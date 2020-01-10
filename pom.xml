@@ -33,6 +33,7 @@
         <module>jopen-python-rocketmq</module>
         <module>jopen-hazelcast</module>
         <module>jopen-springboot-plugins</module>
+        <module>jopen-beam</module>
     </modules>
 
 
