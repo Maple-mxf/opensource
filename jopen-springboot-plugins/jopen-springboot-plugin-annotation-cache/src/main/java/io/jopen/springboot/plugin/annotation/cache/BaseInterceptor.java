@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -32,7 +32,8 @@ import java.util.*;
  * 注解实例调用<code>annotationType()<code/>方法的结果是一个正确的Class对象  而非一个Proxy对象
  * @see Annotation#annotationType()
  */
-public class BaseInterceptor implements HandlerInterceptor {
+@Component
+public class BaseInterceptor implements HandlerInterceptor, CommandLineRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseInterceptor.class);
 
@@ -43,9 +44,27 @@ public class BaseInterceptor implements HandlerInterceptor {
      * @see ClassToInstanceMap
      * @see java.util.concurrent.ConcurrentHashMap
      */
-    private final Map<Integer, ClassToInstanceMap<Annotation>> annotationCache = new HashMap<>(300);
+    private final static Map<Integer, ClassToInstanceMap<Annotation>> ANNOTATION_CACHE = new HashMap<>(300);
 
-    public BaseInterceptor() throws IOException {
+
+    /**
+     * 获取指定标记
+     *
+     * @param type    注解类型
+     * @param handler 目标接口方法
+     * @return 返回指定的注解实例
+     */
+    @Nullable
+    public <TYPE extends Annotation> TYPE getMark(@NonNull Class<TYPE> type,
+                                                  @NonNull Object handler) {
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        int key = handlerMethod.getMethod().toGenericString().hashCode();
+        ClassToInstanceMap<Annotation> classToInstanceMap = ANNOTATION_CACHE.get(key);
+        return classToInstanceMap == null ? null : classToInstanceMap.getInstance(type);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
         LOGGER.info("load api interface annotation");
 
         // TODO  需要设置controller包  API访问策略
@@ -93,26 +112,11 @@ public class BaseInterceptor implements HandlerInterceptor {
                             }
                             classToInstanceMap.put(annotation.annotationType(), annotation);
                         }
-                        this.annotationCache.put(key, classToInstanceMap);
+                        this.ANNOTATION_CACHE.put(key, classToInstanceMap);
                     }
                 });
 
         LOGGER.info("cache api interface annotation complete");
-    }
-
-    /**
-     * 获取指定标记
-     *
-     * @param type    注解类型
-     * @param handler 目标接口方法
-     * @return 返回指定的注解实例
-     */
-    @Nullable <TYPE extends Annotation> TYPE getMark(@NonNull Class<TYPE> type,
-                                                     @NonNull Object handler) {
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
-        int key = handlerMethod.getMethod().toGenericString().hashCode();
-        ClassToInstanceMap<Annotation> classToInstanceMap = annotationCache.get(key);
-        return classToInstanceMap == null ? null : classToInstanceMap.getInstance(type);
     }
 
 }

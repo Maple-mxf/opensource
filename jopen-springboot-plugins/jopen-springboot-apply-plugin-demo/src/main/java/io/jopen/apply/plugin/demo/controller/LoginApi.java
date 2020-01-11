@@ -21,7 +21,7 @@ import java.util.Map;
 public class LoginApi {
 
     @RequestMapping(value = "")
-    @Limiting  // 进行限流   只对当前方法限流，如果加到控制器则对于当前控制器下的所有接口进行限流
+    @Limiting(time = 1,count = 100)  // 1秒钟可以访问100次 进行限流   只对当前方法限流，如果加到控制器则对于当前控制器下的所有接口进行限流
     @DESDecryptBody  // 对Http请求体进行解密
     @DESEncryptBody  // 对于返回参数进行加密
     @CheckParamNotNull // 检验参数不可为空

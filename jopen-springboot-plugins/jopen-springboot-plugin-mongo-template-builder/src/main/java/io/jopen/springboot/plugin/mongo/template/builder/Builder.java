@@ -1,6 +1,8 @@
 package io.jopen.springboot.plugin.mongo.template.builder;
 
 import org.apache.logging.log4j.util.Strings;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -25,6 +27,7 @@ public class Builder<T> {
     /*缓存数据*/
     private static final ConcurrentHashMap<Class<?>, WeakReference<SerializedLambda>> SF_CACHE = new ConcurrentHashMap<>();
 
+    @NonNull
     Function<SFunction<T, ?>, String> produceValName = sFunction -> {
         WeakReference<SerializedLambda> weakReference = SF_CACHE.get(sFunction.getClass());
         SerializedLambda serializedLambda = Optional.ofNullable(weakReference)
@@ -37,7 +40,8 @@ public class Builder<T> {
         return this.resolve(serializedLambda);
     };
 
-    private String resolve(SerializedLambda lambda) {
+    @Nullable
+    private String resolve(@NonNull SerializedLambda lambda) {
 
         String implMethodName = lambda.getImplMethodName();
 

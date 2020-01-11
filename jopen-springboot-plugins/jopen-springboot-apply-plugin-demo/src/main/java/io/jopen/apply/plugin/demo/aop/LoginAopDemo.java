@@ -27,6 +27,7 @@ public class LoginAopDemo extends AbstractAopAction {
 
     // 无参数构造方法
     public LoginAopDemo() {
+        super();
 
         // 登录前操作  此Action可以定义多个，只需要按照顺序排列存放即可
         this.beforeActions.put(this.checkAccount, ResultHandler.ignore());

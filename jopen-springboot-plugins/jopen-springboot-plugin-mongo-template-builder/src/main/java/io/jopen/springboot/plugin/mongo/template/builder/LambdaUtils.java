@@ -37,7 +37,4 @@ final class LambdaUtils {
                     return lambda;
                 });
     }
-
-
-
 }

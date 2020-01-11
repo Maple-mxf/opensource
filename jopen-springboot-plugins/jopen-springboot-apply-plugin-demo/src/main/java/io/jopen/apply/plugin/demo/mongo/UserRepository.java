@@ -5,10 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import io.jopen.springboot.plugin.mongo.template.builder.AggregationBuilder;
 import io.jopen.springboot.plugin.mongo.template.builder.BaseModel;
 import io.jopen.springboot.plugin.mongo.template.builder.QueryBuilder;
+import io.jopen.springboot.plugin.mongo.template.builder.UpdateBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -46,5 +48,11 @@ public class UserRepository {
         ).build();
 
         return mongoTemplate.aggregate(aggregation, BaseModel.getCollectionName(User.class), Map.class).getMappedResults();
+    }
+
+    public void updateUserAge(int age){
+        Update update = UpdateBuilder.builderFor(User.class).set(User::getAge, age).build();
+        Query query = QueryBuilder.builderFor(User.class).eq(User::getId, "1").build();
+        mongoTemplate.updateFirst(query,update,User.class);
     }
 }

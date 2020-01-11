@@ -1,6 +1,7 @@
 package io.jopen.apply.plugin.demo;
 
 import io.jopen.apply.plugin.demo.mongo.UserRepository;
+import io.jopen.springboot.plugin.annotation.cache.EnableJopenAnnotationCache;
 import io.jopen.springboot.plugin.encryption.annotation.EnableJopenEncryptBody;
 import io.jopen.springboot.plugin.init.EnableJopenInit;
 import io.jopen.springboot.plugin.limit.EnableJopenLimit;
@@ -45,6 +46,7 @@ import java.util.Map;
 @EnableJopenEncryptBody
 @EnableJopenInit
 @EnableJopenParamTest
+@EnableJopenAnnotationCache
 public class Application {
 
     public static void main(String[] args) {
