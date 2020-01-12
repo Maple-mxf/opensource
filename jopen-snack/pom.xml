@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jopen-leopard</artifactId>
+    <artifactId>jopen-snack</artifactId>
     <packaging>pom</packaging>
     <modules>
         <module>snack-embed</module>
-        <module>snack-common</module>
+        <module>snack-data</module>
         <module>snack-cs</module>
     </modules>
 </project>
