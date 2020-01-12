@@ -35,7 +35,9 @@ public class UserRepository {
 
     public Collection<User> getUserListByExcludeSomeFields() {
         /*只查询部分字段 */
-        Query query = QueryBuilder.builderFor(User.class).excludeFields(User::getBirth, User::getName).build();
+        Query query = QueryBuilder.builderFor(User.class)
+                .eq(User::getId,"1")
+                .excludeFields(User::getBirth, User::getName).build();
         return mongoTemplate.find(query, User.class);
     }
 

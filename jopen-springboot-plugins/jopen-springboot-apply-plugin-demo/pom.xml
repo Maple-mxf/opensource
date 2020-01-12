@@ -27,7 +27,6 @@
             <version>${springboot-version}</version>
         </dependency>
 
-
         <!--依赖AOP模块插件-->
         <dependency>
             <groupId>io.jopen</groupId>
