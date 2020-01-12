@@ -21,7 +21,7 @@ import java.util.List;
 public class QueryUpdateBuilder<T> {
 
     private final T entity;
-    private List<Criterion> criteria = new ArrayList<Criterion>();
+    private List<Criterion> criteria = new ArrayList<>();
     private List<String> selectedFields = Collections.emptyList();
     private QueryOperationType queryOperationType = QueryOperationType.UPDATE;
 

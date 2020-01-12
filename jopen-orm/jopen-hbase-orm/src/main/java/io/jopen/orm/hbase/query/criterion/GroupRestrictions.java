@@ -1,11 +1,10 @@
 package io.jopen.orm.hbase.query.criterion;
 
-
-import com.planet.phoenix.query.criterion.expression.EqualityExpression;
-import com.planet.phoenix.query.criterion.expression.RangeExpression;
-import com.planet.phoenix.query.criterion.expression.SetExpression;
-import com.planet.phoenix.query.criterion.expression.UnaryExpression;
-import com.planet.phoenix.query.criterion.projection.AggregateProjection;
+import io.jopen.orm.hbase.query.criterion.expression.EqualityExpression;
+import io.jopen.orm.hbase.query.criterion.expression.RangeExpression;
+import io.jopen.orm.hbase.query.criterion.expression.SetExpression;
+import io.jopen.orm.hbase.query.criterion.expression.UnaryExpression;
+import io.jopen.orm.hbase.query.criterion.projection.AggregateProjection;
 
 import java.util.Collection;
 
