@@ -24,7 +24,7 @@ public enum Operator implements Symbolic {
     private final String symbol;
     private static final ImmutableMap<String, Operator> map = SymbolicLookup.map(values());
 
-    private Operator(String symbol) {
+    Operator(String symbol) {
         this.symbol = symbol;
     }
 

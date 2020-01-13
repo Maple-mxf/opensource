@@ -1,16 +1,18 @@
 package io.jopen.orm.hbase.query.criterion;
 
 
+import jdk.nashorn.internal.objects.annotations.Setter;
+
 /**
  * Ordering criterion
  * This defines the order that results will be returned in.
  */
-public class Ordering implements Criterion, WithProperty {
+public class Ordering extends LambdaBuilder implements Criterion, WithProperty {
 
     public enum Order {
         ASCENDING, DESCENDING
     }
-    
+
     /**
      * When property name is <tt>null</tt> should those values be put first or last
      */
@@ -24,6 +26,7 @@ public class Ordering implements Criterion, WithProperty {
 
     /**
      * Create an ordering to order results by the given property in ascending order with nulls first
+     *
      * @param propertyName the name of the property to order by
      * @return the ordering
      */
@@ -32,16 +35,33 @@ public class Ordering implements Criterion, WithProperty {
     }
 
     /**
+     * @param sFunction
+     * @return
+     * @see Ordering#asc(String)
+     */
+    public static Ordering asc(SFunction<?, ?> sFunction) {
+        String propertyName = produceValName.apply(sFunction);
+        return new Ordering(propertyName, Order.ASCENDING, NullOrdering.FIRST);
+    }
+
+    /**
      * Create an ordering to order results by the given property in descending order with nulls first
+     *
      * @param propertyName the name of the property to order by
      * @return the ordering
      */
     public static Ordering desc(String propertyName) {
         return new Ordering(propertyName, Order.DESCENDING, NullOrdering.FIRST);
     }
-    
+
+    public static Ordering desc(SFunction<?, ?> sFunction) {
+        String propertyName = produceValName.apply(sFunction);
+        return new Ordering(propertyName, Order.DESCENDING, NullOrdering.FIRST);
+    }
+
     /**
      * Create an ordering to order results by the given property in ascending order with nulls first
+     *
      * @param propertyName the name of the property to order by
      * @param nullOrdering should nulls be first or last
      * @return the ordering
@@ -50,8 +70,14 @@ public class Ordering implements Criterion, WithProperty {
         return new Ordering(propertyName, Order.ASCENDING, nullOrdering);
     }
 
+    public static Ordering asc(SFunction<?, ?> sFunction, NullOrdering nullOrdering) {
+        String propertyName = produceValName.apply(sFunction);
+        return new Ordering(propertyName, Order.ASCENDING, nullOrdering);
+    }
+
     /**
      * Create an ordering to order results by the given property in descending order with nulls first
+     *
      * @param propertyName the name of the property to order by
      * @param nullOrdering should nulls be first or last
      * @return the ordering
@@ -60,17 +86,31 @@ public class Ordering implements Criterion, WithProperty {
         return new Ordering(propertyName, Order.DESCENDING, nullOrdering);
     }
 
+    public static Ordering desc(SFunction<?, ?> sFunction, NullOrdering nullOrdering) {
+        String propertyName = produceValName.apply(sFunction);
+        return new Ordering(propertyName, Order.DESCENDING, nullOrdering);
+    }
+
     /**
      * Create an ordering
+     *
      * @param propertyName the property to order by
-     * @param order the order that should be applied (ascending or descending)
+     * @param order        the order that should be applied (ascending or descending)
      * @param nullOrdering whether nulls should be first or last
      */
-    public Ordering(String propertyName, Order order, NullOrdering nullOrdering) {
+    private Ordering(String propertyName, Order order, NullOrdering nullOrdering) {
         this.propertyName = propertyName;
         this.order = order;
         this.nullOrdering = nullOrdering;
     }
+
+    private Ordering(SFunction<?, ?> sFunction, Order order, NullOrdering nullOrdering) {
+        this.propertyName = produceValName.apply(sFunction);
+        this.order = order;
+        this.nullOrdering = nullOrdering;
+    }
+
+
 
     @Override
     public String getPropertyName() {
@@ -79,6 +119,7 @@ public class Ordering implements Criterion, WithProperty {
 
     /**
      * Get the order to return the sorted items in
+     *
      * @return ascending or descending
      */
     public Order getOrder() {
@@ -87,12 +128,13 @@ public class Ordering implements Criterion, WithProperty {
 
     /**
      * Get the ordering of nulls
+     *
      * @return whether nulls should be first or last
      */
     public NullOrdering getNullOrdering() {
-    
+
         return nullOrdering;
-    
+
     }
 
     @Override
