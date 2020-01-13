@@ -1,7 +1,6 @@
 package io.jopen.orm.hbase.query.criterion;
 
-
-import com.planet.phoenix.query.criterion.projection.*;
+import io.jopen.orm.hbase.query.criterion.projection.*;
 
 public class Projections {
 

@@ -3,14 +3,21 @@ package io.jopen.orm.hbase.query.criterion;
 import org.apache.commons.lang3.SerializationUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.*;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
  * An base on lambda method reference parse property name
@@ -32,16 +39,67 @@ public interface LambdaBuilder {
     ConcurrentHashMap<Class<?>, WeakReference<SerializedLambda>> SF_CACHE = new ConcurrentHashMap<>(200);
 
 
+    @NonNull
+    Function<SFunction<?, ?>, String> produceValName = sFunction -> {
+        WeakReference<SerializedLambda> weakReference = SF_CACHE.get(sFunction.getClass());
+        SerializedLambda serializedLambda = Optional.ofNullable(weakReference)
+                .map(Reference::get)
+                .orElseGet(() -> {
+                    SerializedLambda lambda = resolve(sFunction);
+                    SF_CACHE.put(sFunction.getClass(), new WeakReference<>(lambda));
+                    return lambda;
+                });
+        return resolve(serializedLambda);
+    };
+
+    static String resolve(@NonNull SerializedLambda lambda) {
+
+        String implMethodName = lambda.getImplMethodName();
+        // 忽略大小写
+        String valName;
+        if (implMethodName.startsWith("get")) {
+            valName = implMethodName.replaceFirst("get", "");
+        } else if (implMethodName.startsWith("is")) {
+            valName = implMethodName.replaceFirst("is", "");
+        } else {
+            System.err.println("字段错误");
+            return null;
+        }
+        return valName;
+    }
+
+    static PropertyDescriptor[] getPropertiesHelper(Class type, boolean read, boolean write) {
+        try {
+            BeanInfo info = Introspector.getBeanInfo(type, Object.class);
+            PropertyDescriptor[] all = info.getPropertyDescriptors();
+            if (read && write) {
+                return all;
+            } else {
+                List properties = new ArrayList(all.length);
+
+                for (PropertyDescriptor pd : all) {
+                    if (read && pd.getReadMethod() != null || write && pd.getWriteMethod() != null) {
+                        properties.add(pd);
+                    }
+                }
+
+                return (PropertyDescriptor[]) properties.toArray(new PropertyDescriptor[0]);
+            }
+        } catch (IntrospectionException var8) {
+            throw new RuntimeException(var8);
+        }
+    }
+
+
     /**
      * <p>
      * 解析 lambda 表达式
      * </p>
      *
      * @param func 需要解析的 lambda 对象
-     * @param <T>  类型，被调用的 Function 对象的目标类型
      * @return 返回解析后的结果
      */
-    static <T> SerializedLambda resolve(SFunction<T, ?> func) {
+    static SerializedLambda resolve(SFunction<?, ?> func) {
         Class clazz = func.getClass();
         return Optional.ofNullable(SF_CACHE.get(clazz))
                 .map(WeakReference::get)
