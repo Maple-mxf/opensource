@@ -3,10 +3,14 @@ package io.jopen.core.common.proxology.reflection;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * An description method class,{@link java.beans.MethodDescriptor}
+ *
  * @author maxuefeng
  * @see Method
  */
@@ -18,14 +22,24 @@ public class MethodInfo {
         WITH,
         IS;
 
+        /**
+         * @param methodName
+         * @return
+         * @see Enum#valueOf(Class, String)
+         * @see Prefix#valueOf(String)
+         */
         public static Prefix forMethodName(String methodName) {
-
             return Stream.of(Prefix.values())
                     .filter(p -> methodName.startsWith(p.name().toLowerCase()))
                     .findAny()
                     .orElse(null);
         }
 
+        /**
+         * @param methodName method name
+         * @return property name
+         * @see Enum#name()
+         */
         public String getPropertyName(String methodName) {
             int prefixLength = name().length();
             if (methodName.length() <= prefixLength) {
@@ -53,9 +67,7 @@ public class MethodInfo {
     }
 
     public static MethodInfo forMethod(Method method, TypeInfo declaringType) {
-        
         String methodName = method.getName();
-
         return new MethodInfo(method, methodName, declaringType, Prefix.forMethodName(methodName));
     }
 
@@ -100,7 +112,7 @@ public class MethodInfo {
      * @return
      */
     public String getPropertyName() {
-        return prefix == null ? methodName : prefix.getPropertyName(methodName);
+        return Optional.ofNullable(prefix).map(p -> p.getPropertyName(methodName)).orElse(methodName);
     }
 
     /**

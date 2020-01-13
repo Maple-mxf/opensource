@@ -8,6 +8,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ * Language interpreter
+ *
  * @author maxuefeng
  */
 @FunctionalInterface
@@ -26,7 +28,7 @@ public interface ClassInterpreter<T> {
                         Function.identity(),
                         interpreter::interpret
                 ))::get;
-        
+
     }
 
     UnboundMethodInterpreter<T> interpret(Class<?> iFace);

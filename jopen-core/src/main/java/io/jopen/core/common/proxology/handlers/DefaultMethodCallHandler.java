@@ -1,6 +1,5 @@
 package io.jopen.core.common.proxology.handlers;
 
-
 import io.jopen.core.common.proxology.memoization.Memoizer;
 
 import java.lang.invoke.MethodHandle;
@@ -37,7 +36,6 @@ final class DefaultMethodCallHandler {
     }
 
     /**
-     *
      * @param method
      * @return
      */

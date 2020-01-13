@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * An description type {@link java.beans.BeanDescriptor}
+ *
+ * @author maxuefeng
+ */
 public class TypeInfo {
 
     public static TypeInfo forType(Type type) {
@@ -18,6 +23,9 @@ public class TypeInfo {
         this.type = type;
     }
 
+    /**
+     * @return If has generic return true
+     */
     public boolean isParameterized() {
         return type instanceof ParameterizedType;
     }
@@ -26,6 +34,10 @@ public class TypeInfo {
         return (ParameterizedType) type;
     }
 
+    /**
+     * @return
+     * @see ParameterizedType#getActualTypeArguments()
+     */
     public List<TypeInfo> getTypeArguments() {
         return Stream.of(getParameterizedType().getActualTypeArguments())
                 .map(TypeInfo::forType)
@@ -69,7 +81,8 @@ public class TypeInfo {
     }
 
     public Stream<MethodInfo> streamDeclaredMethods() {
-        return Stream.of(getRawType().getDeclaredMethods()).map(method -> MethodInfo.forMethod(method, this));
+        return Stream.of(getRawType().getDeclaredMethods())
+                .map(method -> MethodInfo.forMethod(method, this));
     }
 
     public Stream<MethodInfo> streamNonDefaultPublicInstanceMethods() {

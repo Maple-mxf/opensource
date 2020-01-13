@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 参数转换
+ * 参数转换器
  *
  * @author maxuefeng
  */
@@ -26,23 +26,18 @@ public class ArgumentConversion {
     public static Object convert(TypeInfo wantedType, Object argument) {
 
         Class<?> argumentClass = argument.getClass();
-
         if (wantedType.isPrimitive() || wantedType.getRawType().isAssignableFrom(argumentClass)) {
             return argument;
         }
-
         if (argumentClass.isArray()) {
             return convertStream(wantedType, Stream.of(toObjectArray(argument)));
         }
-
         if (argument instanceof Collection) {
             return convertStream(wantedType, ((Collection<Object>) argument).stream());
         }
-
         if (argument instanceof Supplier) {
             return convert(wantedType, ((Supplier<Object>) argument).get());
         }
-
         throw new IllegalArgumentException("Cannot convert " + argument.getClass() + " to " + wantedType);
     }
 

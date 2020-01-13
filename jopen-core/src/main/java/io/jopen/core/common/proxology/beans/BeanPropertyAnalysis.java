@@ -1,6 +1,5 @@
 package io.jopen.core.common.proxology.beans;
 
-
 import io.jopen.core.common.proxology.Nonchalantly;
 
 import java.beans.BeanInfo;

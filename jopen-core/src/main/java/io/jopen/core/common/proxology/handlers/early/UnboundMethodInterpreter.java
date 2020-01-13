@@ -1,6 +1,5 @@
 package io.jopen.core.common.proxology.handlers.early;
 
-
 import io.jopen.core.common.proxology.handlers.MethodInterpreter;
 
 import java.lang.reflect.Method;

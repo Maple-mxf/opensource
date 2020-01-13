@@ -3,7 +3,6 @@ package io.jopen.core.common.proxology.proxies;
 
 import io.jopen.core.common.proxology.EqualisableByState;
 import io.jopen.core.common.proxology.handlers.MethodCallInterceptor;
-import io.jopen.core.common.proxology.handlers.MethodInterpreters;
 import io.jopen.core.common.proxology.handlers.PropertyValueStore;
 
 import java.lang.reflect.InvocationHandler;

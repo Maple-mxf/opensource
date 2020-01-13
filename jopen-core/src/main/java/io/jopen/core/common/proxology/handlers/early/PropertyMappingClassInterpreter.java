@@ -1,6 +1,5 @@
 package io.jopen.core.common.proxology.handlers.early;
 
-
 import io.jopen.core.common.proxology.reflection.MethodInfo;
 
 import java.lang.reflect.Method;
@@ -8,8 +7,6 @@ import java.util.Map;
 
 /**
  * @author maxuefeng
- * @see java.util.Properties
- * @see Map
  */
 public final class PropertyMappingClassInterpreter {
 
