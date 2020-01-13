@@ -14,6 +14,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @param <T>
+ * @param <R>
+ * @author maxuefeng
+ */
 public class QueryBuilder<T, R> {
 
     private final Class<T> entityClass;
@@ -34,11 +39,11 @@ public class QueryBuilder<T, R> {
 
     public static <T, R> QueryBuilder<T, R> builderFor(Class<T> entityClass, Class<R> returnType,
                                                        String... returnFields) {
-        return new QueryBuilder<T, R>(entityClass, returnType).setReturnFields(returnFields);
+        return new QueryBuilder<>(entityClass, returnType).setReturnFields(returnFields);
     }
 
     public static <T> QueryBuilder<T, T> builderFor(Class<T> entityClass) {
-        return new QueryBuilder<T, T>(entityClass, entityClass);
+        return new QueryBuilder<>(entityClass, entityClass);
     }
 
     public QueryBuilder<T, R> select() {
@@ -131,8 +136,12 @@ public class QueryBuilder<T, R> {
         // if criteria.size == 0, rootCriterion = null
         Criterion rootCriterion = bindCriterion(this.criteria);
         Criterion groupCriterion = bindCriterion(this.groupCriteria);
-        return new QuerySelectImpl<T, R>(entityClass, returnType, rootCriterion, groupCriterion, orderings, maxResults, returnFields,
-                projections, queryOperationType, queryHint);
+        return new QuerySelectImpl<>(
+                entityClass, returnType,
+                rootCriterion, groupCriterion,
+                orderings, maxResults,
+                returnFields, projections,
+                queryOperationType, queryHint);
     }
 
     private Criterion bindCriterion(List<Criterion> criteria) {

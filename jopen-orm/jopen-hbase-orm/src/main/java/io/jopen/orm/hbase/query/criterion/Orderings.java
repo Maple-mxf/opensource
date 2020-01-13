@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class Orderings {
 
-    private final List<Ordering> orderings = new ArrayList<Ordering>();
+    private final List<Ordering> orderings = new ArrayList<>();
 
     public Orderings() {
     }
