@@ -5,7 +5,9 @@ import io.jopen.orm.hbase.translator.PropertyResolver;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * @author maxuefeng
+ */
 public class EntityPropertiesResolver implements PropertyResolver {
 
     private final EntityPropertiesMappingContext entityPropertiesMappingContext;

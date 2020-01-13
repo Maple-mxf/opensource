@@ -27,12 +27,12 @@ public class PhoenixHBaseQueryExecutor {
     private static final String QUERY_TIMEOUT_SEC = "queryTimeoutSec";
 
     public PhoenixHBaseQueryExecutor(final PhoenixHBaseQueryTranslator queryTranslator,
-            final PhoenixProjectedResultMapper resultMapper) {
+                                     final PhoenixProjectedResultMapper resultMapper) {
         this(queryTranslator, resultMapper, new HashMap<>());
     }
-    
-    public PhoenixHBaseQueryExecutor(final PhoenixHBaseQueryTranslator queryTranslator,
-            final PhoenixProjectedResultMapper resultMapper, final Map<String, String> statementProperties) {
+
+    private PhoenixHBaseQueryExecutor(final PhoenixHBaseQueryTranslator queryTranslator,
+                                      final PhoenixProjectedResultMapper resultMapper, final Map<String, String> statementProperties) {
         this.queryTranslator = Preconditions.checkNotNull(queryTranslator);
         this.resultMapper = Preconditions.checkNotNull(resultMapper);
         this.statementProperties = Preconditions.checkNotNull(statementProperties);
@@ -91,7 +91,7 @@ public class PhoenixHBaseQueryExecutor {
                 log.info("Query String {}", queryStr);
             }
             ps = createPreparedStatement(conn, queryStr);
-            
+
             int result = ps.executeUpdate();
             if (result == 0) {
                 throw new DataStoreException("Save Failed for query...");
@@ -166,33 +166,32 @@ public class PhoenixHBaseQueryExecutor {
     }
 
     private Statement createStatement(final Connection conn) throws SQLException {
-    	Statement statement = conn.createStatement();
-    	if(statementProperties.containsKey(QUERY_TIMEOUT_SEC)) {
-    		String queryTimeOutValue = statementProperties.get(QUERY_TIMEOUT_SEC);
-    		try {
-    			statement.setQueryTimeout(Integer.valueOf(queryTimeOutValue));
-    		} catch(Exception ig) {
-        		log.warn("Ignoring invalid queryTimeout {}", queryTimeOutValue, ig);
-        	}
-    	}
-    	return statement;
-    	
+        Statement statement = conn.createStatement();
+        if (statementProperties.containsKey(QUERY_TIMEOUT_SEC)) {
+            String queryTimeOutValue = statementProperties.get(QUERY_TIMEOUT_SEC);
+            try {
+                statement.setQueryTimeout(Integer.valueOf(queryTimeOutValue));
+            } catch (Exception ig) {
+                log.warn("Ignoring invalid queryTimeout {}", queryTimeOutValue, ig);
+            }
+        }
+        return statement;
+
     }
-    
+
     private PreparedStatement createPreparedStatement(final Connection conn, final String queryStr) throws SQLException {
-    	PreparedStatement statement = conn.prepareStatement(queryStr);
-    	if(statementProperties.containsKey(QUERY_TIMEOUT_SEC)) {
-    		String queryTimeOutValue = statementProperties.get(QUERY_TIMEOUT_SEC);
-    		try {
-    			statement.setQueryTimeout(Integer.valueOf(queryTimeOutValue));
-    		} catch(Exception ig) {
-        		log.warn("Ignoring invalid queryTimeout {}", queryTimeOutValue, ig);
-        	}
-    	}
-    	return statement;
-    	
+        PreparedStatement statement = conn.prepareStatement(queryStr);
+        if (statementProperties.containsKey(QUERY_TIMEOUT_SEC)) {
+            String queryTimeOutValue = statementProperties.get(QUERY_TIMEOUT_SEC);
+            try {
+                statement.setQueryTimeout(Integer.valueOf(queryTimeOutValue));
+            } catch (Exception ig) {
+                log.warn("Ignoring invalid queryTimeout {}", queryTimeOutValue, ig);
+            }
+        }
+        return statement;
     }
-    
+
     protected PhoenixProjectedResultMapper getMapper() {
         return resultMapper;
     }

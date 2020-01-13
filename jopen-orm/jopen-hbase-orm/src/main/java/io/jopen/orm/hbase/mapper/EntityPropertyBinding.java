@@ -4,7 +4,6 @@ import java.lang.reflect.Type;
 
 /**
  * @author maxuefeng
- *
  */
 public class EntityPropertyBinding {
 
