@@ -31,16 +31,15 @@ import java.util.function.Function;
  * @author maxuefeng
  * @since 2020-01-13
  */
-public interface LambdaBuilder {
+class LambdaBuilder {
 
     /**
      * an storage lambda serializedLambda Object hashMap local cache
      */
-    ConcurrentHashMap<Class<?>, WeakReference<SerializedLambda>> SF_CACHE = new ConcurrentHashMap<>(200);
-
+    private final static ConcurrentHashMap<Class<?>, WeakReference<SerializedLambda>> SF_CACHE = new ConcurrentHashMap<>(200);
 
     @NonNull
-    Function<SFunction<?, ?>, String> produceValName = sFunction -> {
+    final static Function<SFunction<?, ?>, String> produceValName = sFunction -> {
         WeakReference<SerializedLambda> weakReference = SF_CACHE.get(sFunction.getClass());
         SerializedLambda serializedLambda = Optional.ofNullable(weakReference)
                 .map(Reference::get)
@@ -52,7 +51,7 @@ public interface LambdaBuilder {
         return resolve(serializedLambda);
     };
 
-    static String resolve(@NonNull SerializedLambda lambda) {
+    private static String resolve(@NonNull SerializedLambda lambda) {
 
         String implMethodName = lambda.getImplMethodName();
         // 忽略大小写
@@ -68,7 +67,7 @@ public interface LambdaBuilder {
         return valName;
     }
 
-    static PropertyDescriptor[] getPropertiesHelper(Class type, boolean read, boolean write) {
+    final PropertyDescriptor[] getPropertiesHelper(Class type, boolean read, boolean write) {
         try {
             BeanInfo info = Introspector.getBeanInfo(type, Object.class);
             PropertyDescriptor[] all = info.getPropertyDescriptors();
@@ -99,7 +98,7 @@ public interface LambdaBuilder {
      * @param func 需要解析的 lambda 对象
      * @return 返回解析后的结果
      */
-    static SerializedLambda resolve(SFunction<?, ?> func) {
+    private static SerializedLambda resolve(SFunction<?, ?> func) {
         Class clazz = func.getClass();
         return Optional.ofNullable(SF_CACHE.get(clazz))
                 .map(WeakReference::get)
@@ -111,7 +110,7 @@ public interface LambdaBuilder {
     }
 
 
-    final class SerializedLambda implements Serializable {
+    final static class SerializedLambda implements Serializable {
 
         private static final long serialVersionUID = 8025925345765570181L;
 
@@ -205,7 +204,7 @@ public interface LambdaBuilder {
         }
     }
 
-    final class ClassHelper {
+    final static class ClassHelper {
 
         /**
          * 代理 class 的名称

@@ -13,7 +13,7 @@ import java.util.Collection;
  * @author maxuefeng
  * @since 2020-01-13
  */
-public final class LambdaRestrictions implements LambdaBuilder {
+public final class LambdaRestrictions extends LambdaBuilder {
     private LambdaRestrictions() {
     }
 
@@ -25,7 +25,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static EqualityExpression eq(SFunction<?, String> methodRef, Object value) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new EqualityExpression(Operator.EQUAL, propertyName, value);
     }
 
@@ -37,7 +37,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static EqualityExpression ne(SFunction<?, String> methodRef, Object value) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new EqualityExpression(Operator.NOT_EQUAL, propertyName, value);
     }
 
@@ -49,7 +49,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static EqualityExpression lt(SFunction<?, String> methodRef, Object value) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new EqualityExpression(Operator.LESS_THAN, propertyName, value);
     }
 
@@ -61,7 +61,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static EqualityExpression like(SFunction<?, String> methodRef, Object value) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new EqualityExpression(Operator.LIKE, propertyName, value);
     }
 
@@ -73,7 +73,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static EqualityExpression ilike(SFunction<?, String> methodRef, Object value) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new EqualityExpression(Operator.ILIKE, propertyName, value);
     }
 
@@ -85,7 +85,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static EqualityExpression lte(SFunction<?, String> methodRef, Object value) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new EqualityExpression(Operator.LESS_THAN_OR_EQUAL, propertyName, value);
     }
 
@@ -97,7 +97,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static EqualityExpression gt(SFunction<?, String> methodRef, Object value) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new EqualityExpression(Operator.GREATER_THAN, propertyName, value);
     }
 
@@ -109,7 +109,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static EqualityExpression gte(SFunction<?, String> methodRef, Object value) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new EqualityExpression(Operator.GREATER_THAN_OR_EQUAL, propertyName, value);
     }
 
@@ -122,7 +122,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static RangeExpression between(SFunction<?, String> methodRef, Object from, Object to) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new RangeExpression(Operator.BETWEEN, propertyName, from, to);
     }
 
@@ -136,7 +136,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static SetExpression discreteRange(SFunction<?, String> methodRef, int from, int to) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new SetExpression(Operator.IN, propertyName, from <= to ? range(from, to) : range(to, from));
     }
 
@@ -164,7 +164,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static SetExpression in(SFunction<?, String> methodRef, Object[] values) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new SetExpression(Operator.IN, propertyName, values);
     }
 
@@ -187,7 +187,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static SetExpression notIn(SFunction<?, String> methodRef, Object[] values) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new SetExpression(Operator.NOT_IN, propertyName, values);
     }
 
@@ -221,7 +221,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static SetExpression contains(SFunction<?, String> methodRef, Object[] values) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new SetExpression(Operator.CONTAINS, propertyName, values);
     }
 
@@ -232,7 +232,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static UnaryExpression isNull(SFunction<?, String> methodRef) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new UnaryExpression(Operator.NULL, propertyName);
     }
 
@@ -243,7 +243,7 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return Criterion
      */
     public static UnaryExpression isNotNull(SFunction<?, String> methodRef) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new UnaryExpression(Operator.NOT_NULL, propertyName);
     }
 
@@ -254,12 +254,12 @@ public final class LambdaRestrictions implements LambdaBuilder {
      * @return UnaryExpression
      */
     public static UnaryExpression isEmpty(SFunction<?, String> methodRef) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new UnaryExpression(Operator.EMPTY, propertyName);
     }
 
     public static UnaryExpression isNotEmpty(SFunction<?, String> methodRef) {
-        String propertyName = LambdaBuilder.produceValName.apply(methodRef);
+        String propertyName = produceValName.apply(methodRef);
         return new UnaryExpression(Operator.NOT_EMPTY, propertyName);
     }
 
