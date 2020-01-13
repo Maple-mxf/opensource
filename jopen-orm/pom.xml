@@ -11,6 +11,7 @@
 
     <artifactId>jopen-orm</artifactId>
     <packaging>pom</packaging>
+    
     <modules>
         <module>jopen-mongo-orm</module>
         <module>jopen-hbase-orm</module>
