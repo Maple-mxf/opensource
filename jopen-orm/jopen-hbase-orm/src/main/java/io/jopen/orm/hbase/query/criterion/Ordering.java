@@ -7,14 +7,14 @@ package io.jopen.orm.hbase.query.criterion;
  */
 public class Ordering implements Criterion, WithProperty {
 
-    public static enum Order {
+    public enum Order {
         ASCENDING, DESCENDING
     }
     
     /**
      * When property name is <tt>null</tt> should those values be put first or last
      */
-    public static enum NullOrdering {
+    public enum NullOrdering {
         FIRST, LAST
     }
 
