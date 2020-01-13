@@ -20,14 +20,14 @@ public class CountCodeLine {
         if (baseFileDir.isDirectory()) {
             File[] files = baseFileDir.listFiles();
             for (File file : files) {
-                if (file.getName().endsWith(".java")) {
+                if (file.getName().endsWith(".py")) {
                     num += Files.readLines(file, StandardCharsets.UTF_8).size();
                 } else {
                     count(file.getAbsolutePath());
                 }
             }
         } else {
-            if (baseFileDir.getName().endsWith(".java")){
+            if (baseFileDir.getName().endsWith(".py")){
                 num += Files.readLines(baseFileDir, StandardCharsets.UTF_8).size();
             }
         }
@@ -35,7 +35,7 @@ public class CountCodeLine {
 
     // 109619 11W+代码  38640 + 80576
     public static void main(String[] args) throws IOException {
-        new CountCodeLine().count("E:\\java-workplace\\opensource");
+        new CountCodeLine().count("E:\\py-workplace\\ai-server\\iteminspection");
         System.err.println(num);
     }
 }
