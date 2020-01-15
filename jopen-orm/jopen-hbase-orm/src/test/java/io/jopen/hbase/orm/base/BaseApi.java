@@ -1,6 +1,5 @@
 package io.jopen.hbase.orm.base;
 
-
 import com.google.common.collect.ImmutableList;
 import io.jopen.orm.hbase.api.ReflectHelper;
 import io.jopen.orm.hbase.hbase.PhoenixHBaseDataStoreApiImpl;
@@ -13,6 +12,8 @@ import io.jopen.orm.hbase.query.QuerySelect;
 import io.jopen.orm.hbase.query.QueryUpdate;
 import io.jopen.orm.hbase.query.builder.QueryBuilder;
 import io.jopen.orm.hbase.query.builder.QueryUpdateBuilder;
+import io.jopen.orm.hbase.query.criterion.LambdaProjections;
+import io.jopen.orm.hbase.query.criterion.LambdaRestrictions;
 import io.jopen.orm.hbase.query.criterion.Restrictions;
 import io.jopen.orm.hbase.query.criterion.projection.CountProjection;
 import io.jopen.orm.hbase.query.criterion.projection.GroupProjection;
@@ -31,11 +32,6 @@ public class BaseApi {
     private List<String> getClasses(String packageName) {
         List<Class<?>> classes = ReflectHelper.getClasses(packageName);
         return classes.parallelStream().map(Class::getName).collect(Collectors.toList());
-    }
-
-    class User {
-        String name;
-        int age;
     }
 
     @Test
@@ -78,6 +74,34 @@ public class BaseApi {
 
         // 构建数据保存操作
         User saveResult = dataStoreApi.save(user1);
+    }
+
+    /**
+     * @see io.jopen.orm.hbase.query.criterion.SFunction
+     * @throws Exception
+     */
+    public void test1() throws Exception {
+        // 配置驱动
+        // TODO  需要设置实体类的包名  如果在多个包下  需要开发者自行制定类的名称
+        EntityPropertiesMappingContext context = new EntityPropertiesMappingContext(getClasses(""));
+        EntityPropertiesResolver resolver = new EntityPropertiesResolver(context);
+        PhoenixHBaseQueryTranslator translator = new PhoenixHBaseQueryTranslator(resolver);
+        PhoenixProjectedResultMapper resultMapper = new PhoenixProjectedResultMapper(resolver);
+        PhoenixHBaseQueryExecutor queryExecutor = new PhoenixHBaseQueryExecutor(translator, resultMapper);
+        PhoenixHBaseDataStoreApiImpl dataStoreApi = new PhoenixHBaseDataStoreApiImpl("jdbc:phoenix:thin:url=http://host:8765;serialization=PROTOBUF", queryExecutor);
+
+        // 项目的入口初始化完毕
+        dataStoreApi.save(new User());
+
+        QuerySelect<User, User> query = QueryBuilder.builderFor(User.class).select()
+                .add(LambdaRestrictions.eq(User::getName, "mxf"))
+                .build();
+
+        User user = dataStoreApi.findOne(query);
+
+        QueryBuilder.builderFor(User.class).select()
+                // 根据姓名进行分组
+                .addGroupCriterion(LambdaProjections.groupBy(User::getName))
 
     }
 }
