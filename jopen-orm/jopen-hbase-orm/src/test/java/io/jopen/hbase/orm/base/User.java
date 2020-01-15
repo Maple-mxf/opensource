@@ -6,8 +6,10 @@ package io.jopen.hbase.orm.base;
  */
 public class User {
 
-    String name;
-    int age;
+    private String name;
+    private int age;
+
+    public User(){}
 
     public String getName() {
         return name;

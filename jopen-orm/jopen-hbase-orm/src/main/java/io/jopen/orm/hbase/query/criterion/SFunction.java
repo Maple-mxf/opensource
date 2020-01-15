@@ -6,6 +6,7 @@ package io.jopen.orm.hbase.query.criterion;
  * @author maxuefeng
  * @since 2020-01-13
  */
+@FunctionalInterface
 public interface SFunction<I, O> extends java.io.Serializable {
     O apply(I input);
 }

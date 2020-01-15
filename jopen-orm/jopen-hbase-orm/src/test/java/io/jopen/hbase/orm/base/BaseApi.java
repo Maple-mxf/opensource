@@ -1,5 +1,6 @@
 package io.jopen.hbase.orm.base;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import io.jopen.orm.hbase.api.ReflectHelper;
 import io.jopen.orm.hbase.hbase.PhoenixHBaseDataStoreApiImpl;
@@ -15,6 +16,7 @@ import io.jopen.orm.hbase.query.builder.QueryUpdateBuilder;
 import io.jopen.orm.hbase.query.criterion.LambdaProjections;
 import io.jopen.orm.hbase.query.criterion.LambdaRestrictions;
 import io.jopen.orm.hbase.query.criterion.Restrictions;
+import io.jopen.orm.hbase.query.criterion.SFunction;
 import io.jopen.orm.hbase.query.criterion.projection.CountProjection;
 import io.jopen.orm.hbase.query.criterion.projection.GroupProjection;
 import org.junit.Test;
@@ -77,8 +79,8 @@ public class BaseApi {
     }
 
     /**
-     * @see io.jopen.orm.hbase.query.criterion.SFunction
      * @throws Exception
+     * @see io.jopen.orm.hbase.query.criterion.SFunction
      */
     public void test1() throws Exception {
         // 配置驱动
@@ -93,15 +95,24 @@ public class BaseApi {
         // 项目的入口初始化完毕
         dataStoreApi.save(new User());
 
-        QuerySelect<User, User> query = QueryBuilder.builderFor(User.class).select()
-                .add(LambdaRestrictions.eq(User::getName, "mxf"))
+//        QuerySelect<User, User> query = QueryBuilder.builderFor(User.class).select()
+//                .add(LambdaRestrictions.eq(User::getName, "mxf"))
+//                .build();
+
+//        User user = dataStoreApi.findOne(query);
+
+        SFunction<User, String> getName = User::getName;
+
+        SFunction<?,String> stringSFunction = (SFunction<Object, String>) input -> {
+            User user1 = (User) input;
+            return user1.getName();
+        };
+
+        QuerySelect<User, User> groupQuery = QueryBuilder.builderFor(User.class).select()
+                // 根据姓名进行分组
+                .addGroupCriterion(LambdaProjections.groupBy(stringSFunction))
                 .build();
 
-        User user = dataStoreApi.findOne(query);
-
-        QueryBuilder.builderFor(User.class).select()
-                // 根据姓名进行分组
-                .addGroupCriterion(LambdaProjections.groupBy(User::getName))
 
     }
 }
