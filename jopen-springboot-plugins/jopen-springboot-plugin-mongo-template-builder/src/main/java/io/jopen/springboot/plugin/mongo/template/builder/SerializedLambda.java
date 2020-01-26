@@ -1,5 +1,6 @@
 package io.jopen.springboot.plugin.mongo.template.builder;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.util.SerializationUtils;
 
 import java.io.*;
@@ -29,7 +30,7 @@ public class SerializedLambda implements Serializable {
      * @param lambda lambda对象
      * @return 返回解析后的 SerializedLambda
      */
-    public static SerializedLambda resolve(SFunction lambda) {
+    public static SerializedLambda resolve(@NonNull SFunction lambda) {
         if (!lambda.getClass().isSynthetic()) {
             throw new RuntimeException("该方法仅能传入 lambda 表达式产生的合成类");
         }

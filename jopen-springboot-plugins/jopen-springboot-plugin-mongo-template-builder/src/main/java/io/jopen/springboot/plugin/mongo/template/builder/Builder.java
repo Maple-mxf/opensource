@@ -33,12 +33,13 @@ public class Builder<T> {
         SerializedLambda serializedLambda = Optional.ofNullable(weakReference)
                 .map(Reference::get)
                 .orElseGet(() -> {
-                    SerializedLambda lambda = LambdaUtils.resolve(sFunction);
+                    SerializedLambda lambda = SerializedLambda.resolve(sFunction);
                     SF_CACHE.put(sFunction.getClass(), new WeakReference<>(lambda));
                     return lambda;
                 });
         return this.resolve(serializedLambda);
     };
+
 
     @Nullable
     private String resolve(@NonNull SerializedLambda lambda) {
