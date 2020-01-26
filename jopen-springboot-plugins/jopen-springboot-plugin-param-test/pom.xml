@@ -31,7 +31,16 @@
         </dependency>
     </dependencies>
 
-
+    <distributionManagement>
+        <repository>
+            <id>rdc-releases</id>
+            <url>https://repo.rdc.aliyun.com/repository/119718-release-hDM8LM/</url>
+        </repository>
+        <snapshotRepository>
+            <id>rdc-snapshots</id>
+            <url>https://repo.rdc.aliyun.com/repository/119718-snapshot-iTjlKe/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>
