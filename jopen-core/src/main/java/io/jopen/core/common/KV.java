@@ -67,7 +67,8 @@ public class KV {
     }
 
     public static <K, V> Map<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6,
-                                      K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10, K k11, V v11, K k12, V v12, K k13, V v13) {
+                                      K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10, K k11, V v11, K k12, V v12,
+                                      K k13, V v13) {
 
         HashMap<K, V> map = new HashMap<>();
 

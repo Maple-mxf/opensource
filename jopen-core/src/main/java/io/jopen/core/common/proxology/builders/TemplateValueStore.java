@@ -1,6 +1,5 @@
 package io.jopen.core.common.proxology.builders;
 
-
 import io.jopen.core.common.proxology.handlers.MethodInterpreter;
 import io.jopen.core.common.proxology.proxies.Proxies;
 import io.jopen.core.common.proxology.reflection.TypeInfo;

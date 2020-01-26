@@ -1,6 +1,5 @@
 package io.jopen.core.common.proxology.beans;
 
-
 import io.jopen.core.common.proxology.EqualisableByState;
 import io.jopen.core.common.proxology.proxies.Proxies;
 

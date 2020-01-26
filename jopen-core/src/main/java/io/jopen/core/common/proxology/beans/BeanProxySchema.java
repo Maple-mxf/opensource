@@ -1,6 +1,5 @@
 package io.jopen.core.common.proxology.beans;
 
-
 import io.jopen.core.common.proxology.handlers.MethodInterpreter;
 import io.jopen.core.common.proxology.handlers.early.ClassInterpreter;
 import io.jopen.core.common.proxology.handlers.early.UnboundMethodInterpreter;
@@ -42,7 +41,8 @@ public class BeanProxySchema {
      * @param setterIndices
      * @return
      */
-    private static UnboundMethodInterpreter<BeanProxyStorage> getInterpreter(Map<Method, Integer> getterIndices, Map<Method, Integer> setterIndices) {
+    private static UnboundMethodInterpreter<BeanProxyStorage> getInterpreter(Map<Method, Integer> getterIndices,
+                                                                             Map<Method, Integer> setterIndices) {
         return method -> {
             if (getterIndices.containsKey(method)) {
                 int slotIndex = getterIndices.get(method);

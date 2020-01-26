@@ -88,12 +88,8 @@ public class UploadHelper {
             response = client.newCall(request).execute();
             String jsonString = response.body().string();
             if (!response.isSuccessful()) {
-
-
                 return new JSONObject(ImmutableMap.of("code", "0", "msg", "request Error"));
-
             } else {
-
                 return JSONObject.parseObject(jsonString);
             }
         } catch (IOException ex) {

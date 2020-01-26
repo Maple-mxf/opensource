@@ -1,6 +1,5 @@
 package io.jopen.core.common.proxology.proxies;
 
-
 import io.jopen.core.common.proxology.EqualisableByState;
 import io.jopen.core.common.proxology.handlers.MethodCallInterceptor;
 import io.jopen.core.common.proxology.handlers.PropertyValueStore;
@@ -18,14 +17,17 @@ import static io.jopen.core.common.proxology.handlers.MethodInterpreters.*;
 public final class Proxies {
 
     @SuppressWarnings("unchecked")
-    public static <T> T simpleProxy(Class<? extends T> iface, InvocationHandler handler, Class<?>...otherIfaces) {
+    public static <T> T simpleProxy(Class<? extends T> iface,
+                                    InvocationHandler handler,
+                                    Class<?>... otherIfaces) {
         Class<?>[] allInterfaces = Stream.concat(
                 Stream.of(iface),
                 Stream.of(otherIfaces))
                 .distinct()
                 .toArray(Class<?>[]::new);
 
-        return (T) Proxy.newProxyInstance(iface.getClassLoader(),
+        return (T) Proxy.newProxyInstance(
+                iface.getClassLoader(),
                 allInterfaces,
                 handler);
     }
