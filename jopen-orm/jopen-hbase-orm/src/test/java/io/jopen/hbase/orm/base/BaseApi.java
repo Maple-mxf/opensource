@@ -21,11 +21,17 @@ import io.jopen.orm.hbase.query.criterion.projection.CountProjection;
 import io.jopen.orm.hbase.query.criterion.projection.GroupProjection;
 import org.junit.Test;
 
+import javax.swing.plaf.synth.SynthButtonUI;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
  * @author maxuefeng
+ * @see java.util.LinkedList
+ * @see CountDownLatch#await()
+ * @see
  * @since 2020/1/12
  */
 public class BaseApi {
@@ -103,7 +109,7 @@ public class BaseApi {
 
         SFunction<User, String> getName = User::getName;
 
-        SFunction<?,String> stringSFunction = (SFunction<Object, String>) input -> {
+        SFunction<?, String> stringSFunction = (SFunction<Object, String>) input -> {
             User user1 = (User) input;
             return user1.getName();
         };
@@ -112,7 +118,59 @@ public class BaseApi {
                 // 根据姓名进行分组
                 .addGroupCriterion(LambdaProjections.groupBy(stringSFunction))
                 .build();
+    }
 
 
+    void update() {
+        synchronized (this) {
+            a++;
+        }
+    }
+
+    void update1() {
+        synchronized (this) {
+            a++;
+        }
+    }
+
+    private int a = 0;
+    private Object object = null;
+
+    @Test
+    public void testNullSync() {
+        System.err.printf("I am a  thread, name is %s ", Thread.currentThread().getName());
+        synchronized (object) {
+            a++;
+        }
+    }
+
+    private final Object A = new Object();
+    private final Object B = new Object();
+
+    @Test
+    public void testDeadLock() throws InterruptedException {
+
+        new Thread(() -> {
+            synchronized (A){
+                try {
+                    Thread.sleep(100000);
+                } catch (InterruptedException ignored) {
+                }
+
+                synchronized (B){
+                    System.err.println("I am locking A object");
+                }
+            }
+        }).start();
+
+        new Thread(() -> {
+            synchronized (B){
+                synchronized (A){
+                    System.err.println("I am lock B and lock A");
+                }
+            }
+        }).start();
+
+        Thread.sleep(100000);
     }
 }
