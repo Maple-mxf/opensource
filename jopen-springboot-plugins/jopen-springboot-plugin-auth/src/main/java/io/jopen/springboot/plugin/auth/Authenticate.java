@@ -40,6 +40,7 @@ public class Authenticate extends BaseInterceptor {
 
                     // 检测角色
                     String[] permissionRoles = m.role();
+                    if (permissionRoles[0].equals("*")) return true;
 
                     //
                     List<String> roles = this.tokenProducer.getRoles(tokenValue);

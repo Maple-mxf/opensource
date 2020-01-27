@@ -20,6 +20,4 @@ public @interface EnableJopenAuth {
      * @see TokenProducer
      */
     String tokenProducerClassPath() default "";
-
-
 }
