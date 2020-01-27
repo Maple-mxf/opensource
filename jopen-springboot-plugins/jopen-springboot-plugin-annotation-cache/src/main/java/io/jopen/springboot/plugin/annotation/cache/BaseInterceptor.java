@@ -112,7 +112,7 @@ public class BaseInterceptor implements HandlerInterceptor, CommandLineRunner {
                             }
                             classToInstanceMap.put(annotation.annotationType(), annotation);
                         }
-                        this.ANNOTATION_CACHE.put(key, classToInstanceMap);
+                        ANNOTATION_CACHE.put(key, classToInstanceMap);
                     }
                 });
 
