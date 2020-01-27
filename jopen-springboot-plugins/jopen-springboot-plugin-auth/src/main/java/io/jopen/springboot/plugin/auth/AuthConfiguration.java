@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -19,22 +18,19 @@ public class AuthConfiguration implements ImportAware, WebMvcConfigurer {
     @Autowired
     private Authenticate authenticate;
 
-    @Nullable
-    private AnnotationAttributes enableAuth;
-
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authenticate);
+        registry.addInterceptor(authenticate).addPathPatterns("/**");
     }
 
     /**
      * @param importMetadata 导入的元数据信息
      */
     public void setImportMetadata(AnnotationMetadata importMetadata) {
-        this.enableAuth = AnnotationAttributes
+        AnnotationAttributes enableAuth = AnnotationAttributes
                 .fromMap(importMetadata.getAnnotationAttributes(EnableJopenAuth.class.getName(), false));
 
-        if (this.enableAuth == null) {
+        if (enableAuth == null) {
             throw new IllegalArgumentException(
                     "@EnableAuth is not present on importing class " + importMetadata.getClassName());
         }

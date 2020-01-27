@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,9 +30,24 @@ public class Authenticate extends BaseInterceptor {
         return Optional.ofNullable(verify)
                 .map(m -> {
                     String tokenKey;
-                    return tokenProducer != null
-                            && !Strings.isNullOrEmpty((tokenKey = this.tokenProducer.parseRequestTokenKey(request)))
-                            && this.tokenProducer.getVerifyToken(tokenKey) != null;
+                    Object tokenValue = null;
+                    boolean result = (tokenProducer == null
+                            || Strings.isNullOrEmpty((tokenKey = this.tokenProducer.parseRequestTokenKey(request)))
+                            || (tokenValue = this.tokenProducer.getVerifyToken(tokenKey)) == null);
+
+                    // 没有授权信息
+                    if (result) throw new RuntimeException(m.errMsg());
+
+                    // 检测角色
+                    String[] permissionRoles = m.role();
+
+                    //
+                    List<String> roles = this.tokenProducer.getRoles(tokenValue);
+                    boolean hasAllowRole = Arrays.stream(permissionRoles)
+                            .anyMatch(roles::contains);
+
+                    if (hasAllowRole) return true;
+                    else throw new RuntimeException(m.errMsg());
                 })
                 .orElse(true);
     }

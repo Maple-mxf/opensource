@@ -4,6 +4,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author maxuefeng
@@ -30,4 +31,12 @@ public abstract class TokenProducer {
      */
     @Nullable
     public abstract <U> U getVerifyToken(@NonNull String tokenKey);
+
+    /**
+     * @param u
+     * @param <U>
+     * @return
+     */
+    @NonNull
+    public abstract <U> List<String> getRoles(@NonNull U u);
 }
