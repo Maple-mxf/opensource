@@ -1,10 +1,10 @@
-package io.jopen.springboot.plugin.common;
+package io.jopen.springboot.plugin.common.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jopen.springboot.plugin.common.KV;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
