@@ -15,11 +15,9 @@ import java.lang.annotation.*;
 @Import({Authenticate.class, AuthConfiguration.class})
 public @interface EnableJopenAuth {
 
-    // public String
-    TokenLocation location() default TokenLocation.HEADER;
-
-    enum TokenLocation {
-        HEADER,
-        COOKIE
-    }
+    /**
+     * @return the implement {@link TokenProducer} class path example:"io.jopen.springboot.plugin.auth.DefaultTokenProducer"
+     * @see TokenProducer
+     */
+    String tokenProducerClassPath() default "";
 }

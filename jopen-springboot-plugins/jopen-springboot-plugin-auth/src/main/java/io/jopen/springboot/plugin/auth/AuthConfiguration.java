@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -28,6 +27,9 @@ public class AuthConfiguration implements ImportAware, WebMvcConfigurer {
         registry.addInterceptor(authenticate);
     }
 
+    /**
+     * @param importMetadata 导入的元数据信息
+     */
     public void setImportMetadata(AnnotationMetadata importMetadata) {
         this.enableAuth = AnnotationAttributes
                 .fromMap(importMetadata.getAnnotationAttributes(EnableJopenAuth.class.getName(), false));
@@ -36,5 +38,20 @@ public class AuthConfiguration implements ImportAware, WebMvcConfigurer {
             throw new IllegalArgumentException(
                     "@EnableAuth is not present on importing class " + importMetadata.getClassName());
         }
+
+        String tokenProducerClassPath = enableAuth.getString("tokenProducerClassPath");
+        Class type;
+        try {
+            type = Class.forName(tokenProducerClassPath);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(String.format("class not found %s", tokenProducerClassPath));
+        }
+        TokenProducer tokenProducer;
+        try {
+            tokenProducer = (TokenProducer) type.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e.getCause());
+        }
+        this.authenticate.setTokenProducer(tokenProducer);
     }
 }
