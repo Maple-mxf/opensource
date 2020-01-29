@@ -75,14 +75,14 @@ public class BaseInterceptor implements HandlerInterceptor {
 
     @Nullable
     public <TYPE extends Annotation> TYPE getApiServiceAnnotation(@NonNull Class<TYPE> type, @NonNull Object handler) {
-        return Optional.ofNullable(handler)
+        return Optional.of(handler)
                 .filter(h -> h instanceof HandlerMethod)
                 .map(h -> (HandlerMethod) h)
                 .map(h -> {
                     TYPE annotation = h.getMethodAnnotation(type);
-                    return Optional.ofNullable(annotation).orElseGet(() -> h.getBeanType().getDeclaredAnnotation(type));
+                    return Optional.ofNullable(annotation).orElse(h.getBeanType().getDeclaredAnnotation(type));
                 })
-                .get();
+                .orElse(null);
     }
 
 
