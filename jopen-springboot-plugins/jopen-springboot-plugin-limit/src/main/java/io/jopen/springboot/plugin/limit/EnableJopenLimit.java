@@ -12,6 +12,30 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({FlowControl.class, LuaConfiguration.class})
+@Import({FlowControl.class, LimitConfiguration.class})
 public @interface EnableJopenLimit {
+
+    /**
+     * 限流Key定义  {@link }
+     *
+     * @return
+     */
+    // LimitType keyType() default LimitType.IP;
+
+
+    /**
+     * 限流方式
+     */
+    @Deprecated
+    enum LimitType {
+        IP, // 基于IP限流
+        TOKEN // 基于token限流
+    }
+
+    /**
+     * 限流Key的实现类
+     *
+     * @return limit key
+     */
+    String limitKeyProducerClassPath();
 }

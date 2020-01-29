@@ -13,5 +13,6 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @Import({BaseInterceptor.class})
+@Deprecated
 public @interface EnableJopenAnnotationCache {
 }

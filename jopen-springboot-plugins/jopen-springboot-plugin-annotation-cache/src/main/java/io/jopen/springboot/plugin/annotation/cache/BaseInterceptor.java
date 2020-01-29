@@ -2,13 +2,13 @@ package io.jopen.springboot.plugin.annotation.cache;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.MapMaker;
 import com.google.common.collect.MutableClassToInstanceMap;
 import io.jopen.springboot.plugin.common.ReflectUtil;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +19,10 @@ import javax.annotation.PostConstruct;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 /**
+ * {@link HandlerMethod}
  * 通用方法抽象
  * <p>
  * {@link HandlerInterceptor}
@@ -32,8 +34,8 @@ import java.util.*;
  * 注解实例调用<code>annotationType()<code/>方法的结果是一个正确的Class对象  而非一个Proxy对象
  * @see Annotation#annotationType()
  */
-@Component
-public class BaseInterceptor implements HandlerInterceptor, CommandLineRunner {
+// @Component
+public class BaseInterceptor implements HandlerInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseInterceptor.class);
 
@@ -44,8 +46,15 @@ public class BaseInterceptor implements HandlerInterceptor, CommandLineRunner {
      * @see ClassToInstanceMap
      * @see java.util.concurrent.ConcurrentHashMap
      */
+    @Deprecated
     private final static Map<Integer, ClassToInstanceMap<Annotation>> ANNOTATION_CACHE = new HashMap<>(300);
 
+    /**
+     * {@link MapMaker}
+     * GC Key and Value
+     * if HashMap  it will gc value，key not gc
+     */
+    private final static ConcurrentMap<Integer, Set<Annotation>> CACHE = new MapMaker().weakValues().makeMap();
 
     /**
      * 获取指定标记
@@ -55,6 +64,7 @@ public class BaseInterceptor implements HandlerInterceptor, CommandLineRunner {
      * @return 返回指定的注解实例
      */
     @Nullable
+    @Deprecated
     public <TYPE extends Annotation> TYPE getMark(@NonNull Class<TYPE> type,
                                                   @NonNull Object handler) {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -63,7 +73,26 @@ public class BaseInterceptor implements HandlerInterceptor, CommandLineRunner {
         return classToInstanceMap == null ? null : classToInstanceMap.getInstance(type);
     }
 
-    @Override
+    @Nullable
+    public <TYPE extends Annotation> TYPE getApiServiceAnnotation(@NonNull Class<TYPE> type, @NonNull Object handler) {
+        return Optional.of(handler)
+                .filter(h -> h instanceof HandlerMethod)
+                .map(h -> (HandlerMethod) h)
+                .map(h -> {
+                    TYPE annotation = h.getMethodAnnotation(type);
+                    return Optional.ofNullable(annotation).orElseGet(() -> h.getBeanType().getDeclaredAnnotation(type));
+                })
+                .get();
+    }
+
+
+    /**
+     * {@link org.springframework.boot.CommandLineRunner} start spring application {@link BaseInterceptor#run(String...)}
+     *
+     * @param args
+     * @throws Exception
+     */
+    @Deprecated
     public void run(String... args) throws Exception {
         LOGGER.info("load api interface annotation");
 

@@ -41,7 +41,7 @@ public class NetWorkUtil {
                 ip = request.getRemoteAddr();
             }
         } catch (Exception e) {
-            System.err.println(e);
+            e.printStackTrace();
         }
         return ip;
     }

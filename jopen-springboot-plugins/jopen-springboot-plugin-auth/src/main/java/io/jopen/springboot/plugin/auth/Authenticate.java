@@ -26,7 +26,7 @@ public class Authenticate extends BaseInterceptor {
     }
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Verify verify = super.getMark(Verify.class, handler);
+        Verify verify = super.getApiServiceAnnotation(Verify.class, handler);
         return Optional.ofNullable(verify)
                 .map(m -> {
                     String tokenKey;
@@ -40,12 +40,11 @@ public class Authenticate extends BaseInterceptor {
 
                     // 检测角色
                     String[] permissionRoles = m.role();
-                    if (permissionRoles[0].equals("*")) return true;
-
+                    if (permissionRoles.length == 0) return false;
+                    if ("*".equals(permissionRoles[0])) return true;
                     //
                     List<String> roles = this.tokenProducer.getRoles(tokenValue);
-                    boolean hasAllowRole = Arrays.stream(permissionRoles)
-                            .anyMatch(roles::contains);
+                    boolean hasAllowRole = Arrays.stream(permissionRoles) .anyMatch(roles::contains);
 
                     if (hasAllowRole) return true;
                     else throw new RuntimeException(m.errMsg());

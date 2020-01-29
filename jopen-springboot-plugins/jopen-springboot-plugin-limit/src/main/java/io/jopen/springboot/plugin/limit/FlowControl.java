@@ -1,7 +1,7 @@
 package io.jopen.springboot.plugin.limit;
 
 import io.jopen.springboot.plugin.annotation.cache.BaseInterceptor;
-import io.jopen.springboot.plugin.common.NetWorkUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 流量控制
+ * 流量控制 {@link BaseInterceptor}
  *
  * @author maxuefeng
  * @see Limiting
@@ -31,9 +31,25 @@ public class FlowControl extends BaseInterceptor {
     @Qualifier(value = "limitScript")
     private DefaultRedisScript<Number> limitScript;
 
-    public FlowControl() throws IOException {
+    //
+    private LimitKeyProducer limitKeyProducer;
+
+    public void setLimitKeyProducer(@NonNull LimitKeyProducer limitKeyProducer) {
+        this.limitKeyProducer = limitKeyProducer;
     }
 
+    public FlowControl() {
+    }
+
+    /**
+     * {@link LimitKeyProducer#key(HttpServletRequest)} 此方法需要自定义  根据Request对象来生产key
+     *
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws IOException
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
 
@@ -43,28 +59,22 @@ public class FlowControl extends BaseInterceptor {
         }
 
         // 获取限流注解
-        Limiting limiting = (Limiting) getMark(Limiting.class, handler);
-
+        Limiting limiting = super.getApiServiceAnnotation(Limiting.class, handler);
         if (limiting != null) {
-
-            // 获取客户但IP地址
-            String ip = NetWorkUtil.getIpAddr(request);
-
+            // 获取客户端的限流Key
+            String ip = limitKeyProducer.key(request);
             // 拼接key
             HandlerMethod handlerMethod = (HandlerMethod) handler;
-
             //
             List<String> keys = Collections.singletonList(ip + "-" + handlerMethod.getMethod().getName() + "-" + limiting.key());
-
             //  统计访问次数
             Number r = redisTemplate.execute(limitScript, keys, limiting.count(), limiting.time());
-
             //
             if (r != null && r.intValue() != 0 && r.intValue() <= limiting.count()) {
                 return true;
             } else {
                 // 返回错误消息
-                throw new RuntimeException("访问过于频繁");
+                throw new RuntimeException("访问过于频繁，请稍后再试！");
             }
         }
         return true;
