@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({FlowControl.class, LimitPluginConfiguration.class})
+@Import({FlowControl.class, LimitPluginConfiguration.class, ScriptConfiguration.class})
 public @interface EnableJopenLimit {
 
     /**

@@ -75,7 +75,7 @@ public class BaseInterceptor implements HandlerInterceptor {
 
     @Nullable
     public <TYPE extends Annotation> TYPE getApiServiceAnnotation(@NonNull Class<TYPE> type, @NonNull Object handler) {
-        return Optional.of(handler)
+        return Optional.ofNullable(handler)
                 .filter(h -> h instanceof HandlerMethod)
                 .map(h -> (HandlerMethod) h)
                 .map(h -> {
