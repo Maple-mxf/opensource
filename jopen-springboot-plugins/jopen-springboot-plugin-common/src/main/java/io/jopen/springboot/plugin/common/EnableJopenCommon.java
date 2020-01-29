@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * 开启SpringContainer工具类
+ * 开启工具类
  *
  * @author maxuefeng
  * @since 2020/1/27
@@ -14,6 +14,18 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({SpringContainer.class})
+@Import({
+        // Spring容器对象获取工具
+        SpringContainer.class,
+        // 全局异常捕获器
+        GlobalThrowableCaptors.class})
 public @interface EnableJopenCommon {
+
+    /**
+     * 哪种环境下开启打印异常
+     *
+     * @return
+     */
+    String printExceptionStackInfoInEnv();
+
 }
