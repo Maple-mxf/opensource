@@ -8,8 +8,11 @@ import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Arrays;
 
 /**
  * 无副作用。
@@ -31,6 +34,8 @@ public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
 
     @Autowired
     private FlowControl flowControl;
+
+    private InterceptorRegistration interceptorRegistration;
 
     /**
      * 加载Lua限流脚本
@@ -59,7 +64,7 @@ public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(flowControl).order(0).addPathPatterns("/**");
+        interceptorRegistration = registry.addInterceptor(flowControl).order(0).addPathPatterns("/**");
     }
 
     @Override
@@ -81,5 +86,14 @@ public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
             e.printStackTrace();
             this.flowControl.setLimitKeyProducer(new LimitKeyProducer.IPLimitKeyStrategy());
         }
+
+        String[] pathPatterns = enableLimit.getStringArray("pathPatterns");
+        String[] excludePathPatterns = enableLimit.getStringArray("excludePathPattern");
+        int order = enableLimit.getNumber("order");
+
+        // 设置当前对象的拦截器的顺序
+        this.interceptorRegistration.addPathPatterns(Arrays.asList(pathPatterns));
+        this.interceptorRegistration.excludePathPatterns(Arrays.asList(excludePathPatterns));
+        this.interceptorRegistration.order(order);
     }
 }

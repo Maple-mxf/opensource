@@ -5,8 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Arrays;
 
 /**
  * @author maxuefeng
@@ -17,10 +20,11 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
 
     @Autowired
     private Authenticate authenticate;
+    private InterceptorRegistration interceptorRegistration;
 
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authenticate).addPathPatterns("/**");
+        interceptorRegistration = registry.addInterceptor(authenticate).addPathPatterns("/**");
     }
 
     /**
@@ -49,5 +53,15 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
             throw new RuntimeException(e.getCause());
         }
         this.authenticate.setTokenProducer(tokenProducer);
+
+
+        String[] pathPatterns = enableAuth.getStringArray("pathPatterns");
+        String[] excludePathPatterns = enableAuth.getStringArray("excludePathPattern");
+        int order = enableAuth.getNumber("order");
+
+        // 设置当前对象的拦截器的顺序
+        this.interceptorRegistration.addPathPatterns(Arrays.asList(pathPatterns));
+        this.interceptorRegistration.excludePathPatterns(Arrays.asList(excludePathPatterns));
+        this.interceptorRegistration.order(order);
     }
 }

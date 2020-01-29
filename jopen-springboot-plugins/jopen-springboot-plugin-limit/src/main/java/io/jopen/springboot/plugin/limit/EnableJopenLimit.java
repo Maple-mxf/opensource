@@ -16,26 +16,30 @@ import java.lang.annotation.*;
 public @interface EnableJopenLimit {
 
     /**
-     * 限流Key定义  {@link }
-     *
-     * @return
-     */
-    // LimitType keyType() default LimitType.IP;
-
-
-    /**
-     * 限流方式
-     */
-    @Deprecated
-    enum LimitType {
-        IP, // 基于IP限流
-        TOKEN // 基于token限流
-    }
-
-    /**
      * 限流Key的实现类
      *
      * @return limit key
      */
     String limitKeyProducerClassPath();
+
+    /**
+     * 当前拦截器执行的顺序
+     *
+     * @return 顺序order {@link org.springframework.web.servlet.config.annotation.InterceptorRegistration#order(int)}
+     */
+    int order() default 0;
+
+    /**
+     * 所要拦截的路径
+     *
+     * @see org.springframework.web.servlet.config.annotation.InterceptorRegistration#addPathPatterns(String...)
+     */
+    String[] pathPatterns() default {"/**"};
+
+    /**
+     * 所有排除的路径
+     *
+     * @see org.springframework.web.servlet.config.annotation.InterceptorRegistration#excludePathPatterns(String...)
+     */
+    String[] excludePathPattern() default {};
 }
