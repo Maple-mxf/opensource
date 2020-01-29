@@ -19,7 +19,52 @@ import java.util.Optional;
 @Component
 public class Authenticate extends BaseInterceptor {
 
+    /**
+     * 客户端自定义获取token操作
+     *
+     * @see TokenProducer
+     */
     private TokenProducer tokenProducer;
+
+    /**
+     * 当前拦截器的顺序
+     */
+    private int order;
+
+    /**
+     * 要拦截的路径
+     */
+    private String[] pathPatterns;
+
+    /**
+     * 要排除的路径
+     */
+    private String[] excludePathPatterns;
+
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public String[] getPathPatterns() {
+        return pathPatterns;
+    }
+
+    public void setPathPatterns(String[] pathPatterns) {
+        this.pathPatterns = pathPatterns;
+    }
+
+    public String[] getExcludePathPatterns() {
+        return excludePathPatterns;
+    }
+
+    public void setExcludePathPatterns(String[] excludePathPatterns) {
+        this.excludePathPatterns = excludePathPatterns;
+    }
 
     public void setTokenProducer(@NonNull TokenProducer tokenProducer) {
         this.tokenProducer = tokenProducer;
@@ -44,7 +89,7 @@ public class Authenticate extends BaseInterceptor {
                     if ("*".equals(permissionRoles[0])) return true;
                     //
                     List<String> roles = this.tokenProducer.getRoles(tokenValue);
-                    boolean hasAllowRole = Arrays.stream(permissionRoles) .anyMatch(roles::contains);
+                    boolean hasAllowRole = Arrays.stream(permissionRoles).anyMatch(roles::contains);
 
                     if (hasAllowRole) return true;
                     else throw new RuntimeException(m.errMsg());

@@ -1,4 +1,3 @@
-
 package io.jopen.springboot.plugin.limit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +7,9 @@ import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.Arrays;
 
 /**
  * 无副作用。
@@ -29,13 +26,16 @@ import java.util.Arrays;
  *
  * @author maxuefeng
  */
+@Component
 @Configuration
 public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
 
-    @Autowired
     private FlowControl flowControl;
 
-    private InterceptorRegistration interceptorRegistration;
+    @Autowired
+    public LimitPluginConfiguration(FlowControl flowControl) {
+        this.flowControl = flowControl;
+    }
 
     /**
      * 加载Lua限流脚本
@@ -64,7 +64,11 @@ public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        interceptorRegistration = registry.addInterceptor(flowControl).order(0).addPathPatterns("/**");
+        registry.addInterceptor(flowControl)
+                .order(this.flowControl.getOrder())
+                .addPathPatterns(this.flowControl.getPathPatterns())
+                .excludePathPatterns(this.flowControl.getExcludePathPatterns());
+
     }
 
     @Override
@@ -92,8 +96,8 @@ public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
         int order = enableLimit.getNumber("order");
 
         // 设置当前对象的拦截器的顺序
-        this.interceptorRegistration.addPathPatterns(Arrays.asList(pathPatterns));
-        this.interceptorRegistration.excludePathPatterns(Arrays.asList(excludePathPatterns));
-        this.interceptorRegistration.order(order);
+        this.flowControl.setPathPatterns(pathPatterns);
+        this.flowControl.setExcludePathPatterns(excludePathPatterns);
+        this.flowControl.setOrder(order);
     }
 }

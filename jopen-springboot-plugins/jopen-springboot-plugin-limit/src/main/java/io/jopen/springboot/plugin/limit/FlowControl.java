@@ -34,6 +34,46 @@ public class FlowControl extends BaseInterceptor {
     //
     private LimitKeyProducer limitKeyProducer;
 
+    /**
+     * 当前拦截器的顺序
+     */
+    private int order;
+
+    /**
+     * 要拦截的路径
+     */
+    private String[] pathPatterns;
+
+    /**
+     * 要排除的路径
+     */
+    private String[] excludePathPatterns;
+
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public String[] getPathPatterns() {
+        return pathPatterns;
+    }
+
+    public void setPathPatterns(String[] pathPatterns) {
+        this.pathPatterns = pathPatterns;
+    }
+
+    public String[] getExcludePathPatterns() {
+        return excludePathPatterns;
+    }
+
+    public void setExcludePathPatterns(String[] excludePathPatterns) {
+        this.excludePathPatterns = excludePathPatterns;
+    }
+
     public void setLimitKeyProducer(@NonNull LimitKeyProducer limitKeyProducer) {
         this.limitKeyProducer = limitKeyProducer;
     }
