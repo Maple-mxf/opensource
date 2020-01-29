@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @since 2020/1/26
  */
 @Configuration
-public class AuthConfiguration implements ImportAware, WebMvcConfigurer {
+public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
 
     @Autowired
     private Authenticate authenticate;

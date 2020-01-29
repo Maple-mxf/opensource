@@ -1,8 +1,8 @@
 package io.jopen.springboot.plugin.init;
 
-import com.google.common.base.Preconditions;
 import io.jopen.springboot.plugin.common.ReflectUtil;
 import io.jopen.springboot.plugin.common.SpringContainer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -27,13 +27,15 @@ public class InitApplication implements ApplicationRunner {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(InitApplication.class);
 
+    private String basePackage;
+
+    public void setBasePackage(@NonNull String basePackage) {
+        this.basePackage = basePackage;
+    }
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         LOGGER.info("初始化业务容器");
-        String[] sourceArgs = args.getSourceArgs();
-        Preconditions.checkArgument((sourceArgs != null && sourceArgs.length > 0), String.format("缺少启动参数，请参考 %s, 注解 ", Init.class.getName()));
-
-        String basePackage = sourceArgs[0];
         List<Class<?>> classList = ReflectUtil.getClasses(basePackage);
         Set<Class<?>> initTypeList = classList.parallelStream()
                 .filter(type -> type.getDeclaredAnnotation(Init.class) != null)

@@ -27,7 +27,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author maxuefeng
  */
 @Configuration
-public class LimitConfiguration implements WebMvcConfigurer, ImportAware {
+public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
 
     @Autowired
     private FlowControl flowControl;
