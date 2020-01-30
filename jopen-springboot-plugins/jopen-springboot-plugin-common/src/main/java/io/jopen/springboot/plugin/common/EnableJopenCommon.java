@@ -26,6 +26,6 @@ public @interface EnableJopenCommon {
      *
      * @return
      */
-    String printExceptionStackInfoInEnv();
+    String[] printExceptionStackInfoInEnv() default {};
 
 }

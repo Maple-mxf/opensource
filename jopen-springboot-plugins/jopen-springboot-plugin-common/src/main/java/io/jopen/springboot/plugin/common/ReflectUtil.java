@@ -31,22 +31,15 @@ public class ReflectUtil {
         if (obj == null) return new HashMap<>();
 
         Field[] fields = obj.getClass().getDeclaredFields();
-
-
         Map<String, Object> fieldValues = new HashMap<>();
-
         for (Field field : fields) {
-
             field.setAccessible(true);
-
             // 字段名
             String filedName = field.getName();
-
             // 字段值
             Object value = null;
             try {
                 value = field.get(obj);
-
             } catch (IllegalAccessException ignored) {
             }
 
