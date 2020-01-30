@@ -18,7 +18,6 @@
         <module>jopen-zookeeper</module>
         <module>jopen-mq</module>
         <module>jopen-distribute-lock</module>
-        <module>jopen-quartz</module>
         <module>jopen-spark</module>
         <module>jopen-iot</module>
         <module>jopen-scheduling</module>
