@@ -26,7 +26,7 @@ public class InitPluginConfiguration implements ImportAware {
                     "@EnableInit is not present on importing class " + importMetadata.getClassName());
         }
 
-        String basePackage = enableInit.getString("basePackage");
-        this.initApplication.setBasePackage(basePackage);
+        Class<?> runSpringBootType = enableInit.getClass("runSpringBootType");
+        this.initApplication.setBasePackage(runSpringBootType.getPackage().getName());
     }
 }

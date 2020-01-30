@@ -20,5 +20,5 @@ public @interface EnableJopenInit {
      *
      * @return 基包的位置 比如 io.jopen.springboot.plugin.init
      */
-    String basePackage();
+    Class<?> runSpringBootType();
 }

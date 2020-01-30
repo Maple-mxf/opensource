@@ -14,13 +14,14 @@ import java.lang.annotation.*;
 @Inherited
 @Import({FlowControl.class, LimitPluginConfiguration.class, ScriptConfiguration.class})
 public @interface EnableJopenLimit {
-
+    
     /**
      * 限流Key的实现类
      *
      * @return limit key
+     * @see LimitKeyProducer
      */
-    String limitKeyProducerClassPath();
+    Class<? extends LimitKeyProducer> limitKeyFunctionType();
 
     /**
      * 当前拦截器执行的顺序

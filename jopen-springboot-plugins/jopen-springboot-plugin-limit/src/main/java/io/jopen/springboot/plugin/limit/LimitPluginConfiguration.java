@@ -54,13 +54,12 @@ public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
             throw new IllegalArgumentException(
                     "@EnableLimit is not present on importing class " + importMetadata.getClassName());
         }
-        // 目标类的Class Path
-        String limitKeyProducerClassPath = enableLimit.getString("limitKeyProducerClassPath");
-
+        // 目标类的Class
+        Class<? extends LimitKeyProducer> limitKeyFunctionType = enableLimit.getClass("limitKeyFunctionType");
         try {
-            LimitKeyProducer instance = (LimitKeyProducer) Class.forName(limitKeyProducerClassPath).newInstance();
+            LimitKeyProducer instance = limitKeyFunctionType.newInstance();
             this.flowControl.setLimitKeyProducer(instance);
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             this.flowControl.setLimitKeyProducer(new LimitKeyProducer.IPLimitKeyStrategy());
         }

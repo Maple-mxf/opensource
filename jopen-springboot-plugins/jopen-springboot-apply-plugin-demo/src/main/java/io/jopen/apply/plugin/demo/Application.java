@@ -42,9 +42,9 @@ import java.util.Map;
 @SpringBootApplication
 
 /*注解式插件*/
-@EnableJopenLimit
+// @EnableJopenLimit
 @EnableJopenEncryptBody
-@EnableJopenInit
+// @EnableJopenInit
 @EnableJopenParamTest
 @EnableJopenAnnotationCache
 public class Application {

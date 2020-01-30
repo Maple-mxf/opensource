@@ -43,17 +43,13 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
                     "@EnableAuth is not present on importing class " + importMetadata.getClassName());
         }
 
-        String tokenProducerClassPath = enableAuth.getString("tokenProducerClassPath");
-        Class type;
-        try {
-            type = Class.forName(tokenProducerClassPath);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(String.format("class not found %s", tokenProducerClassPath));
-        }
+        // 获取目标Class对象
+        Class<? extends TokenProducer> tokenFunctionType = enableAuth.getClass("tokenFunctionType");
         TokenProducer tokenProducer;
         try {
-            tokenProducer = (TokenProducer) type.newInstance();
+            tokenProducer = tokenFunctionType.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
             throw new RuntimeException(e.getCause());
         }
         this.authenticate.setTokenProducer(tokenProducer);

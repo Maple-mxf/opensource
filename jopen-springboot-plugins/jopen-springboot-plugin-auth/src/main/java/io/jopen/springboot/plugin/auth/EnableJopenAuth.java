@@ -19,7 +19,7 @@ public @interface EnableJopenAuth {
      * @return the implement {@link TokenProducer} class path example:"io.jopen.springboot.plugin.auth.DefaultTokenProducer"
      * @see TokenProducer
      */
-    String tokenProducerClassPath() default "";
+    Class<? extends TokenProducer> tokenFunctionType();
 
     /**
      * 当前拦截器执行的顺序
