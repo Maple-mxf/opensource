@@ -18,7 +18,10 @@ import java.lang.annotation.*;
         // Spring容器对象获取工具
         SpringContainer.class,
         // 全局异常捕获器
-        GlobalThrowableCaptors.class})
+        GlobalThrowableCaptors.class,
+        // 配置类
+        CommonPluginConfiguration.class
+})
 public @interface EnableJopenCommon {
 
     /**
