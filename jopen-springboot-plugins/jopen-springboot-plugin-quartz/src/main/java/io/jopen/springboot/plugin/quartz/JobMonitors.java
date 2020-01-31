@@ -139,7 +139,7 @@ public final class JobMonitors {
         return tasks;
     }
 
-    public List<DistributeTaskInfo.TriggerInfo> jobTriggerInfoList(String group, String name) throws SchedulerException {
+    public List<TriggerInfo> jobTriggerInfoList(String group, String name) throws SchedulerException {
         JobKey jobKey = JobKey.jobKey(name, group);
         List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
 
@@ -147,7 +147,7 @@ public final class JobMonitors {
                 .map(originTrigger -> {
                     try {
                         CronTrigger cronTrigger = (CronTrigger) originTrigger;
-                        return DistributeTaskInfo.TriggerInfo.builder()
+                        return TriggerInfo.builder()
                                 .cron(((CronTrigger) originTrigger).getCronExpression())
                                 .name(cronTrigger.getKey().getName())
                                 .group(cronTrigger.getKey().getGroup())

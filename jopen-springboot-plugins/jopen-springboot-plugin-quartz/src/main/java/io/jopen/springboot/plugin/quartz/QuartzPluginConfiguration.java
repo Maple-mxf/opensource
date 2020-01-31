@@ -87,6 +87,5 @@ public class QuartzPluginConfiguration implements ImportAware {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         }
-
     }
 }
