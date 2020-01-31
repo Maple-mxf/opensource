@@ -23,11 +23,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
             <version>${springboot-version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.jopen</groupId>
             <artifactId>jopen-springboot-plugin-common</artifactId>
             <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

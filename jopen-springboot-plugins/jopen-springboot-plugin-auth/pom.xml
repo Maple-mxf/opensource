@@ -25,6 +25,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${springboot-version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.jopen</groupId>
@@ -34,6 +35,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
