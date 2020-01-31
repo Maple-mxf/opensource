@@ -26,6 +26,7 @@
         <module>jopen-springboot-plugin-all</module>
         <module>jopen-springboot-plugin-auth</module>
         <module>jopen-springboot-plugin-quartz</module>
+        <module>jopen-springboot-plugin-idempotency</module>
     </modules>
 
 

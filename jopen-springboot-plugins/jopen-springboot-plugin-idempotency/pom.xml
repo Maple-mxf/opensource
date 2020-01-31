@@ -9,9 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jopen-springboot-plugin-all</artifactId>
-
-    <packaging>pom</packaging>
+    <artifactId>jopen-springboot-plugin-idempotency</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,60 +31,52 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-common</artifactId>
-            <version>1.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${springboot-version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-param-test</artifactId>
-            <version>1.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+            <version>${springboot-version}</version>
+            <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-mongo-template-builder</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-encryption</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-init</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-aop</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-limit</artifactId>
-            <version>1.0</version>
-        </dependency>
+
         <dependency>
             <groupId>io.jopen</groupId>
             <artifactId>jopen-springboot-plugin-annotation-cache</artifactId>
             <version>1.0</version>
         </dependency>
+
         <dependency>
-            <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-auth</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-quartz</artifactId>
-            <version>1.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>${springboot-version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.10</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-idempotency</artifactId>
+            <artifactId>jopen-springboot-plugin-common</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
