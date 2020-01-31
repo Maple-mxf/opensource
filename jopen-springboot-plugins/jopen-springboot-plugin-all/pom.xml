@@ -77,6 +77,11 @@
             <artifactId>jopen-springboot-plugin-auth</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.jopen</groupId>
+            <artifactId>jopen-springboot-plugin-quartz</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
