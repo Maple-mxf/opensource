@@ -15,7 +15,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({JobMonitors.class, QuartzPluginConfiguration.class})
+@Import({
+        JobMonitors.class,
+        QuartzPluginConfiguration.class,
+        JobTriggerStateDetector.class
+})
 public @interface EnableJopenQuartz {
 
     /**

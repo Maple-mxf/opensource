@@ -2,6 +2,8 @@ package io.jopen.springboot.plugin.quartz;
 
 import io.jopen.springboot.plugin.common.ReflectUtil;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
@@ -22,6 +24,8 @@ import java.util.stream.Stream;
  */
 @Configuration
 public class QuartzPluginConfiguration implements ImportAware {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(QuartzPluginConfiguration.class);
 
     @Autowired
     private Scheduler scheduler;
@@ -70,13 +74,10 @@ public class QuartzPluginConfiguration implements ImportAware {
 
                 // if exist old job info in db prepare delete job info data
                 // after deleted , schedule the job by trigger
-                if (scheduler.checkExists(jobDetail.getKey())) {
-                    boolean deleteSuccess = scheduler.deleteJob(jobDetail.getKey());
-                    if (!deleteSuccess)
-                        throw new RuntimeException(String.format("Job delete fail job Key %s", jobDetail.getKey()));
+                if (!scheduler.checkExists(jobDetail.getKey())) {
+                    // if not exist ; schedule the job
+                    scheduler.scheduleJob(jobDetail, triggers, jobBeanAgent.setupReplace());
                 }
-                // schedule the job
-                scheduler.scheduleJob(jobDetail, triggers, jobBeanAgent.setupReplace());
             }
 
             // start the scheduler
@@ -85,6 +86,32 @@ public class QuartzPluginConfiguration implements ImportAware {
             }
         } catch (InstantiationException | IllegalAccessException | SchedulerException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+
+    /**
+     * set up current scheduler job detail {@link JobDetail} and trigger{@link Trigger}
+     */
+    public void setupScheduleJob() {
+    }
+
+    /**
+     * security start scheduler
+     * if abort will be throw a {@link RuntimeException}
+     */
+    public void securityStartScheduler() {
+        try {
+            boolean started = this.scheduler.isStarted();
+            if (!started) {
+                this.scheduler.start();
+            } else {
+                LOGGER.warn("Jopen-quartz-plugin schedule status {} ", this.scheduler.isStarted());
+                LOGGER.warn("Jopen-quartz-plugin start schedule start failure");
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
