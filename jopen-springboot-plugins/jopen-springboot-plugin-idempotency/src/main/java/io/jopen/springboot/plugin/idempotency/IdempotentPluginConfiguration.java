@@ -13,6 +13,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @RestController
 @RequestMapping(value = "/jopen-idempotency")
-public class IdempotentPluginConfiguration implements ImportAware {
+public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigurer {
 
     private String tokenKey;
 
@@ -37,6 +39,18 @@ public class IdempotentPluginConfiguration implements ImportAware {
         redisTemplate.opsForValue().set(idempotentToken, "1");
         redisTemplate.expire(idempotentToken, 5, TimeUnit.SECONDS);
         return ImmutableMap.of("idempotentToken", idempotentToken);
+    }
+
+    private TokenIdempotent tokenIdempotent;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+
+        // 注册
+        registry.addInterceptor(tokenIdempotent)
+                .order(tokenIdempotent.getOrder())
+                .addPathPatterns(tokenIdempotent.getIncludePath())
+                .excludePathPatterns(tokenIdempotent.getExcludePath());
     }
 
     /**
@@ -75,6 +89,28 @@ public class IdempotentPluginConfiguration implements ImportAware {
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
+
+        // 顺序
+        int order = enableIdempotent.getNumber("order");
+
+        // includePath
+        String[] includePaths = enableIdempotent.getStringArray("includePath");
+
+        if (includePaths.length == 0) {
+            throw new RuntimeException("！EnableJopenIdempotent include path require non null");
+        }
+
+        // excludePath
+        String[] excludePaths = enableIdempotent.getStringArray("excludePath");
+
+        if (excludePaths.length == 0) {
+            throw new RuntimeException("！EnableJopenIdempotent exclude path require non null");
+        }
+
+        tokenIdempotent.setOrder(order);
+        tokenIdempotent.setIncludePath(includePaths);
+        tokenIdempotent.setExcludePath(excludePaths);
+
     }
 
     @NonNull

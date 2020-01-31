@@ -20,4 +20,23 @@ public @interface EnableJopenIdempotent {
      * @see IdempotentTokenProducer
      */
     Class<? extends IdempotentTokenProducer> idempotentTokenProducerType();
+
+    /**
+     * default 0
+     *
+     * @return
+     */
+    int order() default 0;
+
+    /**
+     * default /**
+     *
+     * @return
+     */
+    String[] includePath() default {"/**"};
+
+    /**
+     * @return
+     */
+    String[] excludePath() default {};
 }

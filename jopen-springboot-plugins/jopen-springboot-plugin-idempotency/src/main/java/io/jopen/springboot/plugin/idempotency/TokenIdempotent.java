@@ -23,6 +23,34 @@ public class TokenIdempotent extends BaseInterceptor {
 
     private IdempotentPluginConfiguration idempotentPluginConfiguration;
 
+    private int order;
+    private String[] includePath;
+    private String[] excludePath;
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public String[] getIncludePath() {
+        return includePath;
+    }
+
+    public void setIncludePath(String[] includePath) {
+        this.includePath = includePath;
+    }
+
+    public String[] getExcludePath() {
+        return excludePath;
+    }
+
+    public void setExcludePath(String[] excludePath) {
+        this.excludePath = excludePath;
+    }
+
     // Order
     // redis IO多路复用的意思只是acceptor是单线程的 而handler任然是多线程
     public TokenIdempotent(@NonNull RedisTemplate<String, Object> redisTemplate,
