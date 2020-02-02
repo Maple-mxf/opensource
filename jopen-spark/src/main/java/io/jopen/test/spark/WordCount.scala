@@ -1,4 +1,4 @@
-package io.jopen.spark
+package io.jopen.test.spark
 
 object WordCount {
   def main(args: Array[String]): Unit = {

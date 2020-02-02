@@ -1,4 +1,4 @@
-package io.jopen.spark.sparksql.datasource
+package io.jopen.test.spark.sparksql.datasource
 
 import org.apache.spark.sql.{SaveMode, SparkSession}
 

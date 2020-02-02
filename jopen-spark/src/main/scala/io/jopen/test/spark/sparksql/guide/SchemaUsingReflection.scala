@@ -1,4 +1,4 @@
-package io.jopen.spark.sparksql.guide
+package io.jopen.test.spark.sparksql.guide
 
 import org.apache.spark.sql.SparkSession
 

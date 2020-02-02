@@ -1,1 +1,2 @@
-1,18,jack,male
+1,male
+2,jack

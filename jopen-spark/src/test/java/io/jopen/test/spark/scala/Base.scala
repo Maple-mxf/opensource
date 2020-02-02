@@ -1,4 +1,4 @@
-package io.jopen.spark.scala
+package io.jopen.test.spark.scala
 
 import org.apache.spark.scheduler.SparkListenerInterface
 import org.apache.spark.{SparkConf, SparkContext}

@@ -1,4 +1,4 @@
-package io.jopen.spark.model
+package io.jopen.test.spark.model
 
 /**
   * @see [[Seq]]
