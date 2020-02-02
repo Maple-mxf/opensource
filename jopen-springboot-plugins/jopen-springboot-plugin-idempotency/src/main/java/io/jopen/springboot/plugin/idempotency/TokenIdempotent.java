@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import io.jopen.springboot.plugin.annotation.cache.BaseInterceptor;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -21,52 +22,21 @@ public class TokenIdempotent extends BaseInterceptor {
 
     private RedisTemplate<String, Object> redisTemplate;
 
-    private IdempotentPluginConfiguration idempotentPluginConfiguration;
-
-    private int order;
-    private String[] includePath;
-    private String[] excludePath;
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    public String[] getIncludePath() {
-        return includePath;
-    }
-
-    public void setIncludePath(String[] includePath) {
-        this.includePath = includePath;
-    }
-
-    public String[] getExcludePath() {
-        return excludePath;
-    }
-
-    public void setExcludePath(String[] excludePath) {
-        this.excludePath = excludePath;
-    }
-
     // Order
     // redis IO多路复用的意思只是acceptor是单线程的 而handler任然是多线程
-    public TokenIdempotent(@NonNull RedisTemplate<String, Object> redisTemplate,
-                           @NonNull IdempotentPluginConfiguration idempotentPluginConfiguration) {
-        this.idempotentPluginConfiguration = idempotentPluginConfiguration;
+    @Autowired
+    public TokenIdempotent(@NonNull RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.tokenKey = idempotentPluginConfiguration.getTokenKey();
-        Preconditions.checkArgument(Strings.isNullOrEmpty(tokenKey), "token Key参数不可为空");
+    }
+
+    public void setTokenKey(String tokenKey){
+        this.tokenKey = tokenKey;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 获取注解
         ApiIdempotent apiIdempotent = super.getApiServiceAnnotation(ApiIdempotent.class, handler);
-
         if (apiIdempotent == null) {
             return true;
         }

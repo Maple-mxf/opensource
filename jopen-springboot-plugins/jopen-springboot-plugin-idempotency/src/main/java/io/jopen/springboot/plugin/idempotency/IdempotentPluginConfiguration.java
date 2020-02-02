@@ -41,16 +41,22 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
         return ImmutableMap.of("idempotentToken", idempotentToken);
     }
 
+    @Autowired
     private TokenIdempotent tokenIdempotent;
+
+    private int order;
+    private String[] includePathPatterns;
+    private String[] excludePathPatterns;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
         // 注册
         registry.addInterceptor(tokenIdempotent)
-                .order(tokenIdempotent.getOrder())
-                .addPathPatterns(tokenIdempotent.getIncludePath())
-                .excludePathPatterns(tokenIdempotent.getExcludePath());
+                .order(this.order)
+                .addPathPatterns(this.includePathPatterns)
+                .excludePathPatterns(this.excludePathPatterns);
+        this.tokenIdempotent.setTokenKey(this.tokenKey);
     }
 
     /**
@@ -84,8 +90,6 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
 
             // 设定tokenKey
             this.tokenKey = idempotentToken;
-
-
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -94,22 +98,23 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
         int order = enableIdempotent.getNumber("order");
 
         // includePath
-        String[] includePaths = enableIdempotent.getStringArray("includePath");
+        String[] includePathPatterns = enableIdempotent.getStringArray("includePath");
 
-        if (includePaths.length == 0) {
+        if (includePathPatterns.length == 0) {
             throw new RuntimeException("！EnableJopenIdempotent include path require non null");
         }
 
         // excludePath
-        String[] excludePaths = enableIdempotent.getStringArray("excludePath");
+        String[] excludePathPatterns = enableIdempotent.getStringArray("excludePath");
 
-        if (excludePaths.length == 0) {
+        if (excludePathPatterns.length == 0) {
             throw new RuntimeException("！EnableJopenIdempotent exclude path require non null");
         }
 
-        tokenIdempotent.setOrder(order);
-        tokenIdempotent.setIncludePath(includePaths);
-        tokenIdempotent.setExcludePath(excludePaths);
+        this.order = order;
+        this.includePathPatterns = includePathPatterns;
+        this.excludePathPatterns = excludePathPatterns;
+
     }
 
     @NonNull
