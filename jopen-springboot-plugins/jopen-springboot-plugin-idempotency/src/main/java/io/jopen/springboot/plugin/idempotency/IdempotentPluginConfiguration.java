@@ -110,7 +110,6 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
         tokenIdempotent.setOrder(order);
         tokenIdempotent.setIncludePath(includePaths);
         tokenIdempotent.setExcludePath(excludePaths);
-
     }
 
     @NonNull
