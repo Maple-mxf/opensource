@@ -3,13 +3,12 @@ package io.jopen.springboot.plugin.quartz;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.quartz.DateBuilder;
-import org.quartz.TimeOfDay;
 
-import java.util.Set;
+import java.util.TimeZone;
 
 /**
  * @author maxuefeng
- * @since 2020/1/31
+ * @since 2020/2/2
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -19,13 +18,12 @@ import java.util.Set;
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
 @Getter
 @Setter
-public class DailyTimeIntervalTriggerInfo extends BaseTriggerInfo {
+public class CalendarIntervalTriggerInfo extends BaseTriggerInfo {
 
-    private Set<Integer> daysOfWeek;
-    private TimeOfDay endTimeOfDay;
-    private int repeatCount;
+
     private int repeatInterval;
     private DateBuilder.IntervalUnit repeatIntervalUnit;
-    private TimeOfDay startTimeOfDay;
     private int timesTriggered;
+    private int timesTriggered1;
+    private TimeZone timeZone;
 }

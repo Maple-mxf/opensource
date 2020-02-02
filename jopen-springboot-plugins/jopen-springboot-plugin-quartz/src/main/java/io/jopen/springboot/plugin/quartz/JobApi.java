@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2020/1/31
  */
 @RestController
-@RequestMapping(value = "/jobApi")
+@RequestMapping(value = "/jopen-quartz")
 public class JobApi {
 
     @Autowired

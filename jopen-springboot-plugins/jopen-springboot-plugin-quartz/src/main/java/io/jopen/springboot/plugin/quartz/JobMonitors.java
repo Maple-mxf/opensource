@@ -8,9 +8,7 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -139,23 +137,123 @@ public final class JobMonitors {
         return tasks;
     }
 
-    public List<TriggerInfo> jobTriggerInfoList(String group, String name) throws SchedulerException {
+    /**
+     * @param group
+     * @param name
+     * @return
+     * @throws SchedulerException
+     * @see org.quartz.SimpleTrigger 简单触发器
+     * @see org.quartz.CronTrigger  基于cron表达式的触发器
+     * @see org.quartz.DailyTimeIntervalTrigger  基于时间间隔的触发器
+     * @see org.quartz.CalendarIntervalTrigger  基于日历的触发器
+     * @see BaseTriggerInfo  基于以上四种trigger的信息的包装
+     */
+    public List<BaseTriggerInfo> jobTriggerInfoList(String group, String name) throws SchedulerException {
         JobKey jobKey = JobKey.jobKey(name, group);
         List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
 
         return triggers.stream()
                 .map(originTrigger -> {
                     try {
-                        CronTrigger cronTrigger = (CronTrigger) originTrigger;
-                        return TriggerInfo.builder()
-                                .cron(((CronTrigger) originTrigger).getCronExpression())
-                                .name(cronTrigger.getKey().getName())
-                                .group(cronTrigger.getKey().getGroup())
-                                .state(scheduler.getTriggerState(cronTrigger.getKey()).name())
-                                .nextFireTime(cronTrigger.getNextFireTime())
-                                .previousFireTime(cronTrigger.getPreviousFireTime())
-                                .endTime(cronTrigger.getEndTime())
-                                .build();
+                        //
+                        BaseTriggerInfo baseTriggerInfo;
+                        if (originTrigger instanceof CronTrigger) {
+                            // 强制转换
+                            CronTrigger cronTrigger = (CronTrigger) originTrigger;
+                            baseTriggerInfo = new CronTriggerInfo();
+
+                            String cronExpression = cronTrigger.getCronExpression();
+                            String expressionSummary = cronTrigger.getExpressionSummary();
+                            TimeZone timeZone = cronTrigger.getTimeZone();
+
+
+                            ((CronTriggerInfo) baseTriggerInfo).setCronExpression(cronExpression);
+                            ((CronTriggerInfo) baseTriggerInfo).setExpressionSummary(expressionSummary);
+                            ((CronTriggerInfo) baseTriggerInfo).setTimeZone(timeZone);
+
+
+                        } else if (originTrigger instanceof SimpleTrigger) {
+
+                            SimpleTrigger simpleTrigger = (SimpleTrigger) originTrigger;
+                            int repeatCount = simpleTrigger.getRepeatCount();
+                            long repeatInterval = simpleTrigger.getRepeatInterval();
+                            int timesTriggered = simpleTrigger.getTimesTriggered();
+
+                            baseTriggerInfo = new SimpleTriggerInfo();
+
+                            ((SimpleTriggerInfo) baseTriggerInfo).setRepeatCount(repeatCount);
+                            ((SimpleTriggerInfo) baseTriggerInfo).setRepeatInterval(repeatInterval);
+                            ((SimpleTriggerInfo) baseTriggerInfo).setTimesTriggered(timesTriggered);
+
+                        } else if (originTrigger instanceof DailyTimeIntervalTrigger) {
+
+                            DailyTimeIntervalTrigger dailyTimeIntervalTrigger = (DailyTimeIntervalTrigger) originTrigger;
+                            Set<Integer> daysOfWeek = dailyTimeIntervalTrigger.getDaysOfWeek();
+                            TimeOfDay endTimeOfDay = dailyTimeIntervalTrigger.getEndTimeOfDay();
+                            int repeatCount = dailyTimeIntervalTrigger.getRepeatCount();
+                            int repeatInterval = dailyTimeIntervalTrigger.getRepeatInterval();
+                            DateBuilder.IntervalUnit repeatIntervalUnit = dailyTimeIntervalTrigger.getRepeatIntervalUnit();
+                            TimeOfDay startTimeOfDay = dailyTimeIntervalTrigger.getStartTimeOfDay();
+                            int timesTriggered = dailyTimeIntervalTrigger.getTimesTriggered();
+
+
+                            baseTriggerInfo = new DailyTimeIntervalTriggerInfo();
+
+                            ((DailyTimeIntervalTriggerInfo) baseTriggerInfo).setDaysOfWeek(daysOfWeek);
+                            ((DailyTimeIntervalTriggerInfo) baseTriggerInfo).setEndTimeOfDay(endTimeOfDay);
+                            ((DailyTimeIntervalTriggerInfo) baseTriggerInfo).setRepeatCount(repeatCount);
+                            ((DailyTimeIntervalTriggerInfo) baseTriggerInfo).setRepeatInterval(repeatInterval);
+                            ((DailyTimeIntervalTriggerInfo) baseTriggerInfo).setRepeatIntervalUnit(repeatIntervalUnit);
+                            ((DailyTimeIntervalTriggerInfo) baseTriggerInfo).setStartTimeOfDay(startTimeOfDay);
+                            ((DailyTimeIntervalTriggerInfo) baseTriggerInfo).setTimesTriggered(timesTriggered);
+
+
+                        } else if (originTrigger instanceof CalendarIntervalTrigger) {
+                            CalendarIntervalTrigger calendarIntervalTrigger = (CalendarIntervalTrigger) originTrigger;
+
+                            baseTriggerInfo = new CalendarIntervalTriggerInfo();
+
+                            int repeatInterval = calendarIntervalTrigger.getRepeatInterval();
+                            DateBuilder.IntervalUnit repeatIntervalUnit = calendarIntervalTrigger.getRepeatIntervalUnit();
+                            int timesTriggered = calendarIntervalTrigger.getTimesTriggered();
+                            TimeZone timeZone = calendarIntervalTrigger.getTimeZone();
+
+                            ((CalendarIntervalTriggerInfo) baseTriggerInfo).setRepeatInterval(repeatInterval);
+                            ((CalendarIntervalTriggerInfo) baseTriggerInfo).setRepeatIntervalUnit(repeatIntervalUnit);
+                            ((CalendarIntervalTriggerInfo) baseTriggerInfo).setTimesTriggered(timesTriggered);
+                            ((CalendarIntervalTriggerInfo) baseTriggerInfo).setTimeZone(timeZone);
+                        } else {
+                            throw new RuntimeException("trigger type not found");
+                        }
+
+                        // setup common property
+                        // common info
+                        String description = originTrigger.getDescription();
+                        String calendarName = originTrigger.getCalendarName();
+                        Date endTime = originTrigger.getEndTime();
+                        Date finalFireTime = originTrigger.getFinalFireTime();
+                        Date nextFireTime = originTrigger.getNextFireTime();
+                        Date previousFireTime = originTrigger.getPreviousFireTime();
+                        TriggerKey triggerKey = originTrigger.getKey();
+                        Date startTime = originTrigger.getStartTime();
+                        int misfireInstruction = originTrigger.getMisfireInstruction();
+                        int priority = originTrigger.getPriority();
+                        JobDataMap jobDataMap = originTrigger.getJobDataMap();
+
+
+                        baseTriggerInfo.setDescription(description);
+                        baseTriggerInfo.setCalendarName(calendarName);
+                        baseTriggerInfo.setEndTime(endTime);
+                        baseTriggerInfo.setFinalFireTime(finalFireTime);
+                        baseTriggerInfo.setNextFireTime(nextFireTime);
+                        baseTriggerInfo.setPreviousFireTime(previousFireTime);
+                        baseTriggerInfo.setTriggerKey(triggerKey);
+                        baseTriggerInfo.setStartTime(startTime);
+                        baseTriggerInfo.setMisfireInstruction(misfireInstruction);
+                        baseTriggerInfo.setPriority(priority);
+                        baseTriggerInfo.setJobDataMap(jobDataMap);
+
+                        return baseTriggerInfo;
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;

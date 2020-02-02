@@ -2,7 +2,8 @@ package io.jopen.springboot.plugin.quartz;
 
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.quartz.Trigger;
+import org.quartz.JobDataMap;
+import org.quartz.TriggerKey;
 
 import java.util.Date;
 
@@ -29,37 +30,15 @@ import java.util.Date;
 @Setter
 public class BaseTriggerInfo {
 
-
-    /**
-     * @see Trigger#getKey() triggerKey区别每一个trigger的区别
-     * 触发器的名称trigger name
-     */
-    protected String triggerName;
-
-    /**
-     * @see Trigger#getKey()
-     * <p>
-     * 触发器的组 trigger group
-     */
-    protected String triggerGroup;
-
-    /**
-     * 触发器的state
-     */
-    protected String state;
-
-    /**
-     * 最后一次的执行时间
-     */
+    protected String description;
+    protected String calendarName;
     protected Date endTime;
-
-    /**
-     * 上一次执行时间
-     */
-    protected Date previousFireTime;
-
-    /**
-     * 下一次的执行时间
-     */
+    protected Date finalFireTime;
     protected Date nextFireTime;
+    protected Date previousFireTime;
+    protected TriggerKey triggerKey;
+    protected Date startTime;
+    protected int misfireInstruction;
+    protected int priority;
+    protected JobDataMap jobDataMap;
 }
