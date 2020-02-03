@@ -3,7 +3,7 @@ package io.jopen.springboot.plugin.auth;
 import java.lang.annotation.*;
 
 /**
- * 需要登陆验证
+ * 权限认证
  *
  * @author maxuefeng
  */
@@ -22,5 +22,5 @@ public @interface Verify {
     /**
      * @return 拦截之后的错误信息
      */
-    String errMsg() default "您没有访问此接口的权限";
+    String errMsg() default "access deny! because you has not access this api interface grant!";
 }

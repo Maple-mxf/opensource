@@ -33,7 +33,7 @@ public class QuartzPluginConfiguration implements ImportAware {
     /**
      * 自动装配
      *
-     * @param importMetadata
+     * @param importMetadata springboot启动类导入的元信息
      */
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
@@ -81,9 +81,7 @@ public class QuartzPluginConfiguration implements ImportAware {
             }
 
             // start the scheduler
-            if (!scheduler.isStarted()) {
-                scheduler.start();
-            }
+            securityStartScheduler();
         } catch (InstantiationException | IllegalAccessException | SchedulerException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
@@ -101,7 +99,7 @@ public class QuartzPluginConfiguration implements ImportAware {
      * security start scheduler
      * if abort will be throw a {@link RuntimeException}
      */
-    public void securityStartScheduler() {
+    private void securityStartScheduler() {
         try {
             boolean started = this.scheduler.isStarted();
             if (!started) {

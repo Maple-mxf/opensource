@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * @see java.lang.annotation.Annotation
  * @author maxuefeng
  * @since 2019/11/18
  */
@@ -22,6 +23,7 @@ public class GlobalThrowableCaptors {
     @ExceptionHandler(value = {Exception.class})
     @ResponseBody
     public Object catchException(Exception e) {
+        LOGGER.error(e.getMessage());
         if (commonPluginConfiguration.getPrintExceptionStack()) {
             e.printStackTrace();
         }

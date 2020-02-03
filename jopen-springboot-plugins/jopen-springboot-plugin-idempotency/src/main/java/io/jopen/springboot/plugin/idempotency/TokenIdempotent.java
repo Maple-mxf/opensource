@@ -19,6 +19,33 @@ import javax.servlet.http.HttpServletResponse;
 public class TokenIdempotent extends BaseInterceptor {
 
     private String tokenKey;
+    private int order;
+    private String[] includePathPatterns;
+    private String[] excludePathPatterns;
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public String[] getIncludePathPatterns() {
+        return includePathPatterns;
+    }
+
+    public void setIncludePathPatterns(String[] includePathPatterns) {
+        this.includePathPatterns = includePathPatterns;
+    }
+
+    public String[] getExcludePathPatterns() {
+        return excludePathPatterns;
+    }
+
+    public void setExcludePathPatterns(String[] excludePathPatterns) {
+        this.excludePathPatterns = excludePathPatterns;
+    }
 
     private RedisTemplate<String, Object> redisTemplate;
 

@@ -3,7 +3,6 @@ package io.jopen.springboot.plugin.idempotency;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import io.jopen.springboot.plugin.common.IDUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
@@ -30,8 +29,15 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
 
     private String tokenKey;
 
-    @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    private TokenIdempotent tokenIdempotent;
+
+    @Autowired
+    public IdempotentPluginConfiguration(RedisTemplate<String, Object> redisTemplate, TokenIdempotent tokenIdempotent) {
+        this.redisTemplate = redisTemplate;
+        this.tokenIdempotent = tokenIdempotent;
+    }
 
     @RequestMapping(value = "/getIdempotentToken", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ImmutableMap<String, Object> getIdempotentToken() {
@@ -41,21 +47,15 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
         return ImmutableMap.of("idempotentToken", idempotentToken);
     }
 
-    @Autowired
-    private TokenIdempotent tokenIdempotent;
-
-    private int order;
-    private String[] includePathPatterns;
-    private String[] excludePathPatterns;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
         // 注册
         registry.addInterceptor(tokenIdempotent)
-                .order(this.order)
-                .addPathPatterns(this.includePathPatterns)
-                .excludePathPatterns(this.excludePathPatterns);
+                .order(tokenIdempotent.getOrder())
+                .addPathPatterns(tokenIdempotent.getIncludePathPatterns())
+                .excludePathPatterns(tokenIdempotent.getExcludePathPatterns());
         this.tokenIdempotent.setTokenKey(this.tokenKey);
     }
 
@@ -111,14 +111,12 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
             throw new RuntimeException("！EnableJopenIdempotent exclude path require non null");
         }
 
-        this.order = order;
-        this.includePathPatterns = includePathPatterns;
-        this.excludePathPatterns = excludePathPatterns;
-
+        // this.order = order;
+        // this.includePathPatterns = includePathPatterns;
+        // this.excludePathPatterns = excludePathPatterns;
+        this.tokenIdempotent.setOrder(order);
+        this.tokenIdempotent.setIncludePathPatterns(includePathPatterns);
+        this.tokenIdempotent.setExcludePathPatterns(excludePathPatterns);
     }
 
-    @NonNull
-    public String getTokenKey() {
-        return this.tokenKey;
-    }
 }
