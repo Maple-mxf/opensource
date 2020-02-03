@@ -39,6 +39,7 @@ public interface CallThePolicy extends java.io.Serializable {
             LOGGER.error("distributeTaskInfo  {} ", JSON.toJSONString(distributeTaskInfo));
             LOGGER.error("error message {} ", errMsg);
             LOGGER.error("occur date time {} ", Formatter.format(occurTimeMs, Formatter.P.P4));
+            LOGGER.error("--------------------------------------------------------------------------------------------");
         }
     }
 }
