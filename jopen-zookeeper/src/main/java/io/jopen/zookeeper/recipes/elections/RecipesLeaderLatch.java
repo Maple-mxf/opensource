@@ -32,7 +32,7 @@ import java.io.IOException;
  * @since 2020/2/1
  */
 public final
-class LeaderLatchBaseApi {
+class RecipesLeaderLatch {
 
     private final String connectionString = "192.168.74.136:2181";
     // int baseSleepTimeMs, int maxRetries, int maxSleepM
@@ -43,7 +43,7 @@ class LeaderLatchBaseApi {
 
     private final LeaderLatch leaderLatch;
 
-    public LeaderLatchBaseApi() {
+    public RecipesLeaderLatch() {
         this.curatorClient = CuratorFrameworkFactory.newClient(connectionString, retryPolicy);
         // start the client
         this.curatorClient.start();

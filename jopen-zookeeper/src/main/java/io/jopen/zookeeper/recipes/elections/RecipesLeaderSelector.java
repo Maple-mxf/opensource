@@ -37,7 +37,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
  * @since 2020/2/1
  */
 public final
-class LeaderSelectorBaseApi {
+class RecipesLeaderSelector {
 
     private final String connectionString = "192.168.74.136:2181";
     // int baseSleepTimeMs, int maxRetries, int maxSleepM
@@ -61,11 +61,11 @@ class LeaderSelectorBaseApi {
          */
         public void takeLeadership(CuratorFramework client) {
             // requeue
-            LeaderSelectorBaseApi.this.leaderSelector.autoRequeue();
+            RecipesLeaderSelector.this.leaderSelector.autoRequeue();
         }
     };
 
-    public LeaderSelectorBaseApi() {
+    public RecipesLeaderSelector() {
         this.curatorClient = CuratorFrameworkFactory.newClient(connectionString, retryPolicy);
         // start the client
         this.curatorClient.start();
