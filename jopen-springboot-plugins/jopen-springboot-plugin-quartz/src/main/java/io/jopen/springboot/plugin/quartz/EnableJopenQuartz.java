@@ -25,7 +25,14 @@ public @interface EnableJopenQuartz {
     /**
      * job bean base package scanner all job bean
      *
-     * @return
+     * @return devoloper define job task bean class package location
      */
     String[] jobBeanBasePackage() default {};
+
+    /**
+     * 是否开启分布式任务的状态检查
+     *
+     * @return true is check  false is not check distribute' task state
+     */
+    boolean enableCheckDistributeTaskState() default true;
 }

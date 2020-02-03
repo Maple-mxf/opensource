@@ -43,6 +43,10 @@ public final class JobMonitors {
         return false;
     }
 
+    public boolean restartJob(JobKey jobKey) throws SchedulerException {
+        return restartJob(jobKey.getGroup(), jobKey.getName());
+    }
+
     public boolean restartJob(String group, String name) throws SchedulerException {
         JobKey jobKey = JobKey.jobKey(name, group);
         boolean exists = scheduler.checkExists(jobKey);

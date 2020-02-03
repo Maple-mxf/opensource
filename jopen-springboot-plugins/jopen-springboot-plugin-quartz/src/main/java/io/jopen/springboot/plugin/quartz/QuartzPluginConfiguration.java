@@ -27,8 +27,15 @@ public class QuartzPluginConfiguration implements ImportAware {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(QuartzPluginConfiguration.class);
 
-    @Autowired
     private Scheduler scheduler;
+
+    private JobTriggerStateDetector jobTriggerStateDetector;
+
+    @Autowired
+    public QuartzPluginConfiguration(Scheduler scheduler, JobTriggerStateDetector jobTriggerStateDetector) {
+        this.scheduler = scheduler;
+        this.jobTriggerStateDetector = jobTriggerStateDetector;
+    }
 
     /**
      * 自动装配
@@ -82,6 +89,12 @@ public class QuartzPluginConfiguration implements ImportAware {
 
             // start the scheduler
             securityStartScheduler();
+
+
+            // setup enableCheckDistributeTaskState
+            boolean enableCheckDistributeTaskState = enableQuartz.getBoolean("enableCheckDistributeTaskState");
+            jobTriggerStateDetector.setEnableCheckDistributeTaskState(enableCheckDistributeTaskState);
+            
         } catch (InstantiationException | IllegalAccessException | SchedulerException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());

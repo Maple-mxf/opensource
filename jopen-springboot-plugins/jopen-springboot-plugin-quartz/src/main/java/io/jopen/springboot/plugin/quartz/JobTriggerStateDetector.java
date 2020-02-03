@@ -1,7 +1,6 @@
 package io.jopen.springboot.plugin.quartz;
 
 import org.quartz.*;
-import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +50,11 @@ public class JobTriggerStateDetector implements ApplicationRunner {
     private Scheduler scheduler;
 
     /**
+     * 是否开启分布式任务的状态检查
+     */
+    private boolean enableCheckDistributeTaskState = true;
+
+    /**
      * job {@link org.quartz.JobDetail}   by jobKey {@link org.quartz.JobKey} get an job
      * all trigger, {@link Scheduler#getTriggerState(TriggerKey)}
      *
@@ -58,6 +62,10 @@ public class JobTriggerStateDetector implements ApplicationRunner {
      */
     @Autowired
     private JobMonitors jobMonitors;
+
+    public void setEnableCheckDistributeTaskState(boolean enableCheckDistributeTaskState) {
+        this.enableCheckDistributeTaskState = enableCheckDistributeTaskState;
+    }
 
 
     /**
@@ -85,62 +93,51 @@ public class JobTriggerStateDetector implements ApplicationRunner {
 
     /**
      * @param args
-     * @throws Exception
      * @see java.util.Timer
      * @see JobTriggerStateDetector#run(ApplicationArguments) 此方法调动的元素应属于原子化的东西，所以作者抽象出来为公共的部分
      */
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
 
         // 1 先调用detection方法进行检测
         // detectionTriggerState();
 
         // 2 调用JVM级别定时器调动定时任务检测(无延迟执行  第一个值设定为now 第二个值设定为间隔时长    不需要设置delay的值)
         // 时间单位为time in milliseconds between successive task executions.毫秒级别
-        detectionTriggerStateTimer.schedule(this.detectionTriggerStateTimeTask, new Date(), 1000 * 60 * 5);
+        detectionTriggerStateTimer.schedule(this.detectionTriggerStateTimeTask, new Date(), 1000 * 60 * 60);
     }
 
     private void detectionTriggerState() throws SchedulerException {
-        // get all jobs state
-        List<String> jobGroupNames = scheduler.getJobGroupNames();
-        for (String groupName : jobGroupNames) {
-            for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
-                // 获取JOB的对象
-                JobDetail jobDetail = scheduler.getJobDetail(jobKey);
 
-                // 查询所有的Trigger
-                List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobDetail.getKey());
-                triggers.stream().filter(trigger -> {
-                    try {
-                        // 过滤状态正常的trigger
-                        return !Trigger.TriggerState.COMPLETE.equals(scheduler.getTriggerState(trigger.getKey())) &&
-                                !Trigger.TriggerState.NORMAL.equals(scheduler.getTriggerState(trigger.getKey()));
-                    } catch (SchedulerException e) {
-                        e.printStackTrace();
-                        return true;
-                    }
-                }).forEachOrdered(trigger -> {
+        LOGGER.info("start check distribute task trigger state");
 
-                    // 1 如果状态为NONE  需要restart
-                    // 2 如果状态为BLOCKED(注意此处很可能是运行环境除了问题 ，此处开发者可自定义报警组件的编写，作者会
-                    // 留下对应的报警组件接入API)
-                    try {
+        List<DistributeTaskInfo> distributeTaskInfoList = jobMonitors.distributeTaskList();
+        distributeTaskInfoList.forEach(task -> {
+            List<BaseTriggerInfo> triggerInfoList = task.getTriggerInfoList();
 
-                        if (scheduler.getTriggerState(trigger.getKey()).equals(Trigger.TriggerState.NONE)) {
-                            // 1 暂停任务
-                            scheduler.pauseJob(jobKey);
-                            // 2 启动任务
-                            scheduler.scheduleJob(trigger);
-                        }
+            long count = triggerInfoList.stream().filter(trigger -> {
+                // 过滤状态正常的trigger
+                TriggerKey triggerKey = trigger.getTriggerKey();
+                try {
+                    return !Trigger.TriggerState.COMPLETE.equals(scheduler.getTriggerState(triggerKey)) &&
+                            !Trigger.TriggerState.NORMAL.equals(scheduler.getTriggerState(triggerKey));
+                } catch (SchedulerException e) {
+                    e.printStackTrace();
+                    LOGGER.error("check distribute task occur an exception {} ", e.getMessage());
+                    return true;
+                }
+            }).count();
 
-                        if (scheduler.getTriggerState(trigger.getKey()).equals(Trigger.TriggerState.BLOCKED)) {
-                            scheduler.resumeJob(jobKey);
-                        }
-                    } catch (SchedulerException e) {
-                        e.printStackTrace();
-                    }
-                });
+            if (count > 0L) {
+                try {
+                    jobMonitors.restartJob(JobKey.jobKey(task.getName(), task.getGroup()));
+                } catch (SchedulerException e) {
+                    e.printStackTrace();
+                    LOGGER.error("check distribute task occur an exception {} ", e.getMessage());
+                }
             }
-        }
+        });
+
+        LOGGER.info("check distribute task trigger state completed");
     }
 }
