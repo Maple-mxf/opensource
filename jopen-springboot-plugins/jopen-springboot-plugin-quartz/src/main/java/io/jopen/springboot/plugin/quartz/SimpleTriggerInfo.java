@@ -19,4 +19,9 @@ public class SimpleTriggerInfo extends BaseTriggerInfo {
     private int repeatCount;
     private long repeatInterval;
     private int timesTriggered;
+
+    @Override
+    public void setupTriggerType() {
+        this.triggerType = "SimpleTrigger";
+    }
 }

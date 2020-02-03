@@ -27,4 +27,9 @@ public class DailyTimeIntervalTriggerInfo extends BaseTriggerInfo {
     private DateBuilder.IntervalUnit repeatIntervalUnit;
     private TimeOfDay startTimeOfDay;
     private int timesTriggered;
+
+    @Override
+    public void setupTriggerType() {
+        this.triggerType = "DailyTimeIntervalTrigger";
+    }
 }

@@ -1,8 +1,14 @@
 package io.jopen.springboot.plugin.quartz;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.quartz.JobDataMap;
+
+import java.util.List;
 
 /**
  * @author maxuefeng
@@ -23,9 +29,12 @@ public class DistributeTaskInfo {
 
     private String desc;
 
-    private String className;
+    private Class jobClass;
 
-    // 状态
-    private String state;
-
+    private boolean durable;
+    private JobDataMap jobDataMap;
+    private boolean concurrentExecutionDisallowed;
+    private boolean persistJobDataAfterExecution;
+    private boolean requestsRecovery;
+    private List<BaseTriggerInfo> triggerInfoList;
 }

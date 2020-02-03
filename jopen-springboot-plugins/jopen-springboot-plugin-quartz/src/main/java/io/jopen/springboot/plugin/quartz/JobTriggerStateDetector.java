@@ -93,7 +93,7 @@ public class JobTriggerStateDetector implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         // 1 先调用detection方法进行检测
-        detectionTriggerState();
+        // detectionTriggerState();
 
         // 2 调用JVM级别定时器调动定时任务检测(无延迟执行  第一个值设定为now 第二个值设定为间隔时长    不需要设置delay的值)
         // 时间单位为time in milliseconds between successive task executions.毫秒级别

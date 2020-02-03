@@ -25,4 +25,9 @@ public class CalendarIntervalTriggerInfo extends BaseTriggerInfo {
     private int timesTriggered;
     private int timesTriggered1;
     private TimeZone timeZone;
+
+    @Override
+    public void setupTriggerType() {
+        this.triggerType = "CalendarIntervalTrigger";
+    }
 }

@@ -1,8 +1,8 @@
 package io.jopen.springboot.plugin.quartz;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +53,9 @@ public final class JobMonitors {
         scheduler.pauseJob(jobKey);
         // 恢复任务
         scheduler.resumeJob(jobKey);
+
+        // Trigger trigger = scheduler.getTrigger();
+        // scheduler.rescheduleJob()
         return true;
     }
 
@@ -97,7 +100,7 @@ public final class JobMonitors {
                 .startNow()
                 .withSchedule(cronScheduleBuilder)
                 .build();
-        scheduler.scheduleJob(jobDetail, trigger);
+        scheduler.scheduleJob(jobDetail, ImmutableSet.of(trigger), replace);
         return true;
     }
 
@@ -107,34 +110,37 @@ public final class JobMonitors {
         for (String groupName : jobGroupNames) {
             for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
                 JobDetail jobDetail = scheduler.getJobDetail(jobKey);
-                String className = jobDetail.getJobClass().getName();
+
+                Class<? extends Job> jobClass = jobDetail.getJobClass();
+                boolean durable = jobDetail.isDurable();
+                JobDataMap jobDataMap = jobDetail.getJobDataMap();
+                boolean concurrentExecutionDisallowed = jobDetail.isConcurrentExectionDisallowed();
+                boolean persistJobDataAfterExecution = jobDetail.isPersistJobDataAfterExecution();
+                boolean requestsRecovery = jobDetail.requestsRecovery();
+
+                List<BaseTriggerInfo> baseTriggerInfoList = this.jobTriggerInfoList(jobKey);
+
                 DistributeTaskInfo task = DistributeTaskInfo.builder()
                         .name(jobKey.getName())
                         .group(groupName)
                         .desc(jobDetail.getDescription())
-                        .className(className)
+                        .jobClass(jobClass)
+                        .durable(durable)
+                        .jobDataMap(jobDataMap)
+                        .concurrentExecutionDisallowed(concurrentExecutionDisallowed)
+                        .persistJobDataAfterExecution(persistJobDataAfterExecution)
+                        .requestsRecovery(requestsRecovery)
+                        .triggerInfoList(baseTriggerInfoList)
                         .build();
 
-                List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
-                List<String> stateList = triggers.stream()
-                        .map(trigger -> {
-                            try {
-                                return scheduler.getTriggerState(trigger.getKey()).toString();
-                            } catch (SchedulerException e) {
-                                e.printStackTrace();
-                                return null;
-                            }
-                        })
-                        .filter(s -> !Strings.isNullOrEmpty(s))
-                        .collect(Collectors.toList());
-
-                String state = Joiner.on("-").join(stateList);
-                // 设置任务状态
-                task.setState(state);
                 tasks.add(task);
             }
         }
         return tasks;
+    }
+
+    public List<BaseTriggerInfo> jobTriggerInfoList(JobKey jobKey) throws SchedulerException {
+        return this.jobTriggerInfoList(jobKey.getGroup(), jobKey.getName());
     }
 
     /**
@@ -239,6 +245,7 @@ public final class JobMonitors {
                         int misfireInstruction = originTrigger.getMisfireInstruction();
                         int priority = originTrigger.getPriority();
                         JobDataMap jobDataMap = originTrigger.getJobDataMap();
+                        boolean mayFireAgain = originTrigger.mayFireAgain();
 
 
                         baseTriggerInfo.setDescription(description);
@@ -252,6 +259,7 @@ public final class JobMonitors {
                         baseTriggerInfo.setMisfireInstruction(misfireInstruction);
                         baseTriggerInfo.setPriority(priority);
                         baseTriggerInfo.setJobDataMap(jobDataMap);
+                        baseTriggerInfo.setMayFireAgain(mayFireAgain);
 
                         return baseTriggerInfo;
                     } catch (Exception e) {
@@ -259,5 +267,44 @@ public final class JobMonitors {
                         return null;
                     }
                 }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    @Nullable
+    public Date rescheduleJob(@NonNull TriggerKey triggerKey, @NonNull Trigger newTrigger) throws SchedulerException {
+        // Trigger trigger = scheduler.getTrigger();
+        Trigger trigger = scheduler.getTrigger(triggerKey);
+        Date date = null;
+
+        if (trigger != null) {
+            // the first fire time of the newly scheduled trigger is returned.
+            date = scheduler.rescheduleJob(triggerKey, newTrigger);
+        }
+        return date;
+    }
+
+    /**
+     * 重新开始触发器  但是不会暂停JOB
+     *
+     * @param triggerKey
+     * @throws SchedulerException
+     */
+    public void resumeTrigger(@NonNull TriggerKey triggerKey) throws SchedulerException {
+        scheduler.resumeTrigger(triggerKey);
+    }
+
+    /**
+     * @param triggerKey
+     * @throws SchedulerException
+     */
+    public void pauseTrigger(@NonNull TriggerKey triggerKey) throws SchedulerException {
+        scheduler.resumeTrigger(triggerKey);
+    }
+
+    /**
+     * @param triggerKey
+     * @throws SchedulerException
+     */
+    public void resetTriggerFromErrorState(@NonNull TriggerKey triggerKey) throws SchedulerException {
+        scheduler.resetTriggerFromErrorState(triggerKey);
     }
 }

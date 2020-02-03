@@ -23,12 +23,10 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@NoArgsConstructor
 @AllArgsConstructor
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
 @Getter
 @Setter
-public class BaseTriggerInfo {
+public abstract class BaseTriggerInfo {
 
     protected String description;
     protected String calendarName;
@@ -36,9 +34,20 @@ public class BaseTriggerInfo {
     protected Date finalFireTime;
     protected Date nextFireTime;
     protected Date previousFireTime;
+    private boolean mayFireAgain;
     protected TriggerKey triggerKey;
     protected Date startTime;
     protected int misfireInstruction;
     protected int priority;
     protected JobDataMap jobDataMap;
+    protected String triggerType;
+
+    // 设定Trigger的类型
+    BaseTriggerInfo() {
+        setupTriggerType();
+    }
+
+    public abstract void setupTriggerType();
 }
+
+

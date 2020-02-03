@@ -21,4 +21,9 @@ public class CronTriggerInfo extends BaseTriggerInfo {
     private String cronExpression;
     private String expressionSummary;
     private TimeZone timeZone;
+
+    @Override
+    public void setupTriggerType() {
+        this.triggerType = "CronTrigger";
+    }
 }
