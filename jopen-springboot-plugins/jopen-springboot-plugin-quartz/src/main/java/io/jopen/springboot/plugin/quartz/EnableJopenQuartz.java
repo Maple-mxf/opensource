@@ -35,4 +35,11 @@ public @interface EnableJopenQuartz {
      * @return true is check  false is not check distribute' task state
      */
     boolean enableCheckDistributeTaskState() default true;
+
+    /**
+     * 如果开启了报警策略，则需要按照开发者自定义的报警策略调用代码
+     *
+     * @return
+     */
+    Class<? extends CallThePolicy> checkDistributeTaskErrorCallThePolicyStrategy() default CallThePolicy.DefaultCallPolicyStrategy.class;
 }

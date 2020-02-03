@@ -94,7 +94,14 @@ public class QuartzPluginConfiguration implements ImportAware {
             // setup enableCheckDistributeTaskState
             boolean enableCheckDistributeTaskState = enableQuartz.getBoolean("enableCheckDistributeTaskState");
             jobTriggerStateDetector.setEnableCheckDistributeTaskState(enableCheckDistributeTaskState);
-            
+
+            // 如果开启了报警策略 则设定具体的值  否则不设定
+            if (enableCheckDistributeTaskState) {
+                // setup callThePolicy
+                Class<? extends CallThePolicy> policyStrategy = enableQuartz.getClass("checkDistributeTaskErrorCallThePolicyStrategy");
+                this.jobTriggerStateDetector.setCallThePolicy(policyStrategy.newInstance());
+            }
+
         } catch (InstantiationException | IllegalAccessException | SchedulerException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());

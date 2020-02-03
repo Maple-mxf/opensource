@@ -54,6 +54,12 @@ public class JobTriggerStateDetector implements ApplicationRunner {
      */
     private boolean enableCheckDistributeTaskState = true;
 
+    private CallThePolicy callThePolicy;
+
+    public void setCallThePolicy(CallThePolicy callThePolicy) {
+        this.callThePolicy = callThePolicy;
+    }
+
     /**
      * job {@link org.quartz.JobDetail}   by jobKey {@link org.quartz.JobKey} get an job
      * all trigger, {@link Scheduler#getTriggerState(TriggerKey)}
@@ -104,7 +110,9 @@ public class JobTriggerStateDetector implements ApplicationRunner {
 
         // 2 调用JVM级别定时器调动定时任务检测(无延迟执行  第一个值设定为now 第二个值设定为间隔时长    不需要设置delay的值)
         // 时间单位为time in milliseconds between successive task executions.毫秒级别
-        detectionTriggerStateTimer.schedule(this.detectionTriggerStateTimeTask, new Date(), 1000 * 60 * 60);
+        if (this.enableCheckDistributeTaskState) {
+            detectionTriggerStateTimer.schedule(this.detectionTriggerStateTimeTask, new Date(), 1000 * 60 * 60);
+        }
     }
 
     private void detectionTriggerState() throws SchedulerException {
@@ -124,6 +132,8 @@ public class JobTriggerStateDetector implements ApplicationRunner {
                 } catch (SchedulerException e) {
                     e.printStackTrace();
                     LOGGER.error("check distribute task occur an exception {} ", e.getMessage());
+                    // 开启报警
+                    callThePolicy.call(task, e.getMessage(), new Date().getTime());
                     return true;
                 }
             }).count();
@@ -134,6 +144,8 @@ public class JobTriggerStateDetector implements ApplicationRunner {
                 } catch (SchedulerException e) {
                     e.printStackTrace();
                     LOGGER.error("check distribute task occur an exception {} ", e.getMessage());
+                    // 开启报警
+                    callThePolicy.call(task, e.getMessage(), new Date().getTime());
                 }
             }
         });
