@@ -17,8 +17,6 @@ import java.lang.annotation.*;
 @Import({
         // Spring容器对象获取工具
         SpringContainer.class,
-        // 全局异常捕获器
-        GlobalThrowableCaptors.class,
         // 配置类
         CommonPluginConfiguration.class
 })
@@ -29,6 +27,6 @@ public @interface EnableJopenCommon {
      *
      * @return
      */
-    String[] printExceptionStackInfoInEnv() default {};
+   //  String[] printExceptionStackInfoInEnv() default {};
 
 }

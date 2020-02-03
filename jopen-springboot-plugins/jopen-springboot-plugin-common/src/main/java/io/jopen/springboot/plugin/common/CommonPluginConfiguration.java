@@ -1,32 +1,27 @@
 package io.jopen.springboot.plugin.common;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
-import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @author maxuefeng
+ * @see com.google.common.eventbus.EventBus
  * @since 2020/1/30
  */
 @Configuration
 @Component
 public class CommonPluginConfiguration implements ImportAware {
 
-    @Autowired
-    private Environment env;
+    // @Autowired
+    // private Environment env;
 
-    private boolean printExceptionStack = false;
+    // private boolean printExceptionStack = false;
 
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
-        AnnotationAttributes enableCommon = AnnotationAttributes
+        /*AnnotationAttributes enableCommon = AnnotationAttributes
                 .fromMap(importMetadata.getAnnotationAttributes(EnableJopenCommon.class.getName(), false));
 
         if (enableCommon == null) {
@@ -41,10 +36,10 @@ public class CommonPluginConfiguration implements ImportAware {
         if (printExceptionStackEnvs.length > 0)
             if (Arrays.stream(activeProfiles).anyMatch(printExceptionStackEnvList::contains)) {
                 this.printExceptionStack = true;
-            }
+            }*/
     }
 
-    public boolean getPrintExceptionStack() {
-        return this.printExceptionStack;
-    }
+    // public boolean getPrintExceptionStack() {
+    //    return this.printExceptionStack;
+    // }
 }

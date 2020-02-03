@@ -16,7 +16,6 @@ import java.util.Set;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
 @Getter
 @Setter
 public class DailyTimeIntervalTriggerInfo extends BaseTriggerInfo {

@@ -48,6 +48,10 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
     }
 
 
+    /**
+     * @see org.springframework.context.ConfigurableApplicationContext
+     * @param registry
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
