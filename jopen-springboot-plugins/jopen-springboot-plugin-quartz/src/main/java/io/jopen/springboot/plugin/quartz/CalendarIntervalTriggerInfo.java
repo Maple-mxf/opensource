@@ -23,7 +23,6 @@ public class CalendarIntervalTriggerInfo extends BaseTriggerInfo {
     private int repeatInterval;
     private DateBuilder.IntervalUnit repeatIntervalUnit;
     private int timesTriggered;
-    private int timesTriggered1;
     private TimeZone timeZone;
 
     @Override

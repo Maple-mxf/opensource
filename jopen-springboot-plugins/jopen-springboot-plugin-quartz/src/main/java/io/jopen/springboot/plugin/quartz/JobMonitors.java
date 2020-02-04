@@ -142,7 +142,7 @@ public final class JobMonitors {
         }
         return tasks;
     }
-    
+
     public List<DistributeTaskInfo> distributeTaskList() throws SchedulerException {
         return distributeTaskList(true);
     }
@@ -254,6 +254,7 @@ public final class JobMonitors {
                         int priority = originTrigger.getPriority();
                         JobDataMap jobDataMap = originTrigger.getJobDataMap();
                         boolean mayFireAgain = originTrigger.mayFireAgain();
+                        Trigger.TriggerState triggerState = scheduler.getTriggerState(originTrigger.getKey());
 
 
                         baseTriggerInfo.setDescription(description);
@@ -268,6 +269,7 @@ public final class JobMonitors {
                         baseTriggerInfo.setPriority(priority);
                         baseTriggerInfo.setJobDataMap(jobDataMap);
                         baseTriggerInfo.setMayFireAgain(mayFireAgain);
+                        baseTriggerInfo.setTriggerState(triggerState);
 
                         return baseTriggerInfo;
                     } catch (Exception e) {

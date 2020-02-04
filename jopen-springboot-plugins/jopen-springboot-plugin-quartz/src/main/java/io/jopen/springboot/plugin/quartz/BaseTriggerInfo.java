@@ -3,6 +3,7 @@ package io.jopen.springboot.plugin.quartz;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.quartz.JobDataMap;
+import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 
 import java.util.Date;
@@ -41,6 +42,7 @@ public abstract class BaseTriggerInfo {
     protected int priority;
     protected JobDataMap jobDataMap;
     protected String triggerType;
+    private Trigger.TriggerState triggerState;
 
     // 设定Trigger的类型
     BaseTriggerInfo() {
