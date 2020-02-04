@@ -43,11 +43,12 @@ public abstract class JobBeanAgent extends QuartzJobBean {
     /**
      * 是否替换
      * 默认替换
+     *
      * @return 添加新job是否替换
      */
     @NonNull
     public boolean setupReplace() {
-        return true;
+        return false;
     }
 
     /**

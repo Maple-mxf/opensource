@@ -1,5 +1,6 @@
 package io.jopen.springboot.plugin.quartz;
 
+import com.google.common.collect.ImmutableMap;
 import io.jopen.springboot.plugin.common.ReflectUtil;
 import org.quartz.*;
 import org.slf4j.Logger;
@@ -97,11 +98,15 @@ public class QuartzPluginConfiguration implements ImportAware {
 
                 // if exist old job info in db prepare delete job info data
                 // after deleted , schedule the job by trigger
-                if (scheduler.checkExists(jobBeanAgent.setupJobKey()) && jobBeanAgent.setupReplace()) {
-                    scheduler.scheduleJob(jobDetail, triggers, jobBeanAgent.setupReplace());
+                if (scheduler.checkExists(jobDetail.getKey())) {
+                    if (jobBeanAgent.setupReplace()) {
+                        scheduler.scheduleJob(jobDetail, triggers, true);
+                    }
+                    // 否则则不重复调度任务
+                } else {
+                    scheduler.scheduleJobs(ImmutableMap.of(jobDetail, triggers), false);
                 }
             }
-
             // start the scheduler
             securityStartScheduler();
 
@@ -128,8 +133,6 @@ public class QuartzPluginConfiguration implements ImportAware {
      */
     private void securityStartScheduler() {
         try {
-
-
             boolean started = this.scheduler.isStarted();
             if (!started) {
                 this.scheduler.start();
