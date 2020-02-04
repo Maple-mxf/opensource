@@ -1,7 +1,7 @@
 package io.jopen.springboot.plugin.quartz;
 
-import com.alibaba.fastjson.JSON;
 import io.jopen.springboot.plugin.common.Formatter;
+import io.jopen.springboot.plugin.common.json.Jackson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ public interface CallThePolicy extends java.io.Serializable {
         public void call(DistributeTaskInfo distributeTaskInfo, String errMsg, long occurTimeMs) {
             LOGGER.error("distribute task occur an Exception");
             LOGGER.error("--------------------------------------------------------------------------------------------");
-            LOGGER.error("distributeTaskInfo  {} ", JSON.toJSONString(distributeTaskInfo));
+            LOGGER.error("distributeTaskInfo  {} ", Jackson.toJson(distributeTaskInfo));
             LOGGER.error("error message {} ", errMsg);
             LOGGER.error("occur date time {} ", Formatter.format(occurTimeMs, Formatter.P.P4));
             LOGGER.error("--------------------------------------------------------------------------------------------");
