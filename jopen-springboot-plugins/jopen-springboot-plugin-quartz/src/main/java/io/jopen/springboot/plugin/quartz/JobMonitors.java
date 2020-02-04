@@ -108,7 +108,7 @@ public final class JobMonitors {
         return true;
     }
 
-    public List<DistributeTaskInfo> distributeTaskList() throws SchedulerException {
+    public List<DistributeTaskInfo> distributeTaskList(boolean isQueryTrigger) throws SchedulerException {
         List<DistributeTaskInfo> tasks = new ArrayList<>();
         List<String> jobGroupNames = scheduler.getJobGroupNames();
         for (String groupName : jobGroupNames) {
@@ -122,8 +122,6 @@ public final class JobMonitors {
                 boolean persistJobDataAfterExecution = jobDetail.isPersistJobDataAfterExecution();
                 boolean requestsRecovery = jobDetail.requestsRecovery();
 
-                List<BaseTriggerInfo> baseTriggerInfoList = this.jobTriggerInfoList(jobKey);
-
                 DistributeTaskInfo task = DistributeTaskInfo.builder()
                         .name(jobKey.getName())
                         .group(groupName)
@@ -134,13 +132,19 @@ public final class JobMonitors {
                         .concurrentExecutionDisallowed(concurrentExecutionDisallowed)
                         .persistJobDataAfterExecution(persistJobDataAfterExecution)
                         .requestsRecovery(requestsRecovery)
-                        .triggerInfoList(baseTriggerInfoList)
                         .build();
 
+                if (isQueryTrigger) {
+                    task.setTriggerInfoList(this.jobTriggerInfoList(jobKey));
+                }
                 tasks.add(task);
             }
         }
         return tasks;
+    }
+    
+    public List<DistributeTaskInfo> distributeTaskList() throws SchedulerException {
+        return distributeTaskList(true);
     }
 
     public List<BaseTriggerInfo> jobTriggerInfoList(JobKey jobKey) throws SchedulerException {

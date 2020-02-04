@@ -31,10 +31,15 @@ public class QuartzPluginConfiguration implements ImportAware {
 
     private JobTriggerStateDetector jobTriggerStateDetector;
 
+    private JobMonitors jobMonitors;
+
     @Autowired
-    public QuartzPluginConfiguration(Scheduler scheduler, JobTriggerStateDetector jobTriggerStateDetector) {
+    public QuartzPluginConfiguration(Scheduler scheduler,
+                                     JobTriggerStateDetector jobTriggerStateDetector,
+                                     JobMonitors jobMonitors) {
         this.scheduler = scheduler;
         this.jobTriggerStateDetector = jobTriggerStateDetector;
+        this.jobMonitors = jobMonitors;
     }
 
     /**
@@ -67,6 +72,17 @@ public class QuartzPluginConfiguration implements ImportAware {
                     .filter(type -> type.getGenericSuperclass().equals(JobBeanAgent.class))
                     .collect(Collectors.toList());
 
+            // 获取schedule存储的任务Job
+            List<DistributeTaskInfo> taskList = jobMonitors.distributeTaskList(false);
+
+            // 检测不存在的任务 （可能由于开发者删除或者其他原因）
+            List<DistributeTaskInfo> notExistJobClassList = taskList.stream()
+                    .filter(task -> !jobBeanClass.contains(task.getJobClass())).collect(Collectors.toList());
+            // 删除不存在的任务
+            for (DistributeTaskInfo distributeTaskInfo : notExistJobClassList) {
+                scheduler.deleteJob(JobKey.jobKey(distributeTaskInfo.getName(), distributeTaskInfo.getGroup()));
+            }
+
             for (Class<?> beanClass : jobBeanClass) {
                 JobBeanAgent jobBeanAgent = (JobBeanAgent) beanClass.newInstance();
 
@@ -89,7 +105,6 @@ public class QuartzPluginConfiguration implements ImportAware {
             // start the scheduler
             securityStartScheduler();
 
-
             // setup enableCheckDistributeTaskState
             boolean enableCheckDistributeTaskState = enableQuartz.getBoolean("enableCheckDistributeTaskState");
             jobTriggerStateDetector.setEnableCheckDistributeTaskState(enableCheckDistributeTaskState);
@@ -107,19 +122,14 @@ public class QuartzPluginConfiguration implements ImportAware {
         }
     }
 
-
-    /**
-     * set up current scheduler job detail {@link JobDetail} and trigger{@link Trigger}
-     */
-    public void setupScheduleJob() {
-    }
-
     /**
      * security start scheduler
      * if abort will be throw a {@link RuntimeException}
      */
     private void securityStartScheduler() {
         try {
+
+
             boolean started = this.scheduler.isStarted();
             if (!started) {
                 this.scheduler.start();
