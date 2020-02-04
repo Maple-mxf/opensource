@@ -10,6 +10,7 @@ import java.util.List;
  * @author maxuefeng
  * @since 2020/1/27
  */
+@Deprecated
 public abstract class TokenProducer {
 
     /*自定义无参数构造函数*/

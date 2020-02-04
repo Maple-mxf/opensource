@@ -19,6 +19,7 @@ public @interface EnableJopenAuth {
      * @return the implement {@link TokenProducer} class path example:"io.jopen.springboot.plugin.auth.DefaultTokenProducer"
      * @see TokenProducer
      */
+    @Deprecated
     Class<? extends TokenProducer> tokenFunctionType();
 
     /**
@@ -41,4 +42,9 @@ public @interface EnableJopenAuth {
      * @see org.springframework.web.servlet.config.annotation.InterceptorRegistration#excludePathPatterns(String...)
      */
     String[] excludePathPattern() default {};
+
+    /**
+     * @return {@link AuthMetadata} 认证的元数据信息
+     */
+    Class<? extends AuthMetadata> authMetadataType();
 }

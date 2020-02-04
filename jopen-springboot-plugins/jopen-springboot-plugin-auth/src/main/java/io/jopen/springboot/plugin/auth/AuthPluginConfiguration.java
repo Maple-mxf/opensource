@@ -52,12 +52,23 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
             e.printStackTrace();
             throw new RuntimeException(e.getCause());
         }
-        this.authenticate.setTokenProducer(tokenProducer);
 
+        //
+        this.authenticate.setTokenProducer(tokenProducer);
 
         String[] pathPatterns = enableAuth.getStringArray("pathPatterns");
         String[] excludePathPatterns = enableAuth.getStringArray("excludePathPattern");
         int order = enableAuth.getNumber("order");
+
+        Class<? extends AuthMetadata> authMetadataType = enableAuth.getClass("authMetadataType");
+        AuthMetadata authMetadataInstance = null;
+        try {
+            authMetadataInstance = authMetadataType.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+
 
         // 设置当前对象的拦截器的顺序
         this.authenticate.setPathPatterns(pathPatterns);
