@@ -34,6 +34,14 @@ public final class Credential implements java.io.Serializable {
      */
     private Object userInfo;
 
+    /**
+     * 用户访问的IP地址
+     */
+    private String ip;
+
+    /**
+     *
+     */
     private boolean empty;
 
     public Credential(boolean empty) {

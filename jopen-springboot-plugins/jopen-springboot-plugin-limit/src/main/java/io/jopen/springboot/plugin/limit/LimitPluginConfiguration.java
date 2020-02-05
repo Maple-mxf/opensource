@@ -64,11 +64,19 @@ public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
             this.flowControl.setLimitKeyProducer(new LimitKeyProducer.IPLimitKeyStrategy());
         }
 
+        // 拦截路径
         String[] pathPatterns = enableLimit.getStringArray("pathPatterns");
+        // 不包含路径
         String[] excludePathPatterns = enableLimit.getStringArray("excludePathPattern");
+        // 拦截器顺序
         int order = enableLimit.getNumber("order");
-
-        // 设置当前对象的拦截器的顺序
+        // 是否开启黑名单策略
+        boolean enablePullBlack = enableLimit.getBoolean("enablePullBlack");
+        // 拉黑逻辑处理策略
+        Class<? extends Keeper> limitKeeperType = enableLimit.getClass("limitKeeperType");
+        
+        this.flowControl.setEnablePullBlack(enablePullBlack);
+        this.flowControl.setLimitKeeperType(limitKeeperType);
         this.flowControl.setPathPatterns(pathPatterns);
         this.flowControl.setExcludePathPatterns(excludePathPatterns);
         this.flowControl.setOrder(order);

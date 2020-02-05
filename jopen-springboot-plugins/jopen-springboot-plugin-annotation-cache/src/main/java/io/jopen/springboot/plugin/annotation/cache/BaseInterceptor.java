@@ -87,13 +87,12 @@ public class BaseInterceptor implements HandlerInterceptor {
 
 
     /**
-     * {@link org.springframework.boot.CommandLineRunner} start spring application {@link BaseInterceptor#run(String...)}
+     * {@link org.springframework.boot.CommandLineRunner} start spring application {@link BaseInterceptor#runCompleteScanner(String...)}
      *
      * @param args
      * @throws Exception
      */
-    @Deprecated
-    public void run(String... args) throws Exception {
+    public void runCompleteScanner(String... args) throws Exception {
         LOGGER.info("load api interface annotation");
 
         // TODO  需要设置controller包  API访问策略

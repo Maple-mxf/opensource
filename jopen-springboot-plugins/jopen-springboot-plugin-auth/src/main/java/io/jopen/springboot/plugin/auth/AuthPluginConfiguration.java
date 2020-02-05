@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.function.Function;
+
 /**
  * @author maxuefeng
  * @since 2020/1/26
@@ -67,6 +71,17 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
+        }
+
+
+        Collection<AuthRule> authRules = authMetadataInstance.setupAuthRules();
+
+        for (AuthRule authRule : authRules) {
+            System.err.println(authRule.getPathPatterns());
+            Function<HttpServletRequest, ? extends CredentialFunction> credentialFunction
+                    = authRule.getCredentialFunction();
+
+            credentialFunction.apply();
         }
 
 

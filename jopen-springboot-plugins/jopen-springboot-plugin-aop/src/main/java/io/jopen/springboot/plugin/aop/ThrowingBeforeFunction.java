@@ -8,8 +8,7 @@ package io.jopen.springboot.plugin.aop;
 public interface ThrowingBeforeFunction {
 
     /**
-     *
-     * @param args
+     * @param args 加工参数
      * @return
      * @throws RuntimeException
      */

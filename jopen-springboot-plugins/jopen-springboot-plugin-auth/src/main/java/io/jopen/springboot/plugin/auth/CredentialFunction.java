@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author maxuefeng
  * @see java.util.function.Function
+ * @see Credential
  * @since 2020/2/4
  */
 @FunctionalInterface

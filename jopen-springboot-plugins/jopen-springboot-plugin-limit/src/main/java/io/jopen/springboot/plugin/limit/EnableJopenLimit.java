@@ -12,9 +12,13 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({FlowControl.class, LimitPluginConfiguration.class, ScriptConfiguration.class})
+@Import({FlowControl.class,
+        LimitPluginConfiguration.class,
+        ScriptConfiguration.class,
+        // 默认的策略实现
+        SimpleKeeperImpl.class})
 public @interface EnableJopenLimit {
-    
+
     /**
      * 限流Key的实现类
      *
@@ -43,4 +47,18 @@ public @interface EnableJopenLimit {
      * @see org.springframework.web.servlet.config.annotation.InterceptorRegistration#excludePathPatterns(String...)
      */
     String[] excludePathPattern() default {};
+
+    /**
+     * 是否使用IP拉黑功能
+     *
+     * @return
+     */
+    boolean enablePullBlack() default true;
+
+    /**
+     * 默认Keeper实现策略 (实现基于IP/Token拉黑)
+     *
+     * @return {@link Keeper}
+     */
+    Class<? extends Keeper> limitKeeperType() default SimpleKeeperImpl.class;
 }
