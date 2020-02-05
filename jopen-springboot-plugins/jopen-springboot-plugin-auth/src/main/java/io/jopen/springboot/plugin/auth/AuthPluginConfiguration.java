@@ -9,30 +9,29 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
-import java.util.function.Function;
 
 /**
  * @author maxuefeng
+ * @see org.springframework.web.util.pattern.PathPattern
  * @since 2020/1/26
  */
 @Configuration
 @Component
 public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
 
-    private Authenticate authenticate;
+    private Authentication authentication;
 
     @Autowired
-    public AuthPluginConfiguration(Authenticate authenticate) {
-        this.authenticate = authenticate;
+    public AuthPluginConfiguration(Authentication authentication) {
+        this.authentication = authentication;
     }
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authenticate)
-                .addPathPatterns(authenticate.getPathPatterns())
-                .excludePathPatterns(authenticate.getExcludePathPatterns())
-                .order(authenticate.getOrder());
+        registry.addInterceptor(authentication)
+                .addPathPatterns(authentication.getPathPatterns())
+                .excludePathPatterns(authentication.getExcludePathPatterns())
+                .order(authentication.getOrder());
     }
 
     /**
@@ -58,14 +57,14 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
         }
 
         //
-        this.authenticate.setTokenProducer(tokenProducer);
+        this.authentication.setTokenProducer(tokenProducer);
 
         String[] pathPatterns = enableAuth.getStringArray("pathPatterns");
         String[] excludePathPatterns = enableAuth.getStringArray("excludePathPattern");
         int order = enableAuth.getNumber("order");
 
         Class<? extends AuthMetadata> authMetadataType = enableAuth.getClass("authMetadataType");
-        AuthMetadata authMetadataInstance = null;
+        AuthMetadata authMetadataInstance;
         try {
             authMetadataInstance = authMetadataType.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
@@ -73,21 +72,11 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
             throw new RuntimeException(e.getMessage());
         }
 
-
-        Collection<AuthRule> authRules = authMetadataInstance.setupAuthRules();
-
-        for (AuthRule authRule : authRules) {
-            System.err.println(authRule.getPathPatterns());
-            Function<HttpServletRequest, ? extends CredentialFunction> credentialFunction
-                    = authRule.getCredentialFunction();
-
-            credentialFunction.apply();
-        }
-
+        Collection<AuthRegistration> authRegistrations = authMetadataInstance.setupAuthRules();
 
         // 设置当前对象的拦截器的顺序
-        this.authenticate.setPathPatterns(pathPatterns);
-        this.authenticate.setExcludePathPatterns(excludePathPatterns);
-        this.authenticate.setOrder(order);
+        this.authentication.setPathPatterns(pathPatterns);
+        this.authentication.setExcludePathPatterns(excludePathPatterns);
+        this.authentication.setOrder(order);
     }
 }

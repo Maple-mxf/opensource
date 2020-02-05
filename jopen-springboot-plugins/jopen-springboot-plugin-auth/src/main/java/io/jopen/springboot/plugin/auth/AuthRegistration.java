@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.util.AntPathMatcher;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -13,7 +12,7 @@ import java.util.function.Function;
  * @author maxuefeng
  * @since 2020/2/4
  */
-public final class AuthRule {
+public final class AuthRegistration {
 
     /**
      * 规则路径
@@ -28,16 +27,16 @@ public final class AuthRule {
      *
      * @see Function
      */
-    private Function<HttpServletRequest, ? extends CredentialFunction> credentialFunction;
+    private CredentialFunction credentialFunction;
 
-    private AuthRule() {
+    private AuthRegistration() {
     }
 
     public Set<String> getPathPatterns() {
         return this.pathPatterns;
     }
 
-    public Function<HttpServletRequest, ? extends CredentialFunction> getCredentialFunction() {
+    public CredentialFunction getCredentialFunction() {
         return this.credentialFunction;
     }
 
@@ -46,10 +45,10 @@ public final class AuthRule {
     }
 
     public static class Builder {
-        private AuthRule authRule;
+        private AuthRegistration authRegistration;
 
         Builder() {
-            authRule = new AuthRule();
+            authRegistration = new AuthRegistration();
         }
 
         /**
@@ -59,33 +58,40 @@ public final class AuthRule {
          * @return
          */
         public Builder addAuthPath(@NonNull String authPath) {
-            this.authRule.pathPatterns.add(authPath);
+            this.authRegistration.pathPatterns.add(authPath);
             return this;
         }
 
         /**
          * 设定检测规则
          *
-         * @param credentialFunction
-         * @return
+         * @param credentialFunction {@link CredentialFunction}
+         * @return {@link Builder}
          */
-        public Builder setupCredentialFunction(@NonNull Function<HttpServletRequest, ? extends CredentialFunction> credentialFunction) {
-            this.authRule.credentialFunction = credentialFunction;
+        public Builder setupCredentialFunction(@NonNull CredentialFunction credentialFunction) {
+            this.authRegistration.credentialFunction = credentialFunction;
             return this;
         }
 
-        public AuthRule build() {
+        /**
+         * @return {@link AuthRegistration}
+         * @see org.springframework.web.util.pattern.PathPattern
+         */
+        public AuthRegistration build() {
             // 检测Path
-            if (authRule.pathPatterns.size() == 0) {
-                throw new RuntimeException("AuthRule auth path must be setup");
+            if (authRegistration.pathPatterns.size() == 0) {
+                throw new RuntimeException("AuthRegistration auth path must be setup");
             }
             // 检测path规则
-            for (String path : authRule.pathPatterns) {
+            for (String path : authRegistration.pathPatterns) {
                 if (Strings.isNullOrEmpty(path) || !path.startsWith("/")) {
                     throw new RuntimeException(String.format("Path %s must be not null and must be start with '/' ", path));
                 }
             }
-            return this.authRule;
+            return this.authRegistration;
         }
     }
+
+
 }
+

@@ -1,8 +1,9 @@
 package io.jopen.springboot.plugin.auth;
 
+import com.google.common.base.Verify;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -20,9 +21,9 @@ public final class Credential implements java.io.Serializable {
     private Serializable identity;
 
     /**
-     * 账户状态
+     * 凭证是否有效
      */
-    private AccountState accountState;
+    private boolean valid = true;
 
     /**
      * 用户角色信息
@@ -34,33 +35,26 @@ public final class Credential implements java.io.Serializable {
      */
     private Object userInfo;
 
-    /**
-     * 用户访问的IP地址
-     */
-    private String ip;
 
     /**
      *
      */
     private boolean empty;
 
-    public Credential(boolean empty) {
+    private Credential(boolean empty) {
         this.empty = empty;
     }
 
-    public enum AccountState {
-        /**
-         * 冻结状态
-         */
-        FREEZE,
-        /**
-         * 正常状态
-         */
-        NORMAL,
-        /**
-         * 危险状态
-         */
-        DANGER
+    public boolean isEmpty() {
+        return this.empty;
+    }
+
+    public boolean getValid() {
+        return this.valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     public Serializable getIdentity() {
@@ -69,14 +63,6 @@ public final class Credential implements java.io.Serializable {
 
     public void setIdentity(Serializable identity) {
         this.identity = identity;
-    }
-
-    public AccountState getAccountState() {
-        return accountState;
-    }
-
-    public void setAccountState(AccountState accountState) {
-        this.accountState = accountState;
     }
 
     public String[] getRoles() {
@@ -95,32 +81,38 @@ public final class Credential implements java.io.Serializable {
         this.userInfo = userInfo;
     }
 
+    public static class Builder {
+        private Credential credential;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Credential that = (Credential) o;
-        return Objects.equals(identity, that.identity) &&
-                accountState == that.accountState &&
-                Arrays.equals(roles, that.roles) &&
-                Objects.equals(userInfo, that.userInfo);
-    }
+        public Builder(boolean isEmpty) {
+            this.credential = new Credential(isEmpty);
+        }
 
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(identity, accountState, userInfo);
-        result = 31 * result + Arrays.hashCode(roles);
-        return result;
-    }
+        public Builder identity(@NonNull Serializable identity) {
+            this.credential.setIdentity(identity);
+            return this;
+        }
 
-    @Override
-    public String toString() {
-        return "Credential{" +
-                "identity=" + identity +
-                ", accountState=" + accountState +
-                ", roles=" + Arrays.toString(roles) +
-                ", userInfo=" + userInfo +
-                '}';
+        public Builder roles(@NonNull String... roles) {
+            this.credential.setRoles(roles);
+            return this;
+        }
+
+        public Builder valid(boolean valid) {
+            this.credential.valid = valid;
+            return this;
+        }
+
+        public Builder userInfo(Object userInfo) {
+            this.credential.setUserInfo(userInfo);
+            return this;
+        }
+
+        public Credential build() {
+            if (!this.credential.empty) {
+                Verify.verify(this.credential.roles != null, "user must has an roles");
+            }
+            return this.credential;
+        }
     }
 }

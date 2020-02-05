@@ -6,13 +6,13 @@ import java.util.Collection;
  * 认证的元信息
  *
  * @author maxuefeng
- * @see AuthRule
+ * @see AuthRegistration
  * @since 2020/2/4
  */
 public interface AuthMetadata {
 
     /**
-     * @return auth roles {@link AuthRule}
+     * @return auth roles {@link AuthRegistration}
      */
-    Collection<AuthRule> setupAuthRules();
+    Collection<AuthRegistration> setupAuthRules();
 }
