@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({FlowControl.class,
+@Import({FlowControlInterceptor.class,
         LimitPluginConfiguration.class,
         ScriptConfiguration.class,
         // 默认的策略实现

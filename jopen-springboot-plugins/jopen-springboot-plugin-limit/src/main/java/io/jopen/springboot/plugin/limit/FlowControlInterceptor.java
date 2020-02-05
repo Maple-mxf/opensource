@@ -25,7 +25,7 @@ import java.util.List;
  * @see Limiting
  */
 @Component
-public class FlowControl extends BaseInterceptor implements CommandLineRunner {
+public class FlowControlInterceptor extends BaseInterceptor implements CommandLineRunner {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -144,7 +144,7 @@ public class FlowControl extends BaseInterceptor implements CommandLineRunner {
 
     /**
      * 1 设定{@link Keeper}
-     * 2 组装{@link FlowControl#runLimitFunction}
+     * 2 组装{@link FlowControlInterceptor#runLimitFunction}
      *
      * @param args
      * @see SimpleKeeperImpl
@@ -154,7 +154,7 @@ public class FlowControl extends BaseInterceptor implements CommandLineRunner {
         this.keeper = SpringContainer.getBean(this.limitKeeperType);
         if (this.enablePullBlack) {
             this.runLimitFunction = (request, response, handler, limiting) -> {
-                String limitKey = FlowControl.this.limitKeyProducer.key(request);
+                String limitKey = FlowControlInterceptor.this.limitKeyProducer.key(request);
                 // 黑名单操作
                 Keeper.Info info = keeper.solicitingOpinions(limitKey);
                 if (!info.isAllowAccess) {
@@ -176,7 +176,7 @@ public class FlowControl extends BaseInterceptor implements CommandLineRunner {
             };
         } else {
             this.runLimitFunction = (request, response, handler, limiting) -> {
-                String limitKey = FlowControl.this.limitKeyProducer.key(request);
+                String limitKey = FlowControlInterceptor.this.limitKeyProducer.key(request);
                 // 拼接key
                 HandlerMethod handlerMethod = (HandlerMethod) handler;
                 List<String> keys = Collections.singletonList(limitKey + "-" + handlerMethod.getMethod().getName() + "-" + limiting.key());

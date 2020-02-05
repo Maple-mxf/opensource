@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * @since 2020/1/31
  */
 @Component
-public class TokenIdempotent extends BaseInterceptor {
+public class TokenIdempotentInterceptor extends BaseInterceptor {
 
     private String tokenKey;
     private int order;
@@ -52,7 +52,7 @@ public class TokenIdempotent extends BaseInterceptor {
     // Order
     // redis IO多路复用的意思只是acceptor是单线程的 而handler任然是多线程
     @Autowired
-    public TokenIdempotent(@NonNull RedisTemplate<String, Object> redisTemplate) {
+    public TokenIdempotentInterceptor(@NonNull RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

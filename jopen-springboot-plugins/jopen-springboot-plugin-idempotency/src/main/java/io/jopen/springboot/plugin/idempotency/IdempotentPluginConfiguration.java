@@ -31,12 +31,12 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
 
     private RedisTemplate<String, Object> redisTemplate;
 
-    private TokenIdempotent tokenIdempotent;
+    private TokenIdempotentInterceptor tokenIdempotentInterceptor;
 
     @Autowired
-    public IdempotentPluginConfiguration(RedisTemplate<String, Object> redisTemplate, TokenIdempotent tokenIdempotent) {
+    public IdempotentPluginConfiguration(RedisTemplate<String, Object> redisTemplate, TokenIdempotentInterceptor tokenIdempotentInterceptor) {
         this.redisTemplate = redisTemplate;
-        this.tokenIdempotent = tokenIdempotent;
+        this.tokenIdempotentInterceptor = tokenIdempotentInterceptor;
     }
 
     @RequestMapping(value = "/getIdempotentToken", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -56,11 +56,11 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
     public void addInterceptors(InterceptorRegistry registry) {
 
         // 注册
-        registry.addInterceptor(tokenIdempotent)
-                .order(tokenIdempotent.getOrder())
-                .addPathPatterns(tokenIdempotent.getIncludePathPatterns())
-                .excludePathPatterns(tokenIdempotent.getExcludePathPatterns());
-        this.tokenIdempotent.setTokenKey(this.tokenKey);
+        registry.addInterceptor(tokenIdempotentInterceptor)
+                .order(tokenIdempotentInterceptor.getOrder())
+                .addPathPatterns(tokenIdempotentInterceptor.getIncludePathPatterns())
+                .excludePathPatterns(tokenIdempotentInterceptor.getExcludePathPatterns());
+        this.tokenIdempotentInterceptor.setTokenKey(this.tokenKey);
     }
 
     /**
@@ -118,9 +118,9 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
         // this.order = order;
         // this.includePathPatterns = includePathPatterns;
         // this.excludePathPatterns = excludePathPatterns;
-        this.tokenIdempotent.setOrder(order);
-        this.tokenIdempotent.setIncludePathPatterns(includePathPatterns);
-        this.tokenIdempotent.setExcludePathPatterns(excludePathPatterns);
+        this.tokenIdempotentInterceptor.setOrder(order);
+        this.tokenIdempotentInterceptor.setIncludePathPatterns(includePathPatterns);
+        this.tokenIdempotentInterceptor.setExcludePathPatterns(excludePathPatterns);
     }
 
 }

@@ -20,18 +20,18 @@ import java.util.Collection;
 @Component
 public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
 
-    private Authentication authentication;
+    private AuthenticationInterceptor authenticationInterceptor;
 
     @Autowired
-    public AuthPluginConfiguration(Authentication authentication) {
-        this.authentication = authentication;
+    public AuthPluginConfiguration(AuthenticationInterceptor authenticationInterceptor) {
+        this.authenticationInterceptor = authenticationInterceptor;
     }
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authentication)
-                .addPathPatterns(authentication.getPathPatterns())
-                .excludePathPatterns(authentication.getExcludePathPatterns())
-                .order(authentication.getOrder());
+        registry.addInterceptor(authenticationInterceptor)
+                .addPathPatterns(authenticationInterceptor.getPathPatterns())
+                .excludePathPatterns(authenticationInterceptor.getExcludePathPatterns())
+                .order(authenticationInterceptor.getOrder());
     }
 
     /**
@@ -57,7 +57,7 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
         }
 
         //
-        this.authentication.setTokenProducer(tokenProducer);
+        this.authenticationInterceptor.setTokenProducer(tokenProducer);
 
         String[] pathPatterns = enableAuth.getStringArray("pathPatterns");
         String[] excludePathPatterns = enableAuth.getStringArray("excludePathPattern");
@@ -75,8 +75,8 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
         Collection<AuthRegistration> authRegistrations = authMetadataInstance.setupAuthRules();
 
         // 设置当前对象的拦截器的顺序
-        this.authentication.setPathPatterns(pathPatterns);
-        this.authentication.setExcludePathPatterns(excludePathPatterns);
-        this.authentication.setOrder(order);
+        this.authenticationInterceptor.setPathPatterns(pathPatterns);
+        this.authenticationInterceptor.setExcludePathPatterns(excludePathPatterns);
+        this.authenticationInterceptor.setOrder(order);
     }
 }

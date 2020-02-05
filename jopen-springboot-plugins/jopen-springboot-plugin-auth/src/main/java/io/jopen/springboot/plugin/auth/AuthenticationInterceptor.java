@@ -21,7 +21,7 @@ import java.util.List;
  * @author maxuefeng
  */
 @Component
-public class Authentication extends BaseInterceptor {
+public class AuthenticationInterceptor extends BaseInterceptor {
 
     /**
      * 客户端自定义获取token操作

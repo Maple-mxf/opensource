@@ -28,20 +28,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
 
-    private FlowControl flowControl;
+    private FlowControlInterceptor flowControlInterceptor;
 
     @Autowired
-    public LimitPluginConfiguration(FlowControl flowControl) {
-        this.flowControl = flowControl;
+    public LimitPluginConfiguration(FlowControlInterceptor flowControlInterceptor) {
+        this.flowControlInterceptor = flowControlInterceptor;
     }
 
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(flowControl)
-                .order(this.flowControl.getOrder())
-                .addPathPatterns(this.flowControl.getPathPatterns())
-                .excludePathPatterns(this.flowControl.getExcludePathPatterns());
+        registry.addInterceptor(flowControlInterceptor)
+                .order(this.flowControlInterceptor.getOrder())
+                .addPathPatterns(this.flowControlInterceptor.getPathPatterns())
+                .excludePathPatterns(this.flowControlInterceptor.getExcludePathPatterns());
 
     }
 
@@ -58,10 +58,10 @@ public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
         Class<? extends LimitKeyProducer> limitKeyFunctionType = enableLimit.getClass("limitKeyFunctionType");
         try {
             LimitKeyProducer instance = limitKeyFunctionType.newInstance();
-            this.flowControl.setLimitKeyProducer(instance);
+            this.flowControlInterceptor.setLimitKeyProducer(instance);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
-            this.flowControl.setLimitKeyProducer(new LimitKeyProducer.IPLimitKeyStrategy());
+            this.flowControlInterceptor.setLimitKeyProducer(new LimitKeyProducer.IPLimitKeyStrategy());
         }
 
         // 拦截路径
@@ -75,10 +75,10 @@ public class LimitPluginConfiguration implements WebMvcConfigurer, ImportAware {
         // 拉黑逻辑处理策略
         Class<? extends Keeper> limitKeeperType = enableLimit.getClass("limitKeeperType");
         
-        this.flowControl.setEnablePullBlack(enablePullBlack);
-        this.flowControl.setLimitKeeperType(limitKeeperType);
-        this.flowControl.setPathPatterns(pathPatterns);
-        this.flowControl.setExcludePathPatterns(excludePathPatterns);
-        this.flowControl.setOrder(order);
+        this.flowControlInterceptor.setEnablePullBlack(enablePullBlack);
+        this.flowControlInterceptor.setLimitKeeperType(limitKeeperType);
+        this.flowControlInterceptor.setPathPatterns(pathPatterns);
+        this.flowControlInterceptor.setExcludePathPatterns(excludePathPatterns);
+        this.flowControlInterceptor.setOrder(order);
     }
 }

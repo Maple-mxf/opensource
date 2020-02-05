@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({TokenIdempotent.class, IdempotentPluginConfiguration.class})  // 导入外部的对象注入
+@Import({TokenIdempotentInterceptor.class, IdempotentPluginConfiguration.class})  // 导入外部的对象注入
 public @interface EnableJopenIdempotent {
 
     /**

@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({Authentication.class, AuthPluginConfiguration.class})
+@Import({AuthenticationInterceptor.class, AuthPluginConfiguration.class})
 public @interface EnableJopenAuth {
 
     /**
