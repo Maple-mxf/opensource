@@ -14,13 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 public interface CredentialFunction {
 
     /**
-     * 返回一个空的Empty的对象
+     * 返回一个无效的对象
      */
-    Credential EMPTY_CREDENTIAL = new Credential(true);
+    Credential INVALID_CREDENTIAL = Credential.builder(false).build();
 
     /**
      * @param request {@link HttpServletRequest}
-     * @return {@link Credential#empty}
+     * @return {@link Credential#getValid()}
      */
     @NonNull
     Credential apply(@NonNull HttpServletRequest request);

@@ -2,6 +2,7 @@ package io.jopen.springboot.plugin.auth;
 
 import com.google.common.base.Verify;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
 import java.util.function.Function;
@@ -35,18 +36,8 @@ public final class Credential implements java.io.Serializable {
      */
     private Object userInfo;
 
-
-    /**
-     *
-     */
-    private boolean empty;
-
-    private Credential(boolean empty) {
-        this.empty = empty;
-    }
-
-    public boolean isEmpty() {
-        return this.empty;
+    private Credential(boolean valid) {
+        this.valid = valid;
     }
 
     public boolean getValid() {
@@ -61,40 +52,32 @@ public final class Credential implements java.io.Serializable {
         return identity;
     }
 
-    public void setIdentity(Serializable identity) {
-        this.identity = identity;
-    }
-
     public String[] getRoles() {
         return roles;
-    }
-
-    public void setRoles(String[] roles) {
-        this.roles = roles;
     }
 
     public Object getUserInfo() {
         return userInfo;
     }
 
-    public void setUserInfo(Object userInfo) {
-        this.userInfo = userInfo;
+    public static Builder builder(boolean valid) {
+        return new Builder(valid);
     }
 
     public static class Builder {
         private Credential credential;
 
-        public Builder(boolean isEmpty) {
-            this.credential = new Credential(isEmpty);
+        Builder(boolean valid) {
+            this.credential = new Credential(valid);
         }
 
         public Builder identity(@NonNull Serializable identity) {
-            this.credential.setIdentity(identity);
+            this.credential.identity = identity;
             return this;
         }
 
         public Builder roles(@NonNull String... roles) {
-            this.credential.setRoles(roles);
+            this.credential.roles = roles;
             return this;
         }
 
@@ -103,13 +86,14 @@ public final class Credential implements java.io.Serializable {
             return this;
         }
 
-        public Builder userInfo(Object userInfo) {
-            this.credential.setUserInfo(userInfo);
+        public Builder userInfo(@Nullable Object userInfo) {
+            this.credential.userInfo = userInfo;
             return this;
         }
 
         public Credential build() {
-            if (!this.credential.empty) {
+            // 如果表示当前对象为空 则不做任何校验
+            if (this.credential.valid) {
                 Verify.verify(this.credential.roles != null, "user must has an roles");
             }
             return this.credential;

@@ -80,15 +80,14 @@ public class AuthenticationInterceptor extends BaseInterceptor {
     }
 
     /**
-     * @param request
-     * @param response
+     * @param request  {@link HttpServletRequest}
+     * @param response {@link HttpServletResponse}
      * @param handler  {@link org.springframework.web.method.HandlerMethod}
-     * @return
-     * @throws Exception
+     * @return {@link Boolean} if true pass else throw a new RuntimeException
      * @see org.springframework.web.util.pattern.PathPattern
      * @see org.springframework.web.util.pattern.PathPattern
      */
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Verify verify = super.getApiServiceAnnotation(Verify.class, handler);
         if (verify != null) {
             // 获取请求地址
@@ -106,7 +105,6 @@ public class AuthenticationInterceptor extends BaseInterceptor {
                     .anyMatch(authRegistration -> {
                         CredentialFunction credentialFunction = authRegistration.getCredentialFunction();
                         Credential credential = credentialFunction.apply(request);
-                        if (credential.isEmpty()) return false;
                         if (!credential.getValid()) return false;
 
                         // 没有设定角色 || 或者设定了*号  任何角色都可以访问
@@ -134,7 +132,7 @@ public class AuthenticationInterceptor extends BaseInterceptor {
      * @param lookupPath  the current request path
      * @return {@code true} if the interceptor applies to the given request path
      */
-    public boolean matches(String pathPattern, @NonNull String lookupPath) {
+    private boolean matches(String pathPattern, @NonNull String lookupPath) {
         return this.pathMatcher.match(pathPattern, lookupPath);
     }
 }
