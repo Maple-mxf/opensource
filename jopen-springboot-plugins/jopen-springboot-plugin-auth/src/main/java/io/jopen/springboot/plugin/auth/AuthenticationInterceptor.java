@@ -113,12 +113,12 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
                                 return true;
                             }
                         }
-                        return false;
+                        throw new RuntimeException(verify.errMsg());
                     })
                     .anyMatch(authRegistration -> {
                         CredentialFunction credentialFunction = authRegistration.getCredentialFunction();
                         Credential credential = credentialFunction.apply(request);
-                        if (!credential.getValid()) return false;
+                        if (!credential.getValid()) throw new RuntimeException("your account state is freeze");
 
                         // 没有设定角色 || 或者设定了*号  任何角色都可以访问
                         String[] requireAllowRoles = verify.role();
