@@ -1,9 +1,6 @@
 package io.jopen.springboot.plugin.limit;
 
-import io.jopen.springboot.plugin.common.MD5Util;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author maxuefeng
@@ -49,7 +46,7 @@ public interface Keeper {
 
     @NonNull
     default String redisKey(@NonNull String limitKey) {
-        return MD5Util.MD5Encode(limitKey, StandardCharsets.UTF_8.name());
+        return "limitKey-" + limitKey;
     }
 
     class Info {

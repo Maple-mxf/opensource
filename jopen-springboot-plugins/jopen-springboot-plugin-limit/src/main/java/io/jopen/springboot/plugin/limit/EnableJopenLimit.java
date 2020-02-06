@@ -12,10 +12,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({FlowControlInterceptor.class,
+@Import({
+        FlowControlInterceptor.class,
         LimitPluginConfiguration.class,
         ScriptConfiguration.class,
-        // 默认的策略实现
+        // 默认拉黑的策略实现
         SimpleKeeperImpl.class})
 public @interface EnableJopenLimit {
 

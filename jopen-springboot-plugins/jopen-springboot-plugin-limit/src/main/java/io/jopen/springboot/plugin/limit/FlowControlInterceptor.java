@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 流量控制 {@link BaseInterceptor}
@@ -133,13 +134,11 @@ public class FlowControlInterceptor extends BaseInterceptor implements CommandLi
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-
         // 获取限流注解
         Limiting limiting = super.getApiServiceAnnotation(Limiting.class, handler);
-        if (limiting != null) {
-            return this.runLimitFunction.apply(request, response, handler, limiting);
-        }
-        return true;
+        return Optional.ofNullable(limiting)
+                .map(limitInstance -> this.runLimitFunction.apply(request, response, handler, limitInstance))
+                .orElse(true);
     }
 
     /**

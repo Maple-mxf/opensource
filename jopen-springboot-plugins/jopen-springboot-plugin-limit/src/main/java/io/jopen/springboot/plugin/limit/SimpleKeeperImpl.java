@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * IP/Token拉黑策略设定
@@ -21,12 +22,14 @@ import java.util.Optional;
 @Component
 public final class SimpleKeeperImpl implements Keeper {
 
-    @Autowired
+
     private RedisTemplate<String, Object> redisTemplate;
 
-    public SimpleKeeperImpl() {
+    @Autowired
+    public SimpleKeeperImpl(@NonNull RedisTemplate<String, Object> redisTemplate) {
         Verify.verify(this.freezingTime() > 0L, "freezingTime must be gt zero");
         Verify.verify(this.exceedViolation() > 0, "exceedViolation must be gt zero");
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -46,6 +49,11 @@ public final class SimpleKeeperImpl implements Keeper {
 
         // setup the value
         redisTemplate.opsForValue().set(redisKey, violationRecord);
+
+        if (violationRecord.getViolationCount() == 1) {
+            // setup expire time
+            redisTemplate.expire(redisKey, this.freezingTime(), TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override
