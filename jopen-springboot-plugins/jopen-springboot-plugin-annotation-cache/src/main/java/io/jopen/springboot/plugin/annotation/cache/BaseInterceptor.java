@@ -1,9 +1,8 @@
 package io.jopen.springboot.plugin.annotation.cache;
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MapMaker;
-import com.google.common.collect.MutableClassToInstanceMap;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.*;
 import io.jopen.springboot.plugin.common.ReflectUtil;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -20,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * {@link HandlerMethod}
@@ -32,12 +32,20 @@ import java.util.concurrent.ConcurrentMap;
  * {@link Annotation}
  * 注解实例调用<code>getClass()<code/>方法的结果是一个Proxy对象 具体打印结果是com.sun.proxy.$Proxy72
  * 注解实例调用<code>annotationType()<code/>方法的结果是一个正确的Class对象  而非一个Proxy对象
+ * @see MapMaker#weakValues()
+ * @see MapMaker#weakKeys()
  * @see Annotation#annotationType()
  */
 // @Component
 public class BaseInterceptor implements HandlerInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseInterceptor.class);
+
+    //
+    private final static Cache<Integer, Set<Annotation>> GUAVA_ANNOTATION_CACHE = CacheBuilder.newBuilder()
+            .weakValues()
+            .build();
+
 
     /**
      * 缓存接口的注解，此处对数据有强一致性的要求，读远大于写
@@ -83,6 +91,32 @@ public class BaseInterceptor implements HandlerInterceptor {
                     return Optional.ofNullable(annotation).orElse(h.getBeanType().getDeclaredAnnotation(type));
                 })
                 .orElse(null);
+    }
+
+    /**
+     * 基本缓存
+     *
+     * @param type
+     * @param handler
+     * @param <TYPE>
+     * @return
+     * @throws ExecutionException
+     */
+    @Nullable
+    public <TYPE extends Annotation> TYPE getApiServiceAnnotation1(@NonNull Class<TYPE> type, @NonNull Object handler) throws ExecutionException {
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        int hashCode = handlerMethod.hashCode();
+        Set<Annotation> annotations = GUAVA_ANNOTATION_CACHE.get(hashCode, () -> {
+            HashSet<Annotation> hashSet = Sets.newHashSet();
+            TYPE methodAnnotation = handlerMethod.getMethodAnnotation(type);
+            hashSet.add(methodAnnotation);
+            return hashSet;
+        });
+        // 加载缓存
+        Optional<Annotation> optional = annotations.parallelStream()
+                .filter(annotation -> annotation.annotationType().equals(type))
+                .findFirst();
+        return (TYPE) optional.orElse(null);
     }
 
 

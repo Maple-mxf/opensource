@@ -49,8 +49,8 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
 
 
     /**
-     * @see org.springframework.context.ConfigurableApplicationContext
      * @param registry
+     * @see org.springframework.context.ConfigurableApplicationContext
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -103,21 +103,9 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
 
         // includePath
         String[] includePathPatterns = enableIdempotent.getStringArray("includePath");
-
-        if (includePathPatterns.length == 0) {
-            throw new RuntimeException("！EnableJopenIdempotent include path require non null");
-        }
-
         // excludePath
         String[] excludePathPatterns = enableIdempotent.getStringArray("excludePath");
 
-        if (excludePathPatterns.length == 0) {
-            throw new RuntimeException("！EnableJopenIdempotent exclude path require non null");
-        }
-
-        // this.order = order;
-        // this.includePathPatterns = includePathPatterns;
-        // this.excludePathPatterns = excludePathPatterns;
         this.tokenIdempotentInterceptor.setOrder(order);
         this.tokenIdempotentInterceptor.setIncludePathPatterns(includePathPatterns);
         this.tokenIdempotentInterceptor.setExcludePathPatterns(excludePathPatterns);
