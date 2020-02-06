@@ -17,6 +17,11 @@ import java.util.function.Function;
 public final class Credential implements java.io.Serializable {
 
     /**
+     * 返回一个无效的对象
+     */
+    public static final Credential INVALID_CREDENTIAL = Credential.builder(false).build();
+
+    /**
      * 用户身份的唯一标识符
      */
     private Serializable identity;

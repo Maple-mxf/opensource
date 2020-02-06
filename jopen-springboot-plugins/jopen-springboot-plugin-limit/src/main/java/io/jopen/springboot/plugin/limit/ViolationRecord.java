@@ -6,7 +6,7 @@ package io.jopen.springboot.plugin.limit;
  * @see SimpleKeeperImpl
  * @since 2020/2/5
  */
-public final class ViolationRecord implements java.io.Serializable {
+public class ViolationRecord implements java.io.Serializable {
 
     /**
      * 首次违规操作
@@ -22,6 +22,8 @@ public final class ViolationRecord implements java.io.Serializable {
      * 违规次数
      */
     private int violationCount;
+
+    public ViolationRecord(){}
 
     public ViolationRecord(long firstViolationTime, long endViolationTime, int violationCount) {
         this.firstViolationTime = firstViolationTime;

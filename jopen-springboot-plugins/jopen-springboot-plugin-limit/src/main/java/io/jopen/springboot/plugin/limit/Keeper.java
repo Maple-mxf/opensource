@@ -1,5 +1,6 @@
 package io.jopen.springboot.plugin.limit;
 
+import com.google.common.base.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -46,14 +47,14 @@ public interface Keeper {
 
     @NonNull
     default String redisKey(@NonNull String limitKey) {
-        return "limitKey-" + limitKey;
+        return "limitKey-" + Objects.hashCode(limitKey);
     }
 
     class Info {
         // 正常状态
         public static final Info NORMAL = new Info(true, null);
         // 不可访问状态
-        public static final Info FORBIDDEN = new Info(true, "您访问过于频繁，现已经被冻结");
+        public static final Info FORBIDDEN = new Info(false, "您访问过于频繁，现已经被冻结");
 
         // 是否允许访问
         boolean isAllowAccess;

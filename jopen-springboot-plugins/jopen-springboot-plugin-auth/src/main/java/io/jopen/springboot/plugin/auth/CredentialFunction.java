@@ -14,11 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 public interface CredentialFunction {
 
     /**
-     * 返回一个无效的对象
-     */
-    Credential INVALID_CREDENTIAL = Credential.builder(false).build();
-
-    /**
      * @param request {@link HttpServletRequest}
      * @return {@link Credential#getValid()}
      */

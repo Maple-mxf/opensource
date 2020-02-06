@@ -57,7 +57,7 @@ public final class AuthRegistration {
          * @param authPath
          * @return
          */
-        public Builder addAuthPath(@NonNull String authPath) {
+        public Builder addAuthPathPattern(@NonNull String authPath) {
             this.authRegistration.pathPatterns.add(authPath);
             return this;
         }

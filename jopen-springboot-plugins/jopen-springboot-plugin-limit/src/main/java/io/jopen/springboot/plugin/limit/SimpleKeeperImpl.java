@@ -59,7 +59,7 @@ public final class SimpleKeeperImpl implements Keeper {
     @Override
     public @NonNull Info solicitingOpinions(@NonNull String limitKey) {
         String redisKey = redisKey(limitKey);
-        boolean exist = redisTemplate.hasKey(redisKey) != null;
+        boolean exist = redisTemplate.hasKey(redisKey);
         if (exist) {
             ViolationRecord violationRecord = (ViolationRecord) redisTemplate.opsForValue().get(redisKey);
             return Optional.ofNullable(violationRecord)
