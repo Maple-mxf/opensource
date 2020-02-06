@@ -24,13 +24,6 @@ import java.util.List;
 public class AuthenticationInterceptor extends BaseInterceptor {
 
     /**
-     * 客户端自定义获取token操作
-     *
-     * @see TokenProducer
-     */
-    private TokenProducer tokenProducer;
-
-    /**
      * @see PathMatcher
      * {@link AntPathMatcher}
      */
@@ -82,8 +75,8 @@ public class AuthenticationInterceptor extends BaseInterceptor {
         this.excludePathPatterns = excludePathPatterns;
     }
 
-    public void setTokenProducer(@NonNull TokenProducer tokenProducer) {
-        this.tokenProducer = tokenProducer;
+    public void setAuthRegistrations(Collection<AuthRegistration> authRegistrations) {
+        this.authRegistrations = authRegistrations;
     }
 
     /**

@@ -43,21 +43,8 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
 
         if (enableAuth == null) {
             throw new IllegalArgumentException(
-                    "@EnableAuth is not present on importing class " + importMetadata.getClassName());
+                    "@EnableJopenAuth is not present on importing class " + importMetadata.getClassName());
         }
-
-        // 获取目标Class对象
-        Class<? extends TokenProducer> tokenFunctionType = enableAuth.getClass("tokenFunctionType");
-        TokenProducer tokenProducer;
-        try {
-            tokenProducer = tokenFunctionType.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getCause());
-        }
-
-        //
-        this.authenticationInterceptor.setTokenProducer(tokenProducer);
 
         String[] pathPatterns = enableAuth.getStringArray("pathPatterns");
         String[] excludePathPatterns = enableAuth.getStringArray("excludePathPattern");
@@ -69,14 +56,16 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
             authMetadataInstance = authMetadataType.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("@EnableJopenAuth authMetadataType instance must be has a public constructor");
         }
 
-        Collection<AuthRegistration> authRegistrations = authMetadataInstance.setupAuthRules();
+
+        Collection<AuthRegistration> authRegistrationCollection = authMetadataInstance.setupAuthRules();
 
         // 设置当前对象的拦截器的顺序
         this.authenticationInterceptor.setPathPatterns(pathPatterns);
         this.authenticationInterceptor.setExcludePathPatterns(excludePathPatterns);
         this.authenticationInterceptor.setOrder(order);
+        this.authenticationInterceptor.setAuthRegistrations(authRegistrationCollection);
     }
 }

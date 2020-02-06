@@ -14,14 +14,7 @@ import java.lang.annotation.*;
 @Inherited
 @Import({AuthenticationInterceptor.class, AuthPluginConfiguration.class})
 public @interface EnableJopenAuth {
-
-    /**
-     * @return the implement {@link TokenProducer} class path example:"io.jopen.springboot.plugin.auth.DefaultTokenProducer"
-     * @see TokenProducer
-     */
-    @Deprecated
-    Class<? extends TokenProducer> tokenFunctionType();
-
+    
     /**
      * 当前拦截器执行的顺序
      *
