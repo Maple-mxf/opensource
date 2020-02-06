@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Collection;
-
 /**
  * @author maxuefeng
  * @see org.springframework.web.util.pattern.PathPattern
@@ -49,23 +47,12 @@ public class AuthPluginConfiguration implements ImportAware, WebMvcConfigurer {
         String[] pathPatterns = enableAuth.getStringArray("pathPatterns");
         String[] excludePathPatterns = enableAuth.getStringArray("excludePathPattern");
         int order = enableAuth.getNumber("order");
-
         Class<? extends AuthMetadata> authMetadataType = enableAuth.getClass("authMetadataType");
-        AuthMetadata authMetadataInstance;
-        try {
-            authMetadataInstance = authMetadataType.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-            throw new RuntimeException("@EnableJopenAuth authMetadataType instance must be has a public constructor");
-        }
-
-
-        Collection<AuthRegistration> authRegistrationCollection = authMetadataInstance.setupAuthRules();
 
         // 设置当前对象的拦截器的顺序
         this.authenticationInterceptor.setPathPatterns(pathPatterns);
         this.authenticationInterceptor.setExcludePathPatterns(excludePathPatterns);
         this.authenticationInterceptor.setOrder(order);
-        this.authenticationInterceptor.setAuthRegistrations(authRegistrationCollection);
+        this.authenticationInterceptor.setAuthMetadataType(authMetadataType);
     }
 }

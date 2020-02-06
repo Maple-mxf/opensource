@@ -1,7 +1,9 @@
 package io.jopen.springboot.plugin.auth;
 
 import io.jopen.springboot.plugin.annotation.cache.BaseInterceptor;
+import io.jopen.springboot.plugin.common.SpringContainer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -21,7 +23,7 @@ import java.util.List;
  * @author maxuefeng
  */
 @Component
-public class AuthenticationInterceptor extends BaseInterceptor {
+public class AuthenticationInterceptor extends BaseInterceptor implements CommandLineRunner {
 
     /**
      * @see PathMatcher
@@ -51,6 +53,12 @@ public class AuthenticationInterceptor extends BaseInterceptor {
      */
     private Collection<AuthRegistration> authRegistrations;
 
+    private Class<? extends AuthMetadata> authMetadataType;
+
+    public void setAuthMetadataType(@NonNull Class<? extends AuthMetadata> authMetadataType) {
+        this.authMetadataType = authMetadataType;
+    }
+
     public int getOrder() {
         return order;
     }
@@ -73,10 +81,6 @@ public class AuthenticationInterceptor extends BaseInterceptor {
 
     public void setExcludePathPatterns(String[] excludePathPatterns) {
         this.excludePathPatterns = excludePathPatterns;
-    }
-
-    public void setAuthRegistrations(Collection<AuthRegistration> authRegistrations) {
-        this.authRegistrations = authRegistrations;
     }
 
     /**
@@ -134,5 +138,11 @@ public class AuthenticationInterceptor extends BaseInterceptor {
      */
     private boolean matches(String pathPattern, @NonNull String lookupPath) {
         return this.pathMatcher.match(pathPattern, lookupPath);
+    }
+
+    @Override
+    public void run(String... args) {
+        AuthMetadata authMetadataBean = SpringContainer.getBean(authMetadataType);
+        this.authRegistrations = authMetadataBean.setupAuthRules();
     }
 }
