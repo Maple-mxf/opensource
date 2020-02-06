@@ -7,12 +7,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static org.springframework.web.servlet.HandlerMapping.LOOKUP_PATH;
 
 /**
  * 身份验证拦截器
@@ -40,6 +43,11 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
      * 要拦截的路径
      */
     private String[] pathPatterns;
+
+    /**
+     * @see UrlPathHelper
+     */
+    private UrlPathHelper urlPathHelper = new UrlPathHelper();
 
     /**
      * 要排除的路径
@@ -95,12 +103,13 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
         Verify verify = super.getApiServiceAnnotation(Verify.class, handler);
         if (verify != null) {
             // 获取请求地址
-            String requestURI = request.getRequestURI();
+            String lookupPath = this.urlPathHelper.getLookupPathForRequest(request, LOOKUP_PATH);
+
             // 按照开发者设定的规则进行检测身份Token信息
             boolean passAuthentication = this.authRegistrations.stream()
                     .filter(authRegistration -> {
                         for (String pathPattern : authRegistration.getPathPatterns()) {
-                            if (this.matches(pathPattern, requestURI)) {
+                            if (this.matches(pathPattern, lookupPath)) {
                                 return true;
                             }
                         }
@@ -117,12 +126,18 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
 
                         // 用户角色
                         String[] roles = credential.getRoles();
-                        // 求两个数组的交际
+                        // 求两个数组的交集
                         List<String> requireAllowRoleList = Arrays.asList(requireAllowRoles);
-                        return Arrays.stream(roles).anyMatch(requireAllowRoleList::contains);
+                        if (Arrays.stream(roles).anyMatch(requireAllowRoleList::contains)) {
+                            request.setAttribute("credential", credential);
+                            return true;
+                        }
+                        throw new RuntimeException(verify.errMsg());
                     });
 
-            if (passAuthentication) return true;
+            if (passAuthentication) {
+                return true;
+            }
             throw new RuntimeException(verify.errMsg());
         }
         return true;
