@@ -39,6 +39,6 @@ public abstract class AbstractBeBasedOnCookieCredentialFunction extends Abstract
      * @param cookie base on {@link Cookie} map to credential object instance
      */
     @NonNull
-    abstract Credential mapCookieToCredential(@NonNull Cookie cookie);
+    public abstract Credential mapCookieToCredential(@NonNull Cookie cookie);
 }
 

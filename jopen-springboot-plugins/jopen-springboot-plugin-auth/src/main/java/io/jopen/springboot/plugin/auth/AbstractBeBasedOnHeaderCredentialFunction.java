@@ -35,6 +35,6 @@ public abstract class AbstractBeBasedOnHeaderCredentialFunction extends Abstract
      *                    map to credential object instance
      */
     @NonNull
-    abstract Credential mapHeaderValueToCredential(@NonNull String headerValue);
+    public abstract Credential mapHeaderValueToCredential(@NonNull String headerValue);
 }
 

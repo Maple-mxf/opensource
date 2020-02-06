@@ -31,6 +31,6 @@ public abstract class AbstractBeBasedOnURLCredentialFunction extends AbstractCre
      * @param urlParamValue base on url param {@link HttpServletRequest#getQueryString()}
      */
     @NonNull
-    abstract Credential mapCookieToCredential(@NonNull String urlParamValue);
+    public abstract Credential mapCookieToCredential(@NonNull String urlParamValue);
 }
 
