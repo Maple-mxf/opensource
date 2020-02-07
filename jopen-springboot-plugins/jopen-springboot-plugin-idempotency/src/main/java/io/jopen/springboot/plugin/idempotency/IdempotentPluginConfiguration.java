@@ -90,7 +90,7 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
 
         //
         String idempotentTokenKey = enableIdempotent.getString("idempotentTokenKey");
-        Verify.verify(Strings.isNullOrEmpty(idempotentTokenKey), "@EnableJopenIdempotent idempotentTokenKey require non null");
+        Verify.verify(!Strings.isNullOrEmpty(idempotentTokenKey), "@EnableJopenIdempotent idempotentTokenKey require non null");
 
         // token Location
         Enum<TokenLocation> idempotentEnum = enableIdempotent.getEnum("idempotentTokenLocation");
