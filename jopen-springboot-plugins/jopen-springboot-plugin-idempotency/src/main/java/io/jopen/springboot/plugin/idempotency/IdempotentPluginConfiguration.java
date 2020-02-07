@@ -28,8 +28,6 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(value = "/jopen-idempotency")
 public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigurer {
 
-    private String tokenKey;
-
     private RedisTemplate<String, Object> redisTemplate;
 
     private TokenIdempotentInterceptor tokenIdempotentInterceptor;
