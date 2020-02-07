@@ -20,6 +20,19 @@ public @interface Verify {
     String[] role() default {"*"};
 
     /**
+     * 是否使用全局配置
+     *
+     * @return
+     */
+    boolean usingGlobalConfig() default true;
+
+    /**
+     * @return
+     * @see AuthMetadata
+     */
+    Class<? extends CredentialFunction> credentialFunctionType() default CredentialFunction.EmptyCredentialFunction.class;
+
+    /**
      * @return 拦截之后的错误信息
      */
     String errMsg() default "access deny! because you has not access this api interface grant!";

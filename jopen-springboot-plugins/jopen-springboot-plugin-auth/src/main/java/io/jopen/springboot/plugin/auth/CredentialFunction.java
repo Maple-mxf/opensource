@@ -19,4 +19,11 @@ public interface CredentialFunction {
      */
     @NonNull
     Credential apply(@NonNull HttpServletRequest request);
+
+    class EmptyCredentialFunction implements CredentialFunction {
+        @Override
+        public @NonNull Credential apply(@NonNull HttpServletRequest request) {
+            return Credential.INVALID_CREDENTIAL;
+        }
+    }
 }
