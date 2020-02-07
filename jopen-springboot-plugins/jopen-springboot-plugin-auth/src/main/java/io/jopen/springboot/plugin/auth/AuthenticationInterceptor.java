@@ -119,7 +119,7 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
                                     return true;
                                 }
                             }
-                            throw new RuntimeException(verify.errMsg());
+                            throw new AuthException(verify.errMsg());
                         })
                         .anyMatch(authRegistration -> {
                             CredentialFunction credentialFunction = authRegistration.getCredentialFunction();
@@ -131,7 +131,7 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
                 if (passAuthentication) {
                     return true;
                 }
-                throw new RuntimeException(verify.errMsg());
+                throw new AuthException(verify.errMsg());
             }
             // 使用局部验证配置
             else {
@@ -144,7 +144,7 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
                 try {
                     credentialFunction = SpringContainer.getBean(credentialFunctionType);
                 } catch (Exception ignored) {
-                    throw new RuntimeException("@Verify if not using global auth configuration;must be inject CredentialFunction bean in Spring Container");
+                    throw new AuthException("@Verify if not using global auth configuration;must be inject CredentialFunction bean in Spring Container");
                 }
 
                 // 获取凭证对象
@@ -157,7 +157,7 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
     }
 
     private void checkupCredential(HttpServletRequest request, Credential credential, Verify verify) {
-        if (!credential.getValid()) throw new RuntimeException("your account state is freeze");
+        if (!credential.getValid()) throw new AuthException("please login");
         // 没有设定角色 || 或者设定了*号  任何角色都可以访问
         String[] requireAllowRoles = verify.role();
         if (requireAllowRoles.length == 0 || "*".equals(requireAllowRoles[0])) return;
@@ -170,7 +170,7 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
             request.setAttribute("credential", credential);
             return;
         }
-        throw new RuntimeException(verify.errMsg());
+        throw new AuthException(verify.errMsg());
     }
 
 
