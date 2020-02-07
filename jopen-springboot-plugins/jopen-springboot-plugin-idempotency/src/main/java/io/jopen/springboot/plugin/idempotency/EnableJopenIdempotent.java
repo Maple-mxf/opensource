@@ -12,14 +12,12 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({TokenIdempotentInterceptor.class, IdempotentPluginConfiguration.class})  // 导入外部的对象注入
+// 导入外部的对象注入
+@Import({TokenIdempotentInterceptor.class,
+        IdempotentPluginConfiguration.class,
+        DefaultIdempotentTokenFunctionImpl.class
+})
 public @interface EnableJopenIdempotent {
-
-    /**
-     * @return class object  {@link Class#newInstance()}
-     * @see IdempotentTokenProducer
-     */
-    Class<? extends IdempotentTokenProducer> idempotentTokenProducerType();
 
     /**
      * default 0
@@ -39,4 +37,18 @@ public @interface EnableJopenIdempotent {
      * @return
      */
     String[] excludePath() default {};
+
+    /**
+     * 拦截器获取幂等性token的Key
+     *
+     * @return {@link javax.servlet.http.HttpServletRequest}
+     */
+    String idempotentTokenKey();
+
+    /**
+     * 从什么位置获取幂等性token
+     *
+     * @return
+     */
+    TokenLocation idempotentTokenLocation() default TokenLocation.HEADER;
 }

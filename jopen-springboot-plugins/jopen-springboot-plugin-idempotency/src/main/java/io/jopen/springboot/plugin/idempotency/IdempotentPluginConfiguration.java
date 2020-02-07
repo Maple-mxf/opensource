@@ -1,6 +1,7 @@
 package io.jopen.springboot.plugin.idempotency;
 
 import com.google.common.base.Strings;
+import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableMap;
 import io.jopen.springboot.plugin.common.IDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +34,16 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
 
     private TokenIdempotentInterceptor tokenIdempotentInterceptor;
 
+    private DefaultIdempotentTokenFunctionImpl defaultIdempotentTokenFunctionImpl;
+
     @Autowired
-    public IdempotentPluginConfiguration(RedisTemplate<String, Object> redisTemplate, TokenIdempotentInterceptor tokenIdempotentInterceptor) {
+    public IdempotentPluginConfiguration(RedisTemplate<String, Object> redisTemplate,
+                                         TokenIdempotentInterceptor tokenIdempotentInterceptor,
+                                         DefaultIdempotentTokenFunctionImpl defaultIdempotentTokenFunctionImpl
+    ) {
         this.redisTemplate = redisTemplate;
         this.tokenIdempotentInterceptor = tokenIdempotentInterceptor;
+        this.defaultIdempotentTokenFunctionImpl = defaultIdempotentTokenFunctionImpl;
     }
 
     @RequestMapping(value = "/getIdempotentToken", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -60,7 +67,6 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
                 .order(tokenIdempotentInterceptor.getOrder())
                 .addPathPatterns(tokenIdempotentInterceptor.getIncludePathPatterns())
                 .excludePathPatterns(tokenIdempotentInterceptor.getExcludePathPatterns());
-        this.tokenIdempotentInterceptor.setTokenKey(this.tokenKey);
     }
 
     /**
@@ -69,6 +75,7 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
      * 使用实例：
      *
      * @param importMetadata
+     * @see com.fasterxml.jackson.annotation.JsonInclude
      */
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
@@ -82,25 +89,17 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
         }
 
         // 获取注解的元素属性
-        Class<? extends IdempotentTokenProducer> type = enableIdempotent.getClass("idempotentTokenProducerType");
-        try {
-            IdempotentTokenProducer idempotentTokenProducer = type.newInstance();
-            String idempotentToken = idempotentTokenProducer.applyIdempotentToken();
 
-            // 检测空值
-            if (Strings.isNullOrEmpty(idempotentToken)) {
-                throw new RuntimeException("token key not set ");
-            }
+        //
+        String idempotentTokenKey = enableIdempotent.getString("idempotentTokenKey");
+        Verify.verify(Strings.isNullOrEmpty(idempotentTokenKey), "@EnableJopenIdempotent idempotentTokenKey require non null");
 
-            // 设定tokenKey
-            this.tokenKey = idempotentToken;
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        // token Location
+        Enum<TokenLocation> idempotentEnum = enableIdempotent.getEnum("idempotentTokenLocation");
+        TokenLocation tokenLocation = (TokenLocation) idempotentEnum;
 
-        // 顺序
+        // order
         int order = enableIdempotent.getNumber("order");
-
         // includePath
         String[] includePathPatterns = enableIdempotent.getStringArray("includePath");
         // excludePath
@@ -109,6 +108,11 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
         this.tokenIdempotentInterceptor.setOrder(order);
         this.tokenIdempotentInterceptor.setIncludePathPatterns(includePathPatterns);
         this.tokenIdempotentInterceptor.setExcludePathPatterns(excludePathPatterns);
+        this.defaultIdempotentTokenFunctionImpl.setTokenKey(idempotentTokenKey);
+        this.defaultIdempotentTokenFunctionImpl.setTokenLocation(tokenLocation);
+    }
+
+    public static void main(String[] args) {
     }
 
 }

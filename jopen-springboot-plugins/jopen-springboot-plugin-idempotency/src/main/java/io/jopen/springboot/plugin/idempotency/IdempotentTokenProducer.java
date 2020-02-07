@@ -7,6 +7,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 2020/1/31
  */
 @FunctionalInterface
+@Deprecated
 public interface IdempotentTokenProducer {
 
     /**

@@ -20,4 +20,25 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ApiIdempotent {
+
+    /**
+     * @return true or false
+     * @see EnableJopenIdempotent#idempotentTokenKey()
+     * @see EnableJopenIdempotent#idempotentTokenLocation()
+     */
+    boolean usingGlobalConfig() default true;
+
+    /**
+     * 拦截器获取幂等性token的Key
+     *
+     * @return {@link javax.servlet.http.HttpServletRequest}
+     */
+    String idempotentTokenKey() default "";
+
+    /**
+     * 从什么位置获取幂等性token
+     *
+     * @return
+     */
+    TokenLocation idempotentTokenLocation() default TokenLocation.HEADER;
 }
