@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 /**
  * @author maxuefeng
  */
+@Deprecated
 public class ReturnValue extends HashMap<String, Object> implements Serializable, Cloneable {
 
     private ReturnValue() {
@@ -22,7 +23,6 @@ public class ReturnValue extends HashMap<String, Object> implements Serializable
     }
 
     /**
-     *
      * @param consumer
      * @param <T>
      */

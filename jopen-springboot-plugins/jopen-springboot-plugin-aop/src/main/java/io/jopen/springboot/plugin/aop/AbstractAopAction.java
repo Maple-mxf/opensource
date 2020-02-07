@@ -30,16 +30,16 @@ public abstract class AbstractAopAction {
 
     protected void doBefore(Object[] args) throws Throwable {
         for (ThrowingBeforeFunction action : beforeActions.keySet()) {
-            ReturnValue returnValue = action.accept(args);
-            beforeActions.get(action).handler(returnValue);
+            Object[] accept = action.accept(args);
+            beforeActions.get(action).handler(accept);
         }
     }
 
     protected void doAfter(Object[] args, Object result) throws Throwable {
 
         for (ThrowingBiAfterFunction action : afterActions.keySet()) {
-            ReturnValue returnValue = action.accept(args, result);
-            afterActions.get(action).handler(returnValue);
+            Object[] accept = action.accept(args, result);
+            afterActions.get(action).handler(accept);
         }
     }
 

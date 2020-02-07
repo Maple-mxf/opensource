@@ -12,5 +12,5 @@ public interface ThrowingBeforeFunction {
      * @return
      * @throws RuntimeException
      */
-    ReturnValue accept(Object[] args) throws Throwable;
+    Object[] accept(Object[] args) throws Throwable;
 }

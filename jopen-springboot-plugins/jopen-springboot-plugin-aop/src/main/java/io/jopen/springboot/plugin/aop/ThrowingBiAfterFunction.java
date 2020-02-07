@@ -12,5 +12,5 @@ public interface ThrowingBiAfterFunction {
      * @return
      * @throws RuntimeException
      */
-    ReturnValue accept(Object[] args, Object result) throws Throwable;
+    Object[] accept(Object[] args, Object result) throws Throwable;
 }

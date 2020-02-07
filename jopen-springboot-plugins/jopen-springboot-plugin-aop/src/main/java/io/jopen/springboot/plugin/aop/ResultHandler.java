@@ -16,5 +16,5 @@ public interface ResultHandler {
         };
     }
 
-    void handler(ReturnValue returnValue);
+    void handler(Object[] args);
 }
