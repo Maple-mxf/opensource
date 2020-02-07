@@ -149,7 +149,6 @@ public class JobTriggerStateDetector implements ApplicationRunner {
                 }
             }
         });
-
         LOGGER.info("check distribute task trigger state completed");
     }
 }

@@ -15,6 +15,22 @@ import java.util.Set;
  */
 public abstract class JobBeanAgent extends QuartzJobBean {
 
+//    protected State state;
+//
+//    public enum State {
+//        Started,
+//        Stopped,
+//        Abort
+//    }
+//
+//    public final void setState(State state) {
+//        this.state = state;
+//    }
+//
+//    public final State getState() {
+//        return this.state;
+//    }
+
     /**
      * @return jobKey  identity
      * @see JobBuilder#withIdentity(JobKey)
@@ -40,22 +56,4 @@ public abstract class JobBeanAgent extends QuartzJobBean {
     @NonNull
     public abstract Set<? extends Trigger> setupTriggers();
 
-    /**
-     * 是否替换
-     * 默认替换
-     *
-     * @return 添加新job是否替换
-     */
-    @NonNull
-    public boolean setupReplace() {
-        return false;
-    }
-
-    /**
-     * @return true allow concurrent
-     * @see org.quartz.DisallowConcurrentExecution
-     */
-    public boolean setupDisableConcurrentExecution() {
-        return false;
-    }
 }

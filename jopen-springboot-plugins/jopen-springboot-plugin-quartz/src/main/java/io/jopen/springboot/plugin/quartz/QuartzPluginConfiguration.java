@@ -99,10 +99,8 @@ public class QuartzPluginConfiguration implements ImportAware {
                 // if exist old job info in db prepare delete job info data
                 // after deleted , schedule the job by trigger
                 if (scheduler.checkExists(jobDetail.getKey())) {
-                    if (jobBeanAgent.setupReplace()) {
-                        scheduler.scheduleJob(jobDetail, triggers, true);
-                    }
-                    // 否则则不重复调度任务
+                    // 默认执行替换策略
+                    scheduler.scheduleJob(jobDetail, triggers, true);
                 } else {
                     scheduler.scheduleJobs(ImmutableMap.of(jobDetail, triggers), false);
                 }
