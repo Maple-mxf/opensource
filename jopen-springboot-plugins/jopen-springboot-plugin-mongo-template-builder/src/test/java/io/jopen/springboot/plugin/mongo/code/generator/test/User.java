@@ -1,4 +1,4 @@
-package io.jopen.springboot.plugin.mongo.code.generator;
+package io.jopen.springboot.plugin.mongo.code.generator.test;
 
 /**
  * @author maxuefeng

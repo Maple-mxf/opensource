@@ -1,0 +1,19 @@
+package ${serviceImplPackage};
+
+import ${entityPackage};
+import ${repositoryPackage}.${entityName}Repository;
+import ${servicePackage}.${entityName}Service;
+import io.jopen.springboot.plugin.mongo.repository.BaseServiceImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * @author ${author}
+ * @since ${time}
+ */
+@Service
+@Transactional
+public class ${entityName}ServiceImpl
+        extends BaseServiceImpl<${IDTypeSimpleName}, ${entityName}, ${entityName}Repository>
+        implements ${entityName}Service{
+}

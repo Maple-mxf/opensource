@@ -1,0 +1,13 @@
+package ${repositoryPackage};
+
+import ${entityPackage};
+import io.jopen.springboot.plugin.mongo.repository.BaseRepository;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author ${author}
+ * @since ${time}
+ */
+@Repository
+public interface ${entityName}Repository extends BaseRepository<${entityName}, ${IDTypeSimpleName}> {
+}
