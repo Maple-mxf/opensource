@@ -19,13 +19,12 @@
         <module>jopen-springboot-plugin-annotation-cache</module>
         <module>jopen-springboot-plugin-common</module>
         <module>jopen-springboot-plugin-param-test</module>
-        <module>jopen-springboot-plugin-mongo-template-builder</module>
+        <module>jopen-springboot-plugin-mongo-extension</module>
         <module>jopen-springboot-plugin-init</module>
         <module>jopen-springboot-plugin-encryption</module>
         <module>jopen-springboot-apply-plugin-demo</module>
         <module>jopen-springboot-plugin-all</module>
         <module>jopen-springboot-plugin-auth</module>
-        <module>jopen-springboot-plugin-auth-jwt</module>
         <module>jopen-springboot-plugin-quartz</module>
         <module>jopen-springboot-plugin-idempotency</module>
         <module>jopen-springboot-plugin-office</module>

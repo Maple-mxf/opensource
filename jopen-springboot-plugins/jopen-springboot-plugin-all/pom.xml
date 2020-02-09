@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>io.jopen</groupId>
-            <artifactId>jopen-springboot-plugin-mongo-template-builder</artifactId>
+            <artifactId>jopen-springboot-plugin-mongo-extension</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
