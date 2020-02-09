@@ -1,19 +1,27 @@
 package io.jopen.springboot.plugin.mongo.repository;
 
-
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * @author maxuefeng
+ * @see org.springframework.data.mongodb.repository.support.SimpleMongoRepository
  * @since 2020/2/9
  */
 @NoRepositoryBean
@@ -29,17 +37,45 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
     }
 
     @Override
-    public <S extends T> Iterable<S> findAll(Example<S> example) {
+    public <S extends T> S getOne(Example<S> example) {
+        return this.findOne(example).orElse(null);
+    }
+
+    @Override
+    public <S extends T> Stream<S> stream(Example<S> example) {
+        Iterable<S> iterable = this.list(example);
+        Collection<S> entities = Lists.newArrayList();
+        iterable.iterator().forEachRemaining(entities::add);
+        return entities.stream();
+    }
+
+    @Override
+    public <S extends T> Page<S> page(Example<S> example, Pageable pageable) {
+        return this.repository.findAll(example, pageable);
+    }
+
+    @Override
+    public List<T> listSort(Sort sort) {
+        return this.repository.findAll(sort);
+    }
+
+    @Override
+    public Page<T> page(Pageable pageable) {
+        return this.repository.findAll(pageable);
+    }
+
+    @Override
+    public <S extends T> Iterable<S> list(Example<S> example) {
         return this.repository.findAll(example);
     }
 
     @Override
-    public <S extends T> Iterable<S> findAll(Example<S> example, Sort sort) {
+    public <S extends T> Iterable<S> listSort(Example<S> example, Sort sort) {
         return this.repository.findAll(example, sort);
     }
 
     @Override
-    public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends T> Page<S> listPage(Example<S> example, Pageable pageable) {
         return this.repository.findAll(example, pageable);
     }
 
@@ -54,12 +90,7 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
     }
 
     @Override
-    public Iterable<T> findAll(Sort sort) {
-        return this.repository.findAll(sort);
-    }
-
-    @Override
-    public Page<T> findAll(Pageable pageable) {
+    public Page<T> listPage(Pageable pageable) {
         return this.repository.findAll(pageable);
     }
 
@@ -69,7 +100,7 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
     }
 
     @Override
-    public List<T> findAll() {
+    public List<T> list() {
         return this.repository.findAll();
     }
 
@@ -126,5 +157,20 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
     @Override
     public void deleteAll() {
         this.repository.deleteAll();
+    }
+
+    @Override
+    public List<Map> groupSum(String sumField, String... groupFields) {
+        return this.repository.groupSum(sumField, groupFields);
+    }
+
+    @Override
+    public List<Map> groupSumBy(Criteria criteria, String sumField, String... groupFields) {
+        return this.repository.groupSumBy(criteria, sumField, groupFields);
+    }
+
+    @Override
+    public MapReduceResults<T> mapReduce(String mapFunction, String reduceFunction) {
+        return this.repository.mapReduce(mapFunction, reduceFunction);
     }
 }
