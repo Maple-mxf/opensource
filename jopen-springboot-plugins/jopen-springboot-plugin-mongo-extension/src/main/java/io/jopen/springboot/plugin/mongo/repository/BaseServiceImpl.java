@@ -6,7 +6,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
@@ -21,6 +20,8 @@ import java.util.stream.Stream;
 
 /**
  * @author maxuefeng
+ * @see GridFsObject
+ * @see org.springframework.data.mongodb.gridfs.GridFsTemplate
  * @see org.springframework.data.mongodb.repository.support.SimpleMongoRepository
  * @since 2020/2/9
  */
@@ -30,6 +31,9 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
 
     @Autowired
     private R repository;
+
+    @Autowired
+    private GridFsTemplate gridFsTemplate;
 
     @Override
     public <S extends T> Optional<S> findOne(Example<S> example) {
