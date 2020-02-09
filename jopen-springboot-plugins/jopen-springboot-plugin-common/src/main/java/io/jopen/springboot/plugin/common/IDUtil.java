@@ -1,7 +1,5 @@
 package io.jopen.springboot.plugin.common;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.util.Date;
@@ -13,11 +11,6 @@ import java.util.Date;
  * @since 2019-04-26
  */
 public class IDUtil {
-
-    /**
-     * 通用缓存
-     */
-    public static Cache<String, Object> commonCache = CacheBuilder.newBuilder().build();
 
     /*orderId*/
     private static SequenceGenerator sequenceGenerator4 = new SequenceGenerator(RandomUtils.nextInt(7, 8));

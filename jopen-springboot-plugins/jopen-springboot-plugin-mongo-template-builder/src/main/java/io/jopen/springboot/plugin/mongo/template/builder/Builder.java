@@ -1,9 +1,12 @@
 package io.jopen.springboot.plugin.mongo.template.builder;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.apache.logging.log4j.util.Strings;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.cglib.core.ReflectUtils;
+import org.springframework.data.mongodb.core.CollectionCallback;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.beans.PropertyDescriptor;
@@ -16,6 +19,19 @@ import java.util.function.Function;
 
 /**
  * @author maxuefeng
+ * <p>
+ * 字段映射
+ * @see org.springframework.data.mongodb.core.mapping.Field
+ * @see org.springframework.data.mongodb.core.mapping.FieldType
+ * <p>
+ * <p>
+ * 实体回调
+ * @see org.springframework.data.mapping.callback.EntityCallback
+ * @see org.springframework.data.mongodb.core.mapping.event.BeforeSaveCallback
+ * @see org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener
+ * @see MongoTemplate#execute(Class, CollectionCallback)
+ * @see CollectionCallback
+ * @see org.springframework.data.repository.PagingAndSortingRepository
  * @since 2019-11-13
  */
 public class Builder<T> {
@@ -24,8 +40,15 @@ public class Builder<T> {
 
     MongoTemplate mongoTemplate;
 
-    /*缓存数据*/
+    /**
+     * 缓存数据
+     *
+     * @see com.google.common.collect.MapMaker
+     * @see com.google.common.cache.CacheBuilder
+     */
     private static final ConcurrentHashMap<Class<?>, WeakReference<SerializedLambda>> SF_CACHE = new ConcurrentHashMap<>();
+
+    Cache<Object, Object> cache = CacheBuilder.newBuilder().weakKeys().build();
 
     @NonNull
     Function<SFunction<T, ?>, String> produceValName = sFunction -> {

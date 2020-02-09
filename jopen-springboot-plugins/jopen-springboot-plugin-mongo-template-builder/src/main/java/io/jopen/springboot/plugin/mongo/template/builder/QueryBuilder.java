@@ -2,6 +2,8 @@ package io.jopen.springboot.plugin.mongo.template.builder;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -11,14 +13,13 @@ import java.util.Collection;
 
 /**
  * {@link com.mongodb.QueryBuilder}
- * {@link IQuery}
  * {@link SFunction} 利用方法引用的形式进行参数传递
  * {@link Query}
  * {@link Criteria}
  */
 public class QueryBuilder<T> extends Builder<T> {
 
-    private IQuery query = new IQuery();
+    private Query query = new Query();
 
     public QueryBuilder(Class<T> targetClass) {
         this(targetClass, null);
@@ -100,19 +101,30 @@ public class QueryBuilder<T> extends Builder<T> {
         return this;
     }
 
-    @SafeVarargs
+    /*@SafeVarargs
     public final QueryBuilder<T> excludeFields(@NonNull SFunction<T, ?>... sFunctions) {
         for (SFunction<T, ?> sFunction : sFunctions) {
             this.query.excludeField(produceValName.apply(sFunction));
         }
         return this;
-    }
+    }*/
 
-    @SafeVarargs
+    /*@SafeVarargs
     public final QueryBuilder<T> includeFields(@NonNull SFunction<T, ?>... sFunctions) {
         for (SFunction<T, ?> sFunction : sFunctions) {
             this.query.includeField(produceValName.apply(sFunction));
         }
+        return this;
+    }*/
+
+    /**
+     * @return
+     * @see Query#with(Pageable)
+     * @see Pageable
+     */
+    public final QueryBuilder<T> page(int page,int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        this.query.with(pageRequest);
         return this;
     }
 

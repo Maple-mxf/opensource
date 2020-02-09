@@ -1,0 +1,11 @@
+package ${servicePackage};
+
+import io.jopen.springboot.plugin.mongo.repository.BaseService;
+import ${entityPackage};
+
+/**
+ * @author ${author}
+ * @since ${time}
+ */
+public interface ${entityName}Service extends BaseService<${IDTypeSimpleName}, ${entityName}> {
+}

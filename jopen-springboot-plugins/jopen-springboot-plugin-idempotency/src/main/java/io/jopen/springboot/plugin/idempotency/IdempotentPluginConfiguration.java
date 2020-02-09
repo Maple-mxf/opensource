@@ -28,10 +28,19 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(value = "/jopen-idempotency")
 public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigurer {
 
+    /**
+     * 依赖redis token
+     */
     private RedisTemplate<String, Object> redisTemplate;
 
+    /**
+     * @see org.springframework.web.servlet.config.annotation.InterceptorRegistration
+     */
     private TokenIdempotentInterceptor tokenIdempotentInterceptor;
 
+    /**
+     * @see IdempotentTokenFunction
+     */
     private DefaultIdempotentTokenFunctionImpl defaultIdempotentTokenFunctionImpl;
 
     @Autowired
@@ -109,8 +118,4 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
         this.defaultIdempotentTokenFunctionImpl.setTokenKey(idempotentTokenKey);
         this.defaultIdempotentTokenFunctionImpl.setTokenLocation(tokenLocation);
     }
-
-    public static void main(String[] args) {
-    }
-
 }
