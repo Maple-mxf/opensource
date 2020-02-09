@@ -29,6 +29,10 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
 
     private final MongoEntityInformation<T, ID> entityInformation;
 
+    public MongoEntityInformation<T, ID> getEntityInformation() {
+        return this.entityInformation;
+    }
+
     public BaseRepositoryImpl(MongoEntityInformation<T, ID> metadata,
                               MongoOperations mongoOperations) {
         super(metadata, mongoOperations);

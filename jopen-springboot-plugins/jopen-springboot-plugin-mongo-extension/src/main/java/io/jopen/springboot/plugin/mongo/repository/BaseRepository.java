@@ -3,6 +3,7 @@ package io.jopen.springboot.plugin.mongo.repository;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
@@ -15,6 +16,8 @@ import java.util.Map;
  */
 @NoRepositoryBean
 public interface BaseRepository<T, ID extends Serializable> extends MongoRepository<T, ID> {
+
+    MongoEntityInformation<T, ID> getEntityInformation();
 
     List<Map> groupSum(String sumField, String... groupFields);
 

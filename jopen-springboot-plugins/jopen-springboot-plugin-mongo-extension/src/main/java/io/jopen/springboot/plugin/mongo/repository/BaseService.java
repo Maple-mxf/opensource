@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 
 /**
  * @author maxuefeng
+ * @see com.mongodb.client.gridfs.model.GridFSFile
  * @since 2020/2/9
  */
 @NoRepositoryBean
@@ -75,4 +77,8 @@ public interface BaseService<ID, T> {
     List<Map> groupSumBy(Criteria criteria, String sumField, String... groupFields);
 
     MapReduceResults<T> mapReduce(String mapFunction, String reduceFunction);
+
+    <F extends GridFsObject> F findFileBy(Query query);
+
+    <F extends GridFsObject> F findFileById(ID id);
 }
