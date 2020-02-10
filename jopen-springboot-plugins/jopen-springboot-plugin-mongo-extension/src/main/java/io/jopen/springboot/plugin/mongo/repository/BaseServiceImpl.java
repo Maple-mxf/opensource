@@ -19,10 +19,7 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -69,28 +66,23 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
     }
 
     @Override
-    public List<T> listSort(Sort sort) {
-        return this.repository.findAll(sort);
+    public <S extends T> List<S> listSort(Sort sort) {
+        return (List<S>) this.repository.findAll(sort);
     }
 
     @Override
-    public Page<T> page(Pageable pageable) {
-        return this.repository.findAll(pageable);
+    public <S extends T> Page<S> page(Pageable pageable) {
+        return (Page<S>) this.repository.findAll(pageable);
     }
 
     @Override
-    public <S extends T> Iterable<S> list(Example<S> example) {
+    public <S extends T> List<S> list(Example<S> example) {
         return this.repository.findAll(example);
     }
 
     @Override
-    public <S extends T> Iterable<S> listSort(Example<S> example, Sort sort) {
+    public <S extends T> List<S> listSort(Example<S> example, Sort sort) {
         return this.repository.findAll(example, sort);
-    }
-
-    @Override
-    public <S extends T> Page<S> listPage(Example<S> example, Pageable pageable) {
-        return this.repository.findAll(example, pageable);
     }
 
     @Override
@@ -104,18 +96,13 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
     }
 
     @Override
-    public Page<T> listPage(Pageable pageable) {
-        return this.repository.findAll(pageable);
-    }
-
-    @Override
     public <S extends T> List<S> saveAll(Iterable<S> entities) {
         return this.repository.saveAll(entities);
     }
 
     @Override
-    public List<T> list() {
-        return this.repository.findAll();
+    public <S extends T> List<S> list() {
+        return (List<S>) this.repository.findAll();
     }
 
     @Override
@@ -134,8 +121,8 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
     }
 
     @Override
-    public Optional<T> findById(ID id) {
-        return this.repository.findById(id);
+    public <S extends T> Optional<S> findById(ID id) {
+        return (Optional<S>) this.repository.findById(id);
     }
 
     @Override
@@ -144,8 +131,8 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
     }
 
     @Override
-    public Iterable<T> findAllById(Iterable<ID> ids) {
-        return this.repository.findAllById(ids);
+    public <S extends T> Iterable<S> findAllById(Iterable<ID> ids) {
+        return (Iterable<S>) this.repository.findAllById(ids);
     }
 
     @Override
@@ -171,6 +158,49 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
     @Override
     public void deleteAll() {
         this.repository.deleteAll();
+    }
+
+    @Override
+    public <S extends T> Optional<S> findOne(Query query) {
+        return (Optional<S>) this.repository.findOne(query);
+    }
+
+    @Override
+    public <S extends T> S getOne(Query query) {
+        return (S) this.repository.getOne(query);
+    }
+
+    @Override
+    public <S extends T> List<S> list(Query query) {
+        return (List<S>) this.repository.list(query);
+    }
+
+    @Override
+    public <S extends T> Stream<S> stream(Query query) {
+        Iterable<T> list = this.list(query);
+        Collection<T> objects = new ArrayList<>();
+        list.forEach(objects::add);
+        return (Stream<S>) objects.stream();
+    }
+
+    @Override
+    public <S extends T> List<S> listSort(Query query, Sort sort) {
+        return (List<S>) this.repository.listSort(query, sort);
+    }
+
+    @Override
+    public <S extends T> Page<S> page(Query query, Pageable pageable) {
+        return this.repository.page(query, pageable);
+    }
+
+    @Override
+    public <S extends T> long count(Query query) {
+        return this.repository.count(query);
+    }
+
+    @Override
+    public <S extends T> boolean exists(Query query) {
+        return this.repository.exists(query);
     }
 
     @Override

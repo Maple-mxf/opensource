@@ -24,31 +24,55 @@ public interface BaseService<ID, T> {
 
     <S extends T> Optional<S> findOne(Example<S> example);
 
+    /**
+     * @param query query
+     * @param <S>   entity type
+     * @return {@link Optional}
+     * @see io.jopen.springboot.plugin.mongo.template.builder.QueryBuilder
+     */
+    <S extends T> Optional<S> findOne(Query query);
+
+    /**
+     * @param example
+     * @param <S>
+     * @return
+     * @see org.springframework.data.domain.ExampleMatcher
+     */
     <S extends T> S getOne(Example<S> example);
 
-    <S extends T> Iterable<S> list(Example<S> example);
+    <S extends T> S getOne(Query query);
+
+    <S extends T> List<S> list(Example<S> example);
+
+    <S extends T> List<S> list(Query query);
 
     <S extends T> Stream<S> stream(Example<S> example);
 
-    <S extends T> Iterable<S> listSort(Example<S> example, Sort sort);
+    <S extends T> Stream<S> stream(Query query);
 
-    <S extends T> Page<S> listPage(Example<S> example, Pageable pageable);
+    <S extends T> List<S> listSort(Example<S> example, Sort sort);
+
+    <S extends T> List<S> listSort(Query query, Sort sort);
 
     <S extends T> Page<S> page(Example<S> example, Pageable pageable);
 
+    <S extends T> Page<S> page(Query query, Pageable pageable);
+
     <S extends T> long count(Example<S> example);
+
+    <S extends T> long count(Query query);
 
     <S extends T> boolean exists(Example<S> example);
 
-    List<T> listSort(Sort sort);
+    <S extends T> boolean exists(Query query);
 
-    Page<T> listPage(Pageable pageable);
+    <S extends T> List<S> listSort(Sort sort);
 
-    Page<T> page(Pageable pageable);
+    <S extends T> Page<S> page(Pageable pageable);
 
     <S extends T> List<S> saveAll(Iterable<S> entities);
 
-    List<T> list();
+    <S extends T> List<S> list();
 
     <S extends T> S insert(S entity);
 
@@ -56,11 +80,11 @@ public interface BaseService<ID, T> {
 
     <S extends T> S save(S entity);
 
-    Optional<T> findById(ID id);
+    <S extends T> Optional<S> findById(ID id);
 
     boolean existsById(ID id);
 
-    Iterable<T> findAllById(Iterable<ID> ids);
+    <S extends T> Iterable<S> findAllById(Iterable<ID> ids);
 
     long count();
 
