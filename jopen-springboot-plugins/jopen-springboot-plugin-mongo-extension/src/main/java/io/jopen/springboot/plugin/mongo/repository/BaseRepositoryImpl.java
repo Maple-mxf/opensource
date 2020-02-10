@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -70,7 +72,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
 
     @Override
     public <S extends T> boolean exists(Query query) {
-        return this.mongoOperations.exists(query,entityInformation.getJavaType());
+        return this.mongoOperations.exists(query, entityInformation.getJavaType());
     }
 
     @Override
@@ -125,5 +127,15 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
                 this.entityInformation.getJavaType());
     }
 
+    @Override
+    public String ensureIndex(Index index) {
+        return this.mongoOperations
+                .indexOps(this.entityInformation.getJavaType())
+                .ensureIndex(index);
+    }
 
+    @Override
+    public List<IndexInfo> getIndexInfo() {
+        return this.mongoOperations.indexOps(this.entityInformation.getJavaType()).getIndexInfo();
+    }
 }

@@ -3,6 +3,8 @@ package io.jopen.springboot.plugin.mongo.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -44,4 +46,12 @@ public interface BaseRepository<T, ID extends Serializable> extends MongoReposit
 
     <S extends T> boolean exists(Query query);
 
+    /**
+     * 索引管理
+     *
+     * @see org.springframework.data.mongodb.core.index.Index
+     */
+    String ensureIndex(Index index);
+
+    List<IndexInfo> getIndexInfo();
 }

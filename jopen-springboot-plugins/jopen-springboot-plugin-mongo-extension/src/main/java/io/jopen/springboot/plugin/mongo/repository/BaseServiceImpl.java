@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -268,5 +270,15 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
             throw new RuntimeException(e.getMessage());
         }
         return result;
+    }
+
+    @Override
+    public String ensureIndex(Index index) {
+        return this.repository.ensureIndex(index);
+    }
+
+    @Override
+    public List<IndexInfo> getIndexInfo() {
+        return this.repository.getIndexInfo();
     }
 }
