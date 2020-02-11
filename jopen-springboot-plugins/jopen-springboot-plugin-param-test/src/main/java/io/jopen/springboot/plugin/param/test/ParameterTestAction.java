@@ -24,7 +24,7 @@ import java.util.Optional;
 @Aspect
 @Component
 @Order(value = 1)
-public class ParameterTestAction   {
+public class ParameterTestAction {
 
     private Logger L = LoggerFactory.getLogger(ParameterTestAction.class);
 
@@ -67,7 +67,7 @@ public class ParameterTestAction   {
 
                         // 如果需要检验的参数为空
                         if (NotNull.Util.isEmpty(args[i], notNull.strictly(), notNull.requireFields())) {
-                            throw new NotNull.NullParamException(String.format("Error Param [ %s ] require not null,Method [ %s ]", parameters[i].getName(), method.getName()));
+                            throw new NotNull.NullParamException(String.format("Error Param '%s' require not null,Method '%s'", parameters[i].getName(), method.getName()));
                         }
                     }
 
@@ -76,12 +76,10 @@ public class ParameterTestAction   {
 
             // 不存在NotNull注解
             else {
-
-
                 for (int i = 0; i < args.length; i++) {
                     if (NotNull.Util.isEmpty(args[i], false, new String[]{})) {
                         String name = method.getParameters()[i].getName();
-                        throw new NotNull.NullParamException(String.format("param [%s] require non null", name));
+                        throw new NotNull.NullParamException(String.format("param '%s' require non null", name));
                     }
                 }
             }

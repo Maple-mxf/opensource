@@ -1,7 +1,5 @@
 package io.jopen.springboot.plugin.mongo.template.builder;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import org.apache.logging.log4j.util.Strings;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -48,7 +46,7 @@ public class Builder<T> {
      */
     private static final ConcurrentHashMap<Class<?>, WeakReference<SerializedLambda>> SF_CACHE = new ConcurrentHashMap<>();
 
-    Cache<Object, Object> cache = CacheBuilder.newBuilder().weakKeys().build();
+    // Cache<Object, Object> cache = CacheBuilder.newBuilder().weakKeys().build();
 
     @NonNull
     Function<SFunction<T, ?>, String> produceValName = sFunction -> {

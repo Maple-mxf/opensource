@@ -7,7 +7,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
@@ -40,9 +39,6 @@ public class BaseServiceImpl<ID extends Serializable, T, R extends BaseRepositor
 
     @Autowired
     private GridFsTemplate gridFsTemplate;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     @Override
     public <S extends T> Optional<S> findOne(Example<S> example) {
