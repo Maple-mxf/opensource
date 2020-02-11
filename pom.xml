@@ -9,7 +9,6 @@
     <packaging>pom</packaging>
     <version>1.0</version>
     <modules>
-        <module>jopen-rpc</module>
         <module>jopen-db</module>
         <module>jopen-core</module>
         <module>jopen-orm</module>
@@ -32,6 +31,7 @@
         <module>jopen-hazelcast</module>
         <module>jopen-springboot-plugins</module>
         <module>jopen-beam</module>
+        <module>jopen-ssh-linux</module>
     </modules>
 
 

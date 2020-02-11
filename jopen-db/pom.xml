@@ -14,10 +14,8 @@
     <modules>
         <module>jopen-mongo</module>
         <module>jopen-redis</module>
-        <module>jopen-mysql</module>
         <module>jopen-hive</module>
         <module>jopen-hbase</module>
-        <module>jopen-computer-vision</module>
     </modules>
 
 
