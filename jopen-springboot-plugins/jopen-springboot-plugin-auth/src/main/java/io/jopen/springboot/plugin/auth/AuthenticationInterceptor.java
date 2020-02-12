@@ -3,6 +3,7 @@ package io.jopen.springboot.plugin.auth;
 import io.jopen.springboot.plugin.annotation.cache.BaseInterceptor;
 import io.jopen.springboot.plugin.common.SpringContainer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -66,6 +67,9 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
      */
     private Class<? extends AuthMetadata> authMetadataType;
 
+    @Autowired
+    private AuthContext authContext;
+
     public void setAuthMetadataType(@NonNull Class<? extends AuthMetadata> authMetadataType) {
         this.authMetadataType = authMetadataType;
     }
@@ -125,7 +129,7 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
                             CredentialFunction credentialFunction = authRegistration.getCredentialFunction();
                             Credential credential = credentialFunction.apply(request);
                             checkupCredential(request, credential, verify);
-                            saveCredential(request, credential);
+                            authContext.setCredential(request, credential);
                             return true;
                         });
 
@@ -151,7 +155,7 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
                 // 获取凭证对象
                 Credential credential = credentialFunction.apply(request);
                 checkupCredential(request, credential, verify);
-                saveCredential(request, credential);
+                authContext.setCredential(request, credential);
                 return true;
             }
         }
@@ -171,11 +175,6 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
         if (Arrays.stream(roles).anyMatch(requireAllowRoleList::contains)) return;
         throw new AuthException(verify.errMsg());
     }
-
-    private void saveCredential(HttpServletRequest request, Credential credential) {
-        request.setAttribute("credential", credential);
-    }
-
 
     /**
      * Determine a match for the given lookup path.

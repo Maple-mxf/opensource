@@ -32,7 +32,7 @@ public abstract class AbstractBeBasedOnHeaderCredentialFunction extends Abstract
 
     /**
      * @param headerValue base on {@link org.springframework.web.servlet.function.ServerRequest.Headers}
-     *                    map to credential object instance
+     *                    map to CREDENTIAL object instance
      */
     @NonNull
     public abstract Credential mapHeaderValueToCredential(@NonNull String headerValue);

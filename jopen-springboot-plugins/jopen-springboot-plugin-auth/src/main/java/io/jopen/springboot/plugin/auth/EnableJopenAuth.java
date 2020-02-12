@@ -12,9 +12,12 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({AuthenticationInterceptor.class, AuthPluginConfiguration.class})
+@Import({AuthenticationInterceptor.class,
+        AuthPluginConfiguration.class,
+        AuthContext.class
+})
 public @interface EnableJopenAuth {
-    
+
     /**
      * 当前拦截器执行的顺序
      *
