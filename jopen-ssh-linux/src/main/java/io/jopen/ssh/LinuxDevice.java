@@ -17,6 +17,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 一个{@link LinuxDevice}可以保持多个{@link Session}连接
+ * 而每一个{@link Session}的状态在{@link LinuxDevice}保持唯一的
+ *
  * @author maxuefeng
  * @see LinuxDeviceManager
  * @since 2020/2/11
@@ -32,6 +35,13 @@ public final class LinuxDevice implements Comparator<Integer> {
      * 每个Linux服务器最多同时可以执行多少个任务
      */
     private static final int DEFAULT_PARALLEL = 4;
+
+    /**
+     * root用户名
+     *
+     * @see Account#getUsername()
+     */
+    private static final String ROOT = "root";
 
     /**
      * 并行度
@@ -96,6 +106,10 @@ public final class LinuxDevice implements Comparator<Integer> {
      * @see Session
      */
     private SessionConnectState sessionConnectState;
+
+
+//    private String
+//    private String rootPassword;
 
     @Override
     public int compare(Integer p1, Integer p2) {
@@ -218,6 +232,16 @@ public final class LinuxDevice implements Comparator<Integer> {
         return connection.openSession();
     }
 
+
+    /**
+     * 切换到Root用户
+     *
+     * @see LinuxDevice#ROOT
+     */
+    void su() {
+
+    }
+
     /**
      * @see java.util.concurrent.Future
      * 异步结果通知
@@ -280,14 +304,17 @@ public final class LinuxDevice implements Comparator<Integer> {
         public void onFailure(Throwable t) {
             LinuxDevice.this.executeTaskNum.getAndDecrement();
 
-            if (LinuxDevice.this.executeTaskNum.get() < LinuxDevice.this.parallelism){
-                LinuxDeviceManager.LINUX_DEVICE_MANAGER.addDevice();
+            if (LinuxDevice.this.executeTaskNum.get() < LinuxDevice.this.parallelism) {
+                // LinuxDeviceManager.LINUX_DEVICE_MANAGER.addDevice();
             }
 
-                completedOnFailure(t);
+            completedOnFailure(t);
         }
 
         abstract void completedOnFailure(Throwable t);
     }
 
+    public String getAlias() {
+        return alias;
+    }
 }

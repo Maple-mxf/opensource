@@ -41,6 +41,12 @@ public final class LinuxDeviceManager {
         AuthTask authTask = new AuthTask(account, device);
         Response response = authTask.call();
         Session session = (Session) response.getData();
+        //
+        LinuxDevice linuxDevice = sessionPool.containDevice(device);
+        if (linuxDevice != null) {
+            sessionPool.g
+        }
+
         sessionPool.add(device, session);
 
         // 将当前device放入队列
