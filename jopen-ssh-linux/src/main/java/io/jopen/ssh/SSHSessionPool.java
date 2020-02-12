@@ -1,9 +1,9 @@
 package io.jopen.ssh;
 
-import ch.ethz.ssh2.Session;
 import com.google.common.collect.MapMaker;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,19 +33,21 @@ final class SSHSessionPool {
         return instance;
     }
 
-    void add(@NonNull LinuxDevice device, Session session) {
-        deviceConnectionMeta.put(device, session);
+    synchronized void add(@NonNull LinuxDevice device, ListeningSession session) {
+        if (this.containDevice(device)) {
+            List<ListeningSession> listeningSessions = deviceConnectionMeta.get(device);
+            listeningSessions.add(session);
+        } else {
+            List<ListeningSession> sessionList = new ArrayList<>();
+            sessionList.add(session);
+            deviceConnectionMeta.put(device, sessionList);
+        }
+
     }
 
-    void addSession(LinuxDevice device,Session session){
-        deviceConnectionMeta.containsKey(device)
-    }
-
-    @Deprecated
-    public final LinuxDevice containDevice(LinuxDevice linuxDevice) {
+    public final boolean containDevice(LinuxDevice linuxDevice) {
         return deviceConnectionMeta.keySet().stream()
-                .filter(d -> d.getAlias().equals(linuxDevice.getAlias()))
-                .findFirst().orElse(null);
+                .anyMatch(d -> d.getAlias().equals(linuxDevice.getAlias()));
     }
 
 }

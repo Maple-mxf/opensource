@@ -26,38 +26,49 @@ public final class LinuxDeviceManager {
     private LinuxDeviceManager() {
     }
 
+    /**
+     * 单例模式
+     */
     public static final LinuxDeviceManager LINUX_DEVICE_MANAGER = new LinuxDeviceManager();
 
 
-    public synchronized void addDevice(@NonNull LinuxDevice device, @NonNull Account account) {
+    public void addDevice(@NonNull LinuxDevice device, @NonNull Account account) {
         Preconditions.checkNotNull(device);
         Preconditions.checkNotNull(account);
 
-        if (this.devices.contains(device)) {
-            return;
+        synchronized (this) {
+            if (this.devices.contains(device)) {
+                return;
+            }
+
+            // 进行同步认证
+            AuthTask authTask = new AuthTask(account, device);
+            Response response = authTask.call();
+            Session session = (Session) response.getData();
+
+            ListeningSession listeningSession = new ListeningSession(session, account);
+            this.sessionPool.add(device, listeningSession);
+
+            // 将当前device放入队列
+            this.devices.add(device);
         }
-
-        // 进行同步认证
-        AuthTask authTask = new AuthTask(account, device);
-        Response response = authTask.call();
-        Session session = (Session) response.getData();
-        //
-        LinuxDevice linuxDevice = sessionPool.containDevice(device);
-        if (linuxDevice != null) {
-            sessionPool.g
-        }
-
-        sessionPool.add(device, session);
-
-        // 将当前device放入队列
-        this.devices.add(device);
     }
 
+    /**
+     * @param task     execute script task {@link java.util.concurrent.Callable}
+     * @param callback {@link com.google.common.util.concurrent.FutureCallback}
+     * @param <T>      return future type
+     * @throws InterruptedException if thread exception
+     */
     public <T> void submitTask(@NonNull Task<T> task, LinuxDevice.Callback<T> callback) throws InterruptedException {
         synchronized (this) {
             LinuxDevice device = devices.take();
             device.submitTask(task, callback);
         }
+    }
+
+
+    public void recovery(LinuxDevice device) {
     }
 
 }

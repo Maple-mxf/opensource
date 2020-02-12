@@ -35,14 +35,7 @@ public final class LinuxDevice implements Comparator<Integer> {
      * 每个Linux服务器最多同时可以执行多少个任务
      */
     private static final int DEFAULT_PARALLEL = 4;
-
-    /**
-     * root用户名
-     *
-     * @see Account#getUsername()
-     */
-    private static final String ROOT = "root";
-
+    
     /**
      * 并行度
      */

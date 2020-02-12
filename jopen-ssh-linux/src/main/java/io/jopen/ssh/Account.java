@@ -10,7 +10,7 @@ import java.io.File;
  */
 public class Account implements java.io.Serializable {
 
-    private static final String ROOT_ACCOUNT = "root";
+    public static final String ROOT_ACCOUNT = "root";
 
     /**
      * 登录用户名
