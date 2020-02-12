@@ -125,6 +125,7 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
                             CredentialFunction credentialFunction = authRegistration.getCredentialFunction();
                             Credential credential = credentialFunction.apply(request);
                             checkupCredential(request, credential, verify);
+                            saveCredential(request, credential);
                             return true;
                         });
 
@@ -150,6 +151,7 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
                 // 获取凭证对象
                 Credential credential = credentialFunction.apply(request);
                 checkupCredential(request, credential, verify);
+                saveCredential(request, credential);
                 return true;
             }
         }
@@ -166,11 +168,12 @@ public class AuthenticationInterceptor extends BaseInterceptor implements Comman
         String[] roles = credential.getRoles();
         // 求两个数组的交集
         List<String> requireAllowRoleList = Arrays.asList(requireAllowRoles);
-        if (Arrays.stream(roles).anyMatch(requireAllowRoleList::contains)) {
-            request.setAttribute("credential", credential);
-            return;
-        }
+        if (Arrays.stream(roles).anyMatch(requireAllowRoleList::contains)) return;
         throw new AuthException(verify.errMsg());
+    }
+
+    private void saveCredential(HttpServletRequest request, Credential credential) {
+        request.setAttribute("credential", credential);
     }
 
 
