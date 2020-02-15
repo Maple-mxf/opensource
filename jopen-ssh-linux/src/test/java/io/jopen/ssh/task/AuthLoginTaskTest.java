@@ -3,10 +3,10 @@ package io.jopen.ssh.task;
 import ch.ethz.ssh2.ChannelCondition;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
+import com.google.common.util.concurrent.FutureCallback;
 import io.jopen.ssh.Account;
 import io.jopen.ssh.LinuxDevice;
 import io.jopen.ssh.LinuxDeviceManager;
-import io.jopen.ssh.ListeningSession;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import java.io.*;
  * @author maxuefeng
  * @since 2020/2/15
  */
-public class AuthTaskTest {
+public class AuthLoginTaskTest {
 
     LinuxDeviceManager deviceManager = LinuxDeviceManager.LINUX_DEVICE_MANAGER;
 
@@ -32,34 +32,26 @@ public class AuthTaskTest {
 
     class LSTask implements FunctionTask<Object> {
         @Override
-        public Object applyTask(ListeningSession listeningSession) throws Throwable {
-
-            Session session = listeningSession.getSession();
-
-            session.requestPTY("bash");
-            session.startShell();
-
+        public Object call(Session session) throws Throwable {
 
             InputStream stdOut = new StreamGobbler(session.getStdout());
             InputStream stdErr = new StreamGobbler(session.getStderr());
 
+            // 读取正确的bash响应
             BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(stdOut));
+            // 读取错误的bash响应
             BufferedReader stderrReader = new BufferedReader(new InputStreamReader(stdErr));
 
-            // 准备输入命令
             PrintWriter out = new PrintWriter(session.getStdin());
 
             // 输入待执行命令
             out.println("ls /");
-            out.println("exit");
 
             // 关闭输入流
             out.close();
 
             // 等待，除非1.连接关闭；2.输出数据传送完毕；3.进程状态为退出；4.超时
             session.waitForCondition(ChannelCondition.CLOSED | ChannelCondition.EOF | ChannelCondition.EXIT_STATUS, 30000);
-
-            System.out.println("Here is the output from stdout:");
 
             while (true) {
                 String line = stdoutReader.readLine();
@@ -68,17 +60,12 @@ public class AuthTaskTest {
                 System.out.println(line);
             }
 
-            System.out.println("Here is the output from stderr:");
             while (true) {
                 String line = stderrReader.readLine();
                 if (line == null)
                     break;
                 System.out.println(line);
             }
-
-            System.out.println("ExitCode: " + session.getExitStatus());
-            Integer exitStatus = session.getExitStatus();
-            System.err.println(exitStatus);
 
             return null;
         }
@@ -87,15 +74,15 @@ public class AuthTaskTest {
 
     @Test
     public void testLSCommand() throws InterruptedException {
-        deviceManager.submitTask(new LSTask(), new LinuxDevice.Callback<Object>() {
+        deviceManager.submitTask(new LSTask(),new FutureCallback<Object>(){
             @Override
-            protected void completedOnSuccess(@Nullable Object result) {
-                System.err.println(result);
+            public void onSuccess(@Nullable Object result) {
+
             }
 
             @Override
-            protected void completedOnFailure(Throwable t) {
-                System.err.println(t);
+            public void onFailure(Throwable t) {
+
             }
         });
 

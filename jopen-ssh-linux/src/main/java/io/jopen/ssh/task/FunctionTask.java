@@ -1,5 +1,6 @@
 package io.jopen.ssh.task;
 
+import ch.ethz.ssh2.Session;
 import io.jopen.ssh.ListeningSession;
 
 /**
@@ -13,5 +14,9 @@ public interface FunctionTask<T> {
      * @param session {@link ListeningSession}
      * @return T
      */
-    T applyTask(ListeningSession session) throws Throwable;
+    T call(Session session) throws Throwable;
+
+    default T apply(ListeningSession listeningSession) throws Throwable {
+        return call(listeningSession.getSession());
+    }
 }

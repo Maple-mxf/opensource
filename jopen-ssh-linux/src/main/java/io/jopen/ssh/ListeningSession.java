@@ -1,6 +1,9 @@
 package io.jopen.ssh;
 
+import ch.ethz.ssh2.Connection;
+import ch.ethz.ssh2.ConnectionInfo;
 import ch.ethz.ssh2.Session;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -46,11 +49,24 @@ public class ListeningSession implements java.io.Serializable {
     private boolean used;
 
     /**
+     * 当前{@link Session}对应的连接
+     */
+    private ch.ethz.ssh2.Connection connection;
+
+
+    /**
+     * 当前{@link Session} 对应的 connection info
+     *
+     * @see ConnectionInfo
+     */
+    private ConnectionInfo connectionInfo;
+
+    /**
      * fair lock
      */
     private ReentrantLock usedLock = new ReentrantLock(true);
 
-    public ListeningSession(LinuxDevice device, Session session, Account account) {
+    public ListeningSession(LinuxDevice device, @Nullable Session session, Account account) {
         this.device = device;
         this.currentAccount = account;
         this.session = session;
@@ -81,5 +97,30 @@ public class ListeningSession implements java.io.Serializable {
 
     public LinuxDevice getDevice() {
         return this.device;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
+    public ConnectionInfo getConnectionInfo() {
+        return connectionInfo;
+    }
+
+    public void setConnectionInfo(ConnectionInfo connectionInfo) {
+        this.connectionInfo = connectionInfo;
+    }
+
+    /**
+     * TODO  当前机器的连接状态
+     */
+    enum SessionConnectState {
+        CONNECTED,
+        NO_CONNECT,
+        BROKEN
     }
 }

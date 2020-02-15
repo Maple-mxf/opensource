@@ -12,7 +12,13 @@ import java.io.File;
  */
 public class Account implements java.io.Serializable {
 
-    public static final String ROOT_ACCOUNT = "root";
+    static final String ROOT_ACCOUNT = "root";
+
+    /**
+     * 默认SSH端口
+     */
+    private static final int DEFAULT_SSH_PORT = 22;
+
 
     /**
      * 登录用户名
@@ -40,9 +46,14 @@ public class Account implements java.io.Serializable {
     private boolean available = true;
 
     /**
+     * 连接port
+     */
+    private int port = DEFAULT_SSH_PORT;
+
+    /**
      * 账户登录方式
      */
-    private LoginType loginType = LoginType.PASSWORD;
+    private LoginType loginType;
 
     public enum LoginType {
         /**
@@ -73,6 +84,24 @@ public class Account implements java.io.Serializable {
         isRoot = ROOT_ACCOUNT.equals(username);
     }
 
+    public Account(String username, String password, File secret, LoginType loginType, int port) {
+
+        Preconditions.checkNotNull(username);
+        Preconditions.checkNotNull(password);
+        Preconditions.checkNotNull(loginType);
+
+        this.username = username;
+        this.password = password;
+        this.loginType = loginType;
+
+        if (LoginType.SECRET.equals(loginType)) {
+            Preconditions.checkNotNull(secret);
+            this.secret = secret;
+        }
+        this.isRoot = ROOT_ACCOUNT.equals(username);
+        this.port = port;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -99,5 +128,9 @@ public class Account implements java.io.Serializable {
 
     public LoginType getLoginType() {
         return loginType;
+    }
+
+    public int getPort() {
+        return port;
     }
 }

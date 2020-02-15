@@ -1,14 +1,11 @@
 package io.jopen.ssh;
 
-import ch.ethz.ssh2.ConnectionInfo;
 import ch.ethz.ssh2.Session;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.*;
 import io.jopen.ssh.task.ListeningCallable;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -25,11 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2020/2/11
  */
 public final class LinuxDevice implements Comparable<LinuxDevice> {
-
-    /**
-     * 默认SSH端口
-     */
-    private static final int DEFAULT_SSH_PORT = 22;
 
     /**
      * 每个Linux服务器最多同时可以执行多少个任务
@@ -62,11 +54,6 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
     private String ip;
 
     /**
-     * 连接port
-     */
-    private int port = DEFAULT_SSH_PORT;
-
-    /**
      * 机器状态
      */
     private State state;
@@ -81,30 +68,14 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
      */
     private PlatformSystem platformSystem;
 
-    /**
-     * 当前Linux对应的连接
-     */
-    private ch.ethz.ssh2.Connection connection;
-
-    /**
-     * 当前Linux connection对应的info
-     *
-     * @see ConnectionInfo
-     */
-    private ConnectionInfo connectionInfo;
-
-    /**
-     * session的连接状态
-     *
-     * @see Session
-     */
-    private SessionConnectState sessionConnectState;
-
     @Override
     public int compareTo(LinuxDevice d) {
         return Integer.compare(d.priority - this.priority, 0);
     }
 
+    /**
+     * 系统类型
+     */
     enum PlatformSystem {
         UBUNTU16,
         UBUNTU18,
@@ -113,74 +84,48 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
     }
 
     public LinuxDevice(@NonNull String alias,
-                       @NonNull String ip,
-                       int port) throws IOException {
+                       @NonNull String ip) {
 
         Preconditions.checkNotNull(alias);
         Preconditions.checkNotNull(ip);
 
         this.alias = alias;
         this.ip = ip;
-        this.port = port;
         this.parallelism = DEFAULT_PARALLEL;
 
-        ch.ethz.ssh2.Connection connection = new ch.ethz.ssh2.Connection(ip);
-        this.connectionInfo = connection.connect();
-
-        this.connection = connection;
         this.executor = getDefaultExecutor();
         this.state = State.NORMAL;
     }
 
 
     public LinuxDevice(@NonNull String alias,
-                       @NonNull String ip,
-                       int port, int parallelism) throws IOException {
+                       @NonNull String ip,int parallelism) {
 
         Preconditions.checkNotNull(alias);
         Preconditions.checkNotNull(ip);
 
         this.alias = alias;
         this.ip = ip;
-        this.port = port;
         this.parallelism = parallelism;
 
-        ch.ethz.ssh2.Connection connection = new ch.ethz.ssh2.Connection(ip);
-        this.connectionInfo = connection.connect();
-
-        this.connection = connection;
         this.executor = getDefaultExecutor();
         this.state = State.NORMAL;
     }
 
     public LinuxDevice(@NonNull String alias,
-                       @NonNull String ip,
-                       int port, int priority, int parallelism) throws IOException {
+                       @NonNull String ip, int priority, int parallelism) {
 
         Preconditions.checkNotNull(alias);
         Preconditions.checkNotNull(ip);
 
         this.alias = alias;
         this.ip = ip;
-        this.port = port;
         this.parallelism = parallelism;
         this.priority = priority;
 
         ch.ethz.ssh2.Connection connection = new ch.ethz.ssh2.Connection(ip);
-        this.connectionInfo = connection.connect();
-        this.connection = connection;
         this.executor = getDefaultExecutor();
         this.state = State.NORMAL;
-    }
-
-
-    /**
-     * TODO  当前机器的连接状态
-     */
-    enum SessionConnectState {
-        CONNECTED,
-        NO_CONNECT,
-        BROKEN
     }
 
     enum State {
@@ -197,31 +142,10 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
     }
 
     /**
-     * 执行登录任务
-     */
-    public Session login(Account account) throws IOException {
-
-
-        boolean authenticateSuccess;
-        if (account.getLoginType().equals(Account.LoginType.PASSWORD)) {
-            authenticateSuccess = connection.authenticateWithPassword(account.getUsername(), account.getPassword());
-
-        } else if (account.getLoginType().equals(Account.LoginType.SECRET)) {
-            authenticateSuccess = connection.authenticateWithPublicKey(account.getUsername(), account.getSecret(), account.getPassword());
-        } else
-            throw new RuntimeException("unsupport login type");
-
-        if (!authenticateSuccess)
-            throw new RuntimeException("auth failed,please check your account and password");
-
-        return connection.openSession();
-    }
-
-    /**
      * @see java.util.concurrent.Future
      * 异步结果通知
      */
-    public <T> void submitTask(ListeningCallable<T> listeningCallable, Callback<T> callback) {
+    <T> void submitTask(ListeningCallable<T> listeningCallable, FutureCallback<T> callback) {
 
         if (this.executeTaskNum.get() >= parallelism) {
             throw new RuntimeException(String.format("current device %s parallelism is %s, max submit listeningCallable number is %s", this, parallelism, this.executeTaskNum));
@@ -266,34 +190,15 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
         return Objects.hash(alias, ip);
     }
 
-    /**
-     * @param <T>
-     * @see LinuxDevice#executeTaskNum
-     */
-    public abstract static class Callback<T> implements FutureCallback<T> {
-
-        @Override
-        public void onSuccess(@Nullable T result) {
-            // LinuxDevice.this.executeTaskNum.getAndDecrement();
-            // LinuxDeviceManager.LINUX_DEVICE_MANAGER.recovery();
-            completedOnSuccess(result);
-        }
-
-        protected abstract void completedOnSuccess(@Nullable T result);
-
-        @Override
-        public void onFailure(Throwable t) {
-            // LinuxDeviceManager.LINUX_DEVICE_MANAGER.recovery(LinuxDevice.this);
-            completedOnFailure(t);
-        }
-        protected abstract void completedOnFailure(Throwable t);
-    }
-
     public String getAlias() {
         return alias;
     }
 
     public AtomicInteger getExecuteTaskNum() {
         return executeTaskNum;
+    }
+
+    public String getIp() {
+        return ip;
     }
 }

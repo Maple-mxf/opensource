@@ -26,12 +26,11 @@ public class ListeningCallable<T> implements Callable<T> {
      * 不管出不出异常  必须要释放session
      *
      * @return
-     * @throws Exception
      */
     @Override
-    public T call() throws Exception {
+    public T call() {
         try {
-            T result = functionTask.applyTask(this.listeningSession);
+            T result = functionTask.apply(this.listeningSession);
             this.listeningSession.setUsed(true);
             return result;
         } catch (Throwable t) {
