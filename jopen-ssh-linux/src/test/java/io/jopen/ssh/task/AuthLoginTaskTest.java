@@ -27,7 +27,7 @@ public class AuthLoginTaskTest {
         LinuxDevice device = new LinuxDevice("jd-1", "114.67.246.62", 22);
         File secretFile = new File("E:\\java-workplace\\opensource\\jopen-ssh-linux\\src\\test\\java\\io\\jopen\\ssh\\task\\common_secret.pem");
         Account account = new Account("root", "qmbx@@2019", secretFile, Account.LoginType.SECRET);
-        deviceManager.addDevice(device, account);
+        deviceManager.addLinuxDevice(device, account);
     }
 
     class LSTask implements FunctionTask<Object> {

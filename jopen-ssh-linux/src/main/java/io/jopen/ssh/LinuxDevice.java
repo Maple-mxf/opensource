@@ -29,19 +29,19 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
     private static final int DEFAULT_PARALLEL = 4;
 
     /**
-     * 并行度
+     * 并行度（当前Linux设备最多可执行多少个任务）
      */
     private final int parallelism;
 
     /**
      * 并行执行器
      */
-    private final ListeningExecutorService executor;
+    private final transient ListeningExecutorService executor;
 
     /**
      * 当前执行任务的数量
      */
-    private AtomicInteger executeTaskNum = new AtomicInteger(0);
+    private transient AtomicInteger executeTaskNum = new AtomicInteger(0);
 
     /**
      * 机器别名
@@ -99,7 +99,7 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
 
 
     public LinuxDevice(@NonNull String alias,
-                       @NonNull String ip,int parallelism) {
+                       @NonNull String ip, int parallelism) {
 
         Preconditions.checkNotNull(alias);
         Preconditions.checkNotNull(ip);
@@ -200,5 +200,45 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
 
     public String getIp() {
         return ip;
+    }
+
+    public int getParallelism() {
+        return parallelism;
+    }
+
+    public void setExecuteTaskNum(AtomicInteger executeTaskNum) {
+        this.executeTaskNum = executeTaskNum;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public PlatformSystem getPlatformSystem() {
+        return platformSystem;
+    }
+
+    public void setPlatformSystem(PlatformSystem platformSystem) {
+        this.platformSystem = platformSystem;
     }
 }
