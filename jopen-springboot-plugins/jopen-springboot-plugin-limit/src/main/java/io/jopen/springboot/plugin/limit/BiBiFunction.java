@@ -6,6 +6,6 @@ package io.jopen.springboot.plugin.limit;
  * @since 2020/2/5
  */
 @FunctionalInterface
-interface BiBiFunction<ONE, TWO, THREE, FOUR, R> {
-    R apply(ONE one, TWO two, THREE three, FOUR four);
+interface BiBiFunction<ONE, TWO, THREE, FOUR, RESULT> {
+    RESULT apply(ONE one, TWO two, THREE three, FOUR four);
 }

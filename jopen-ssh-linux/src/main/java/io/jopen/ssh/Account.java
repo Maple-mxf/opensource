@@ -1,5 +1,7 @@
 package io.jopen.ssh;
 
+import com.google.common.base.Preconditions;
+
 import java.io.File;
 
 /**
@@ -28,11 +30,13 @@ public class Account implements java.io.Serializable {
     private File secret;
 
     /**
-     *
+     * 是否属于root用户
      */
     private boolean isRoot;
 
-
+    /**
+     * 是否可用
+     */
     private boolean available = true;
 
     /**
@@ -40,7 +44,7 @@ public class Account implements java.io.Serializable {
      */
     private LoginType loginType = LoginType.PASSWORD;
 
-    enum LoginType {
+    public enum LoginType {
         /**
          * 密码登录
          */
@@ -52,36 +56,37 @@ public class Account implements java.io.Serializable {
         SECRET
     }
 
-    public String getUsername() {
-        return username;
+    public Account(String username, String password, File secret, LoginType loginType) {
+
+        Preconditions.checkNotNull(username);
+        Preconditions.checkNotNull(password);
+        Preconditions.checkNotNull(loginType);
+
+        this.username = username;
+        this.password = password;
+        this.loginType = loginType;
+
+        if (LoginType.SECRET.equals(loginType)) {
+            Preconditions.checkNotNull(secret);
+            this.secret = secret;
+        }
+        isRoot = ROOT_ACCOUNT.equals(username);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public File getSecret() {
         return secret;
     }
 
-    public void setSecret(File secret) {
-        this.secret = secret;
-    }
-
     public boolean isRoot() {
         return isRoot;
-    }
-
-    public void setRoot(boolean root) {
-        isRoot = root;
     }
 
     public boolean isAvailable() {
@@ -94,9 +99,5 @@ public class Account implements java.io.Serializable {
 
     public LoginType getLoginType() {
         return loginType;
-    }
-
-    public void setLoginType(LoginType loginType) {
-        this.loginType = loginType;
     }
 }

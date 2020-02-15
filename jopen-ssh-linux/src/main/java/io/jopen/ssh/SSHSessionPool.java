@@ -50,4 +50,13 @@ final class SSHSessionPool {
                 .anyMatch(d -> d.getAlias().equals(linuxDevice.getAlias()));
     }
 
+    /**
+     * @return
+     * @see ListeningSession#isUsed()
+     */
+    public ListeningSession getUsableSession(LinuxDevice device) {
+        return this.deviceConnectionMeta.get(device)
+                .stream().filter(session -> !session.isUsed()).findAny().orElse(null);
+    }
+
 }

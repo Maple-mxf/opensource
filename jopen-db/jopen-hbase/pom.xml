@@ -60,7 +60,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix><!--声明主类使用类库的相对目录名称-->
-                            <mainClass>io.recommend.task.SparkStreaming</mainClass>
+                            <mainClass>io.recommend.listeningCallable.SparkStreaming</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

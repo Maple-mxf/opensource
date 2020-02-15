@@ -1,12 +1,17 @@
-package io.jopen.ssh;
+package io.jopen.ssh.task;
 
 import ch.ethz.ssh2.Session;
+import io.jopen.ssh.Account;
+import io.jopen.ssh.LinuxDevice;
+import io.jopen.ssh.Response;
+
+import java.util.concurrent.Callable;
 
 /**
  * @author maxuefeng
  * @since 2020/2/11
  */
-public final class AuthTask extends Task<Response> {
+public final class AuthTask implements Callable<Response> {
 
     /**
      * 账户
@@ -18,7 +23,7 @@ public final class AuthTask extends Task<Response> {
      */
     private LinuxDevice linuxDevice;
 
-    AuthTask(Account account, LinuxDevice linuxDevice) {
+    public AuthTask(Account account, LinuxDevice linuxDevice) {
         this.account = account;
         if (account.getLoginType().equals(Account.LoginType.SECRET)
                 && account.getSecret() == null) {

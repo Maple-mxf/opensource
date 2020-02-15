@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
+ * 实现mongodb的embedded文档的条件查询/分页查询/聚合查询  内嵌文档的添加/删除/修改
+ *
  * @author maxuefeng
  * @since 2020/2/9
  */

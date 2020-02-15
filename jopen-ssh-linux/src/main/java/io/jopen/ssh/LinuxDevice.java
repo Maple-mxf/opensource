@@ -4,11 +4,11 @@ import ch.ethz.ssh2.ConnectionInfo;
 import ch.ethz.ssh2.Session;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.*;
+import io.jopen.ssh.task.ListeningCallable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @see LinuxDeviceManager
  * @since 2020/2/11
  */
-public final class LinuxDevice implements Comparator<Integer> {
+public final class LinuxDevice implements Comparable<LinuxDevice> {
 
     /**
      * 默认SSH端口
@@ -35,7 +35,7 @@ public final class LinuxDevice implements Comparator<Integer> {
      * 每个Linux服务器最多同时可以执行多少个任务
      */
     private static final int DEFAULT_PARALLEL = 4;
-    
+
     /**
      * 并行度
      */
@@ -100,18 +100,10 @@ public final class LinuxDevice implements Comparator<Integer> {
      */
     private SessionConnectState sessionConnectState;
 
-
-//    private String
-//    private String rootPassword;
-
     @Override
-    public int compare(Integer p1, Integer p2) {
-        if (p1 - p2 == 0) return 0;
-        if (p1 - p2 > 0) return 1;
-        if (p1 - p2 < 0) return -1;
-        throw new RuntimeException();
+    public int compareTo(LinuxDevice d) {
+        return Integer.compare(d.priority - this.priority, 0);
     }
-
 
     enum PlatformSystem {
         UBUNTU16,
@@ -207,7 +199,7 @@ public final class LinuxDevice implements Comparator<Integer> {
     /**
      * 执行登录任务
      */
-    Session login(Account account) throws IOException {
+    public Session login(Account account) throws IOException {
 
 
         boolean authenticateSuccess;
@@ -225,22 +217,17 @@ public final class LinuxDevice implements Comparator<Integer> {
         return connection.openSession();
     }
 
-
-    /**
-     * 切换到Root用户
-     *
-     * @see LinuxDevice#ROOT
-     */
-    void su() {
-
-    }
-
     /**
      * @see java.util.concurrent.Future
      * 异步结果通知
      */
-    public <T> void submitTask(Task<T> task, Callback<T> callback) {
-        ListenableFuture<T> future = executor.submit(task);
+    public <T> void submitTask(ListeningCallable<T> listeningCallable, Callback<T> callback) {
+
+        if (this.executeTaskNum.get() >= parallelism) {
+            throw new RuntimeException(String.format("current device %s parallelism is %s, max submit listeningCallable number is %s", this, parallelism, this.executeTaskNum));
+        }
+
+        ListenableFuture<T> future = executor.submit(listeningCallable);
         Futures.addCallback(future, callback, executor);
     }
 
@@ -283,31 +270,30 @@ public final class LinuxDevice implements Comparator<Integer> {
      * @param <T>
      * @see LinuxDevice#executeTaskNum
      */
-    public abstract class Callback<T> implements FutureCallback<T> {
+    public abstract static class Callback<T> implements FutureCallback<T> {
 
         @Override
         public void onSuccess(@Nullable T result) {
-            LinuxDevice.this.executeTaskNum.getAndDecrement();
+            // LinuxDevice.this.executeTaskNum.getAndDecrement();
+            // LinuxDeviceManager.LINUX_DEVICE_MANAGER.recovery();
             completedOnSuccess(result);
         }
 
-        abstract void completedOnSuccess(@Nullable T result);
+        protected abstract void completedOnSuccess(@Nullable T result);
 
         @Override
         public void onFailure(Throwable t) {
-            LinuxDevice.this.executeTaskNum.getAndDecrement();
-
-            if (LinuxDevice.this.executeTaskNum.get() < LinuxDevice.this.parallelism) {
-                // LinuxDeviceManager.LINUX_DEVICE_MANAGER.addDevice();
-            }
-
+            // LinuxDeviceManager.LINUX_DEVICE_MANAGER.recovery(LinuxDevice.this);
             completedOnFailure(t);
         }
-
-        abstract void completedOnFailure(Throwable t);
+        protected abstract void completedOnFailure(Throwable t);
     }
 
     public String getAlias() {
         return alias;
+    }
+
+    public AtomicInteger getExecuteTaskNum() {
+        return executeTaskNum;
     }
 }
