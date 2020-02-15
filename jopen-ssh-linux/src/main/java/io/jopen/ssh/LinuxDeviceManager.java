@@ -17,6 +17,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -74,20 +75,25 @@ public final class LinuxDeviceManager {
      * @see Supplier
      */
     public synchronized void start() {
-        Verify.verify(this.started, "Linux Manager was started");
-        Map<LinuxDevice, Set<Account>> deviceAccounts = this.linuxDeviceSupplier.get();
-        Preconditions.checkNotNull(deviceAccounts);
 
-        deviceAccounts.forEach((device, accountSet) ->
-                accountSet.forEach(account -> {
-                    try {
-                        addLinuxDevice(device, account);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException(e.getMessage());
-                    }
-                }));
-        this.started = true;
+        // 异步启动程序（避免阻塞主程序）
+        CompletableFuture.runAsync(() -> {
+            Verify.verify(LinuxDeviceManager.this.started, "Linux Manager was started");
+            Map<LinuxDevice, Set<Account>> deviceAccounts = LinuxDeviceManager.this.linuxDeviceSupplier.get();
+            Preconditions.checkNotNull(deviceAccounts);
+
+            deviceAccounts.forEach((device, accountSet) ->
+                    accountSet.forEach(account -> {
+                        try {
+                            addLinuxDevice(device, account);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException(e.getMessage());
+                        }
+                    }));
+            LinuxDeviceManager.this.started = true;
+            LOGGER.info(String.format("LinuxDeviceManager %s", LinuxDeviceManager.this.started));
+        });
     }
 
     /**
