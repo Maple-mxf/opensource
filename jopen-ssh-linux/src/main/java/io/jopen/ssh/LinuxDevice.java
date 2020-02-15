@@ -44,7 +44,7 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
     private transient AtomicInteger executeTaskNum = new AtomicInteger(0);
 
     /**
-     * 机器别名
+     * 机器别名(当前机器的唯一标识符  不可重复)
      */
     private String alias;
 

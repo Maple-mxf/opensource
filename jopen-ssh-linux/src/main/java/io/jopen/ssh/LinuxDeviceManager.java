@@ -161,11 +161,14 @@ public final class LinuxDeviceManager {
             LOGGER.info(String.format("device executeTaskNum %s", executeTaskNum));
             this.devices.put(device);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warning(e.getMessage());
+            // 如果回收device失败  则移除当前device的信息
+            this.deviceConnectionMeta.remove(device);
+            LOGGER.warning(String.format("remove current device %s", device.getAlias()));
         }
     }
 
-    synchronized void putSession(@NonNull LinuxDevice device, ListeningSession session) {
+    private synchronized void putSession(@NonNull LinuxDevice device, ListeningSession session) {
         if (this.containDevice(device)) {
             List<ListeningSession> listeningSessions = deviceConnectionMeta.get(device);
             listeningSessions.add(session);
@@ -185,7 +188,7 @@ public final class LinuxDeviceManager {
     /**
      * @see ListeningSession#isUsed()
      */
-    ListeningSession getUsableSession(LinuxDevice device) {
+    private ListeningSession getUsableSession(LinuxDevice device) {
         return this.deviceConnectionMeta.get(device)
                 .stream().filter(session -> !session.isUsed()).findAny().orElse(null);
     }
