@@ -56,4 +56,14 @@ public interface BaseRepository<T, ID extends Serializable> extends MongoReposit
     String ensureIndex(Index index);
 
     List<IndexInfo> getIndexInfo();
+
+//    boolean update(Wrapper<T> updateWrapper);
+//
+//    boolean update(T entity, Wrapper<T> updateWrapper);
+//
+//    boolean updateById(T entity);
+//
+//    boolean updateBatchById(Collection<T> entityList);
+//
+//    boolean updateBatchById(Collection<T> entityList, int batchSize);
 }

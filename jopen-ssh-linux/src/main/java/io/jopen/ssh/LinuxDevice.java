@@ -16,6 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 一个{@link LinuxDevice}可以保持多个{@link Session}连接
  * 而每一个{@link Session}的状态在{@link LinuxDevice}保持唯一的
+ * <p>
+ * 编写基于状态的回调；增加程序的灵活性
  *
  * @author maxuefeng
  * @see LinuxDeviceManager
@@ -34,7 +36,7 @@ public final class LinuxDevice implements Comparable<LinuxDevice> {
     private final int parallelism;
 
     /**
-     * 并行执行器
+     * 并行执行器（需要static修饰 定义为机器级别的执行器 而非某一个）
      */
     private final transient ListeningExecutorService executor;
 

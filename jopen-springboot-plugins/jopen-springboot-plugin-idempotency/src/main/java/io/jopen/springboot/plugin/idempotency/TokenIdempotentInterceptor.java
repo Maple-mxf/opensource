@@ -117,7 +117,15 @@ public class TokenIdempotentInterceptor extends BaseInterceptor {
         }
         com.google.common.base.Verify.verify(!Strings.isNullOrEmpty(tokenValue), "请求缺失幂等性参数");
         boolean hasKey = redisTemplate.hasKey(tokenValue);
-        if (hasKey) return true;
+        if (hasKey) {
+            redisTemplate.delete(tokenValue);
+            return true;
+        }
         throw new RuntimeException("重复请求");
+    }
+
+    public static void main(String[] args) {
+        String tokenValue = null;
+        com.google.common.base.Verify.verify(!Strings.isNullOrEmpty(tokenValue), "请求缺失幂等性参数");
     }
 }

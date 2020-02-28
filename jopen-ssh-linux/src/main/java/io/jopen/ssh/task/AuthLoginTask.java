@@ -4,7 +4,6 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
 import com.google.common.base.Preconditions;
 import io.jopen.ssh.Account;
-import io.jopen.ssh.LinuxDevice;
 import io.jopen.ssh.ListeningSession;
 import io.jopen.ssh.Response;
 
@@ -23,26 +22,19 @@ public final class AuthLoginTask implements Callable<Response> {
     private Account account;
 
     /**
-     * 分配的Linux机器{@link LinuxDevice}
-     */
-    private LinuxDevice linuxDevice;
-
-    /**
      * @see Session
      */
     private ListeningSession listeningSession;
 
-    public AuthLoginTask(Account account, LinuxDevice linuxDevice, ListeningSession listeningSession) {
+    public AuthLoginTask(Account account, ListeningSession listeningSession) {
 
         Preconditions.checkNotNull(account);
-        Preconditions.checkNotNull(linuxDevice);
         Preconditions.checkNotNull(listeningSession);
         this.account = account;
         if (account.getLoginType().equals(Account.LoginType.SECRET)
                 && account.getSecret() == null) {
             throw new RuntimeException("证书参数不可为空");
         }
-        this.linuxDevice = linuxDevice;
         this.listeningSession = listeningSession;
     }
 

@@ -10,9 +10,6 @@ import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,8 +21,6 @@ import java.util.concurrent.TimeUnit;
  * @since 2020/1/31
  */
 @Configuration
-@RestController
-@RequestMapping(value = "/jopen-idempotency")
 public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigurer {
 
     /**
@@ -53,7 +48,8 @@ public class IdempotentPluginConfiguration implements ImportAware, WebMvcConfigu
         this.defaultIdempotentTokenFunctionImpl = defaultIdempotentTokenFunctionImpl;
     }
 
-    @RequestMapping(value = "/getIdempotentToken", produces = {MediaType.APPLICATION_JSON_VALUE})
+    // @RequestMapping(value = "/getIdempotentToken", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Deprecated
     public ImmutableMap<String, Object> getIdempotentToken() {
         String idempotentToken = IDUtil.id();
         redisTemplate.opsForValue().set(idempotentToken, "1");

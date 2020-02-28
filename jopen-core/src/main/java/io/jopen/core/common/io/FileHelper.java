@@ -78,9 +78,7 @@ public class FileHelper implements Serializable {
      * @return
      */
     public static String getFileSuffix(String originName) {
-
         String[] result = originName.split("\\.");
-
         return result[result.length - 1];
     }
 

@@ -31,7 +31,7 @@ public abstract class AbstractBeBasedOnCookieCredentialFunction extends Abstract
         return Stream.of(cookies)
                 .filter(cookie -> cookieName.equals(cookie.getName()))
                 .findFirst()
-                .map(this::mapCookieToCredential)
+                .map(cookie -> this.mapCookieToCredential(request, cookie))
                 .orElse(Credential.INVALID_CREDENTIAL);
     }
 
@@ -39,6 +39,6 @@ public abstract class AbstractBeBasedOnCookieCredentialFunction extends Abstract
      * @param cookie base on {@link Cookie} map to CREDENTIAL object instance
      */
     @NonNull
-    public abstract Credential mapCookieToCredential(@NonNull Cookie cookie);
+    public abstract Credential mapCookieToCredential(@NonNull HttpServletRequest request, @NonNull Cookie cookie);
 }
 

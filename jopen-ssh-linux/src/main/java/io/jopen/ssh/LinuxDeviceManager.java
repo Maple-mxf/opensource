@@ -113,7 +113,7 @@ public final class LinuxDeviceManager {
             ConnectionInfo connectionInfo = connection.connect();
             listeningSession.setConnectionInfo(connectionInfo);
 
-            AuthLoginTask authLoginTask = new AuthLoginTask(account, device, listeningSession);
+            AuthLoginTask authLoginTask = new AuthLoginTask(account, listeningSession);
             Response response = authLoginTask.call();
 
             if (response.isSuccess()) {

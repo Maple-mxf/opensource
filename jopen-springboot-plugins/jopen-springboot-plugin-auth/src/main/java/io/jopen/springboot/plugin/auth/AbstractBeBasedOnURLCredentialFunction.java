@@ -24,13 +24,13 @@ public abstract class AbstractBeBasedOnURLCredentialFunction extends AbstractCre
     @NonNull
     protected Credential verify(@NonNull HttpServletRequest request) {
         String queryString = request.getQueryString();
-        return mapCookieToCredential(queryString);
+        return mapCookieToCredential(request, queryString);
     }
 
     /**
      * @param urlParamValue base on url param {@link HttpServletRequest#getQueryString()}
      */
     @NonNull
-    protected abstract Credential mapCookieToCredential(@NonNull String urlParamValue);
+    protected abstract Credential mapCookieToCredential(@NonNull HttpServletRequest request, @NonNull String urlParamValue);
 }
 
