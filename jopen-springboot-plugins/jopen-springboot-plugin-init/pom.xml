@@ -52,11 +52,11 @@
     <distributionManagement>
         <repository>
             <id>rdc-releases</id>
-            <url>https://repo.rdc.aliyun.com/repository/119718-release-hDM8LM/</url>
+            <url>https://repo.rdc.aliyun.com/repository/121157-release-OFkD4F/</url>
         </repository>
         <snapshotRepository>
             <id>rdc-snapshots</id>
-            <url>https://repo.rdc.aliyun.com/repository/119718-snapshot-iTjlKe/</url>
+            <url>https://repo.rdc.aliyun.com/repository/121157-snapshot-TEN1y1/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

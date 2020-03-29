@@ -100,8 +100,6 @@ public @interface NotNull {
                 }
 
                 // 自定义对象[自定义对象需要判断指定的字段不可为空]
-
-
                 if (fields != null && fields.length > 0) {
 
                     for (String field : fields) {
@@ -114,7 +112,6 @@ public @interface NotNull {
                         } catch (NoSuchFieldException e) {
                             throw new NoSuchFieldOfNotNullException(String.format("注解NotNull指定的属性[ %s ]错误, 对象 [ %s ] 无属性 [ %s ]", field, target.getClass().getName(), field));
                         }
-
                     }
                 }
 
@@ -126,8 +123,6 @@ public @interface NotNull {
                     // 校验所有字段
                     return filedValues.values().stream().anyMatch(Objects::isNull);
                 }
-
-
             }
             return false;
         }

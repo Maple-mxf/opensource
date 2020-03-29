@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class DistributeTransactionTest {
 
-    private String uri = "mongodb://192.168.74.136:27018,192.168.74.138:27018,192.168.74.139:27018";
+    private String uri = "mongodb://192.168.74.143:27018,192.168.74.143:27019,192.168.74.143:27019";
     private ConnectionString connectionString = new ConnectionString(uri);
 
     private MongoClient client = null;

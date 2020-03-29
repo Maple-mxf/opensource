@@ -3,7 +3,6 @@ package io.jopen.springboot.plugin.annotation.cache;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.*;
-import io.jopen.springboot.plugin.common.ReflectUtil;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -130,7 +129,8 @@ public class BaseInterceptor implements HandlerInterceptor {
         LOGGER.info("load api interface annotation");
 
         // TODO  需要设置controller包  API访问策略
-        List<Class<?>> classList = ReflectUtil.getClasses("com.planet.biz.modules.controller");
+        // List<Class<?>> classList = ReflectUtil.getClasses("com.planet.biz.modules.controller");
+        List<Class<?>> classList = new ArrayList<>();
 
         // 需要过滤的注解
         final Set<Class<?>> filterTypes = ImmutableSet.of(

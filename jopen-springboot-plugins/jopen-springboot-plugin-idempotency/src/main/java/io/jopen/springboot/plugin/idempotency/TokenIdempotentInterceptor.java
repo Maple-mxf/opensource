@@ -104,11 +104,13 @@ public class TokenIdempotentInterceptor extends BaseInterceptor {
         if (TokenLocation.HEADER.equals(tokenLocation)) {
             tokenValue = request.getHeader(idempotentTokenKey);
         } else if (TokenLocation.COOKIE.equals(tokenLocation)) {
+
             tokenValue = Optional.ofNullable(request.getCookies())
                     .filter(cookies -> cookies.length > 0)
                     .map(cookies -> Stream.of(cookies).filter(cookie -> idempotentTokenKey.equals(cookie.getName())).findFirst().orElse(null))
                     .map(Cookie::getValue)
                     .orElse(null);
+
         } else if (TokenLocation.URL_PARAM.equals(tokenLocation)) {
             String[] paramValue = request.getParameterMap().get(idempotentTokenKey);
             if (paramValue.length > 0) tokenValue = paramValue[0];
@@ -118,14 +120,11 @@ public class TokenIdempotentInterceptor extends BaseInterceptor {
         com.google.common.base.Verify.verify(!Strings.isNullOrEmpty(tokenValue), "请求缺失幂等性参数");
         boolean hasKey = redisTemplate.hasKey(tokenValue);
         if (hasKey) {
+            System.err.println(String.format("幂等性token %s", tokenValue));
             redisTemplate.delete(tokenValue);
+            System.err.println(String.format("消耗幂等性 token %s",tokenValue));
             return true;
         }
         throw new RuntimeException("重复请求");
-    }
-
-    public static void main(String[] args) {
-        String tokenValue = null;
-        com.google.common.base.Verify.verify(!Strings.isNullOrEmpty(tokenValue), "请求缺失幂等性参数");
     }
 }

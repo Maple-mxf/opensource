@@ -30,4 +30,5 @@ public class NumberAlgorithmTest {
     public void testGetPrimeNumberSum() {
         System.out.println(NumberAlgorithm.getPrimeNumberSum(1, 100));
     }
+
 }

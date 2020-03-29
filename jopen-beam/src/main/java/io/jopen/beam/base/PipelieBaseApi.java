@@ -27,7 +27,6 @@ public class PipelieBaseApi {
         collection.apply(new PTransform<PCollection<String>, POutput>() {
             @Override
             public POutput expand(PCollection<String> input) {
-                input.
                 return null;
             }
         });
