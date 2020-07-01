@@ -12,7 +12,7 @@
     <artifactId>jopen-rocketmq</artifactId>
 
     <properties>
-        <rocketmq.version>4.4.0</rocketmq.version>
+        <rocketmq.version>4.7.1</rocketmq.version>
     </properties>
 
     <dependencies>
